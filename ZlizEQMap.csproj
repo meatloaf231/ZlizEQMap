@@ -155,6 +155,12 @@
     <Compile Include="Forms\ZlizEQMapForm.DesignerCustom.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="Forms\ZlizEQMapFormExperimental.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\ZlizEQMapFormExperimental.Designer.cs">
+      <DependentUpon>ZlizEQMapFormExperimental.cs</DependentUpon>
+    </Compile>
     <Compile Include="LegendTextFactory.cs" />
     <Compile Include="LogFileParser.cs" />
     <Compile Include="Settings.cs" />
@@ -180,6 +186,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\ZlizEQMapForm.resx">
       <DependentUpon>ZlizEQMapForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\ZlizEQMapFormExperimental.resx">
+      <DependentUpon>ZlizEQMapFormExperimental.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
