@@ -764,16 +764,4 @@ namespace ZlizEQMap
             forceLogReselection = true;
         }
 	}
-
-    public class MapPoint
-	{
-		public int Y { get; set; }
-		public int X { get; set; }
-	}
-
-	public class PointSet
-	{
-		public Point Point1 { get; set; }
-		public Point Point2 { get; set; }
-	}
 }

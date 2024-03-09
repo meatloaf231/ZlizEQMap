@@ -21,29 +21,94 @@ namespace ZlizEQMap
         static Regex regExEnteredZone = new Regex(@"^\[.+\] You have entered (.+)\.$", RegexOptions.Compiled);
         static Regex regExLocation = new Regex(@"^\[.+\] Your Location is (.+), (.+), .+$", RegexOptions.Compiled);
         static Regex regExDirection = new Regex(@"^\[.+\] You think you are heading (.+)\.$", RegexOptions.Compiled);
-
-        MapPoint playerLocation = null;
-        MapPoint waypoint = null;
+        
         bool locationIsWithinMap;
-        Direction playerDirection = Direction.Unknown;
-        ZoneData currentZoneData;
         bool locInZoneHasBeenRecorded = false;
-        LogFileParser parser;
-        DateTime lastCharacterChange = DateTime.Now.Subtract(TimeSpan.FromMinutes(1));
-        List<ZoneData> zones;
         bool initialLoadCompleted = false;
-        DateTime lastRecordedDirectionDateTime = DateTime.Now;
-        DateTime lastRecordedLocationDateTime = DateTime.Now;
-        Dictionary<PictureBox, ZoneData> subMapPictureBoxes = new Dictionary<PictureBox, ZoneData>();
-        FileSystemWatcher watcher;
-        Boolean forceLogReselection = false;
-        int flowSubMapssubMapsTotalHeight = 1;
+        bool forceLogReselection = false;
+        
         int defaultWaypointOffsetValue = 4;
+        int defaultPlayerMarkerOffsetValue = 4;
+        int defaultPlayerCircleOffsetValue = 7;
+        int defaultOrdVal = 7;
+        int defaultInterordVal = 6;
 
-        // Scale to render the map at
+        int flowSubMapssubMapsTotalHeight = 1;
+        
         float renderScale = 1.0F;
 
+        FileSystemWatcher watcher;
+        LogFileParser parser;
+
+        DateTime lastCharacterChange = DateTime.Now.Subtract(TimeSpan.FromMinutes(1));
+        DateTime lastRecordedDirectionDateTime = DateTime.Now;
+        DateTime lastRecordedLocationDateTime = DateTime.Now;
+        MapPoint playerLocation = null;
+        MapPoint scaledPlayerLocation = null;
+        MapPoint waypoint = null;
+        Direction playerDirection = Direction.Unknown;
+
+        // Zone and Map Info
+        List<ZoneData> zones;
+        ZoneMap currentZoneMap;
+        ZoneData currentZoneData;
+        Dictionary<PictureBox, ZoneData> subMapPictureBoxes = new Dictionary<PictureBox, ZoneData>();
+
+        // UI specific stuff, pens and control lists
+        Pen playerPen = new Pen(Color.Red, 2f);
+        Pen waypointPen = new Pen(Color.Blue, 2f);
         private List<Control> miniSizeHideShowControlsList = new List<Control>();
+
+        PopoutMap popoutMap;
+
+
+        // Math stuff, reducing number of redundant calls.
+        // Amount of coords per pixel of the map image, on the X axis (horizontal)
+        public float ImageYCoordRatio
+        {
+            get
+            {
+                //var dY = currentZoneData.TotalY;
+                //var mY = currentZoneMap.ImageY;
+                //var defRet = dY / mY;
+                //var scaleRet = defRet * renderScale;
+                //return scaleRet;
+                return ((float)currentZoneData.TotalY / (float)currentZoneMap.ImageY) * renderScale;
+            }
+        }
+
+        // Amount of coords per pixel of the map image, on the Y axis (vertical)
+        public float ImageXCoordRatio
+        {
+            get
+            {
+                //var dX = currentZoneData.TotalX;
+                //var mX = currentZoneMap.ImageX;
+                //var defRet = dX / mX;
+                //var scaleRet = defRet * renderScale;
+                //return scaleRet;
+                return ((float)currentZoneData.TotalX / (float)currentZoneMap.ImageX) * renderScale;
+            }
+        }
+
+        // Math stuff, reducing number of redundant calls.
+        // Amount of coords per pixel of the map image, on the X axis (horizontal)
+        public float UnscaledImageYCoordRatio
+        {
+            get
+            {
+                return (float)currentZoneData.TotalY / (float)currentZoneMap.ImageY;
+            }
+        }
+
+        // Amount of coords per pixel of the map image, on the Y axis (vertical)
+        public float UnscaledImageXCoordRatio
+        {
+            get
+            {
+                return (float)currentZoneData.TotalX / (float)currentZoneMap.ImageX;
+            }
+        }
 
         public ZlizEQMapFormExperimental()
         {
@@ -109,8 +174,10 @@ namespace ZlizEQMap
             miniSizeHideShowControlsList.Add(checkAlwaysOnTop);
             miniSizeHideShowControlsList.Add(checkEnableDirection);
             miniSizeHideShowControlsList.Add(checkLegend);
-            miniSizeHideShowControlsList.Add(btnMinisize);
+            miniSizeHideShowControlsList.Add(buttonOpenPopoutMap);
             miniSizeHideShowControlsList.Add(btnSettingsHelp);
+
+            InitializeDebugging();
         }
 
         private void SetupFileSystemWatcher()
@@ -241,21 +308,15 @@ namespace ZlizEQMap
 
         private MapPoint GetMapImageLocationPoint(int x, int y)
         {
-            //Image image = Image.FromFile(currentZoneData.ImageFilePath);
-            //// Amount of coords per pixel of the map image, on the Y axis (vertical)
-            //imageYCoordRatio = (float)currentZoneData.TotalY / (float)image.Size.Height;
-            //// Amount of coords per pixel of the map image, on the X axis (horizontal)
-            //imageXCoordRatio = (float)currentZoneData.TotalX / (float)image.Size.Width;
+            int newLocationXPixelUnscaled = (int)(currentZoneData.ZeroLocation.X - ((float)x) / UnscaledImageXCoordRatio);
+            int newLocationYPixelUnscaled = (int)(currentZoneData.ZeroLocation.Y - ((float)y) / UnscaledImageYCoordRatio);
 
-            //imageYCoordRatio = imageYCoordRatio * renderScale;
-            //imageXCoordRatio = imageXCoordRatio * renderScale;
+            //int rawscaledX = (int)(newLocationXPixelUnscaled * renderScale);
+            //int rawscaledY = (int)(newLocationYPixelUnscaled * renderScale);
 
-            int newLocationXPixel = currentZoneData.ZeroLocation.X - (int)((float)x / currentZoneData.ImageXCoordRatio);
-            int newLocationYPixel = currentZoneData.ZeroLocation.Y - (int)((float)y / currentZoneData.ImageYCoordRatio);
-
-            if (PlayerLocationIsWithinMapImage(newLocationXPixel, newLocationYPixel, currentZoneData.ImageX, currentZoneData.ImageY))
+            if (PlayerLocationIsWithinMapImage(newLocationXPixelUnscaled, newLocationYPixelUnscaled, currentZoneMap.ImageX, currentZoneMap.ImageY))
             {
-                MapPoint point = new MapPoint() { X = newLocationXPixel, Y = newLocationYPixel };
+                MapPoint point = new MapPoint() { X = newLocationXPixelUnscaled, Y = newLocationYPixelUnscaled };
                 return point;
             }
             else
@@ -309,11 +370,7 @@ namespace ZlizEQMap
             SetButtonWaypointText();
             picBox.Load(zoneData.ImageFilePath);
 
-            Image image = Image.FromFile(zoneData.ImageFilePath);
-            zoneData.ImageY = image.Size.Height;
-            zoneData.ImageX = image.Size.Width;
-
-
+            currentZoneMap = new ZoneMap(zoneData.ImageFilePath);
 
             PopulateSubMaps(zoneData);
 
@@ -445,56 +502,44 @@ namespace ZlizEQMap
 
         private void picBox_Paint(object sender, PaintEventArgs e)
         {
-            Pen pen = new Pen(Color.Red, 2f);
-
             if (locInZoneHasBeenRecorded)
             {
+                int playerCircleOffsetValue = (int)Math.Round(defaultPlayerCircleOffsetValue * renderScale);
+                int playerMarkerOffsetValue = (int)Math.Round(defaultPlayerMarkerOffsetValue * renderScale);
+
                 if (!locationIsWithinMap)
                 {
                     // Draw circle indicating that the location was the last successfully recorded (player is probably out of the bounds of the map now)
-                    int i = 7;
-
                     if (playerLocation != null)
-                        e.Graphics.DrawEllipse(pen, playerLocation.X - i, playerLocation.Y - i, 2 * i, 2 * i);
+                        e.Graphics.DrawEllipse(playerPen, playerLocation.X - playerCircleOffsetValue, playerLocation.Y - playerCircleOffsetValue, 2 * playerCircleOffsetValue, 2 * playerCircleOffsetValue);
                     else
-                        e.Graphics.DrawEllipse(pen, 1, 1, 2 * i, 2 * i);
+                        e.Graphics.DrawEllipse(playerPen, 1, 1, 2 * playerCircleOffsetValue, 2 * playerCircleOffsetValue);
                 }
                 else
                 {
                     if (playerDirection == Direction.Unknown || !checkEnableDirection.Checked || lastRecordedLocationDateTime - lastRecordedDirectionDateTime > TimeSpan.FromMilliseconds(1500))
                     {
                         // Draw player location X
-                        int i = 4;
-                        e.Graphics.DrawLine(pen, new Point(playerLocation.X - i, playerLocation.Y - i), new Point(playerLocation.X + i, playerLocation.Y + i));
-                        e.Graphics.DrawLine(pen, new Point(playerLocation.X + i, playerLocation.Y - i), new Point(playerLocation.X - i, playerLocation.Y + i));
+                        e.Graphics.DrawLine(playerPen, new Point(playerLocation.X - playerMarkerOffsetValue, playerLocation.Y - playerMarkerOffsetValue), new Point(playerLocation.X + playerMarkerOffsetValue, playerLocation.Y + playerMarkerOffsetValue));
+                        e.Graphics.DrawLine(playerPen, new Point(playerLocation.X + playerMarkerOffsetValue, playerLocation.Y - playerMarkerOffsetValue), new Point(playerLocation.X - playerMarkerOffsetValue, playerLocation.Y + playerMarkerOffsetValue));
                     }
                     else if (lastRecordedLocationDateTime - lastRecordedDirectionDateTime <= TimeSpan.FromMilliseconds(1500))
                     {
                         // Draw arrow facing in player direction
                         AdjustableArrowCap arrow = new AdjustableArrowCap(5, 4);
-                        pen.CustomEndCap = arrow;
+                        playerPen.CustomEndCap = arrow;
 
                         PointSet pointSet = GetDirectionLinePointSet();
 
-                        e.Graphics.DrawLine(pen, pointSet.Point1, pointSet.Point2);
+                        e.Graphics.DrawLine(playerPen, pointSet.Point1, pointSet.Point2);
                     }
                 }
             }
 
             if (waypoint != null)
             {
-                int i = 4;
-
-                if (renderScale != 1.0F)
-                {
-                    //i = Math.Round(i )
-                }
-
-                Pen normalWaypointPen = new Pen(Color.Blue, 2f);
-                Pen scaledWaypointPen = new Pen(Color.Green, 2f);
-
-                e.Graphics.DrawEllipse(normalWaypointPen, (waypoint.X - i), (waypoint.Y - i), 2 * i, 2 * i);
-                e.Graphics.DrawEllipse(scaledWaypointPen, (waypoint.X - i) * renderScale, (waypoint.Y - i) * renderScale, 2 * i, 2 * i);
+                int waypointOffsetValue = (int)Math.Round(defaultWaypointOffsetValue * renderScale);
+                e.Graphics.DrawEllipse(waypointPen, (waypoint.X - waypointOffsetValue), (waypoint.Y - waypointOffsetValue), 2 * waypointOffsetValue, 2 * waypointOffsetValue);
             }
         }
 
@@ -505,27 +550,27 @@ namespace ZlizEQMap
 
         private PointSet GetDirectionLinePointSet()
         {
-            int i = 6;
-            int j = 7;
+            int ordVal = (int)Math.Round(defaultOrdVal * renderScale);
+            int interordVal = (int)Math.Round(defaultInterordVal * renderScale);
 
             switch (playerDirection)
             {
                 case Direction.North:
-                    return new PointSet() { Point1 = new Point(playerLocation.X, playerLocation.Y + j), Point2 = new Point(playerLocation.X, playerLocation.Y - j) };
+                    return new PointSet() { Point1 = new Point(playerLocation.X, playerLocation.Y + ordVal), Point2 = new Point(playerLocation.X, playerLocation.Y - ordVal) };
                 case Direction.NorthEast:
-                    return new PointSet() { Point1 = new Point(playerLocation.X - i, playerLocation.Y + i), Point2 = new Point(playerLocation.X + i, playerLocation.Y - i) };
+                    return new PointSet() { Point1 = new Point(playerLocation.X - interordVal, playerLocation.Y + interordVal), Point2 = new Point(playerLocation.X + interordVal, playerLocation.Y - interordVal) };
                 case Direction.East:
-                    return new PointSet() { Point1 = new Point(playerLocation.X - j, playerLocation.Y), Point2 = new Point(playerLocation.X + j, playerLocation.Y) };
+                    return new PointSet() { Point1 = new Point(playerLocation.X - ordVal, playerLocation.Y), Point2 = new Point(playerLocation.X + ordVal, playerLocation.Y) };
                 case Direction.SouthEast:
-                    return new PointSet() { Point1 = new Point(playerLocation.X - i, playerLocation.Y - i), Point2 = new Point(playerLocation.X + i, playerLocation.Y + i) };
+                    return new PointSet() { Point1 = new Point(playerLocation.X - interordVal, playerLocation.Y - interordVal), Point2 = new Point(playerLocation.X + interordVal, playerLocation.Y + interordVal) };
                 case Direction.South:
-                    return new PointSet() { Point1 = new Point(playerLocation.X, playerLocation.Y - j), Point2 = new Point(playerLocation.X, playerLocation.Y + j) };
+                    return new PointSet() { Point1 = new Point(playerLocation.X, playerLocation.Y - ordVal), Point2 = new Point(playerLocation.X, playerLocation.Y + ordVal) };
                 case Direction.SouthWest:
-                    return new PointSet() { Point1 = new Point(playerLocation.X + i, playerLocation.Y - i), Point2 = new Point(playerLocation.X - i, playerLocation.Y + i) };
+                    return new PointSet() { Point1 = new Point(playerLocation.X + interordVal, playerLocation.Y - interordVal), Point2 = new Point(playerLocation.X - interordVal, playerLocation.Y + interordVal) };
                 case Direction.West:
-                    return new PointSet() { Point1 = new Point(playerLocation.X + j, playerLocation.Y), Point2 = new Point(playerLocation.X - j, playerLocation.Y) };
+                    return new PointSet() { Point1 = new Point(playerLocation.X + ordVal, playerLocation.Y), Point2 = new Point(playerLocation.X - ordVal, playerLocation.Y) };
                 case Direction.NorthWest:
-                    return new PointSet() { Point1 = new Point(playerLocation.X + i, playerLocation.Y + i), Point2 = new Point(playerLocation.X - i, playerLocation.Y - i) };
+                    return new PointSet() { Point1 = new Point(playerLocation.X + interordVal, playerLocation.Y + interordVal), Point2 = new Point(playerLocation.X - interordVal, playerLocation.Y - interordVal) };
 
                 default:
                     throw new Exception("Unhandled playerDirection");
@@ -595,11 +640,6 @@ namespace ZlizEQMap
             }
         }
 
-        private void btnMinisize_Click(object sender, EventArgs e)
-        {
-            MiniSizeForm();
-        }
-
         private void MiniSizeForm()
         {
             if (initialLoadCompleted)
@@ -662,6 +702,7 @@ namespace ZlizEQMap
             Direction direction = Direction.Unknown;
             int? locx = null;
             int? locy = null;
+
             string zone = null;
 
             List<string> lines = parser.GetNewLines();
@@ -784,26 +825,32 @@ namespace ZlizEQMap
             this.TopMost = checkAlwaysOnTop.Checked;
         }
 
-        private void btnSetWaypoint_Click(object sender, EventArgs e)
+        private Point ParseWaypointText()
         {
-            if (waypoint == null)
+            Point result = new Point(0, 0);
+            string[] items = txtWaypoint.Text.Split(',');
+
+            if (items.Length == 2)
             {
-                string[] items = txtWaypoint.Text.Split(',');
+                int y;
+                int x;
 
-                if (items.Length == 2)
+                if (Int32.TryParse(items[0].Trim(), out y) && Int32.TryParse(items[1].Trim(), out x))
                 {
-                    int y;
-                    int x;
-
-                    if (Int32.TryParse(items[0].Trim(), out y) && Int32.TryParse(items[1].Trim(), out x))
-                        this.waypoint = GetMapImageLocationPoint(x, y);
+                    result.X = x;
+                    result.Y = y;
                 }
             }
-            else
-                waypoint = null;
 
-            picBox.Invalidate();
+            return result;
+        }
+
+        private void ForceSetWaypoint()
+        {
+            Point parsedWaypoint = ParseWaypointText();
+            SetWaypoint(parsedWaypoint.X, parsedWaypoint.Y);
             SetButtonWaypointText();
+            picBox.Invalidate();
         }
 
         private void SetButtonWaypointText()
@@ -833,6 +880,46 @@ namespace ZlizEQMap
             forceLogReselection = true;
         }
 
+        private void InitializeDebugging()
+        {
+            picBox.SizeMode = PictureBoxSizeMode.Zoom;
+            ForceSetPlayerLocation();
+            ForceSetWaypoint();
+            ResizeMap();
+        }
+
+        private void SetWaypoint(int x, int y)
+        {
+            this.waypoint = GetMapImageLocationPoint(x, y);
+        }
+
+        private void btnSetWaypoint_Click(object sender, EventArgs e)
+        {
+            if (waypoint == null)
+            {
+                string[] items = txtWaypoint.Text.Split(',');
+
+                if (items.Length == 2)
+                {
+                    int y;
+                    int x;
+
+                    if (Int32.TryParse(items[0].Trim(), out y) && Int32.TryParse(items[1].Trim(), out x))
+                        this.waypoint = GetMapImageLocationPoint(x, y);
+                }
+            }
+            else
+                waypoint = null;
+
+            picBox.Invalidate();
+            SetButtonWaypointText();
+        }
+
+        private void ForceSetPlayerLocation()
+        {
+            UpdatePlayerLocation((int)nud_playerX.Value, (int)nud_playerY.Value);
+        }
+
         private void ResizeMap()
         {
             var test = currentZoneData.ZeroLocation;
@@ -840,13 +927,16 @@ namespace ZlizEQMap
             //picBox.Width = currentZoneData.ImageX * renderScale;
             //picBox.Height = currentZoneData.ImageY * renderScale;
 
-            var roundedX = Math.Round(currentZoneData.ImageX * renderScale);
-            var roundedY = Math.Round(currentZoneData.ImageY * renderScale);
+            var roundedX = Math.Round(currentZoneMap.ImageX * renderScale);
+            var roundedY = Math.Round(currentZoneMap.ImageY * renderScale);
 
             picBox.Width = (int)roundedX;
             picBox.Height = (int)roundedY;
-            picBox.Invalidate();
 
+            ForceSetWaypoint();
+            ForceSetPlayerLocation();
+
+            picBox.Invalidate();
         }
 
         private void buttonAutosize_Click(object sender, EventArgs e)
@@ -883,6 +973,68 @@ namespace ZlizEQMap
         {
             float ratio = (float)nud_scale.Value;
             renderScale = ratio;
+            ResizeMap();
+        }
+
+        private void buttonSetPlayerXY_Click(object sender, EventArgs e)
+        {
+            ForceSetPlayerLocation();
+        }
+
+        private void nud_playerY_ValueChanged(object sender, EventArgs e)
+        {
+            ForceSetPlayerLocation();
+        }
+
+        private void nud_playerX_ValueChanged(object sender, EventArgs e)
+        {
+            ForceSetPlayerLocation();
+        }
+
+        private void button_reinit_Click(object sender, EventArgs e)
+        {
+            InitializeDebugging();
+        }
+
+        private void sliderZoom_Scroll(object sender, EventArgs e)
+        {
+            SetZoomSlider();
+        }
+
+        private void SetZoomSlider()
+        {
+            float sliderValue = (float)sliderZoom.Value;
+            float calc = sliderValue / 100F;
+            renderScale = calc;
+            ResizeMap();
+        }
+
+        public void UpdatePopoutMap()
+        {
+            //minimap.LoadMinimap(currentZoneData.ImageFilePath);
+            if (popoutMap == null || popoutMap.IsDisposed)
+            {
+                popoutMap = new PopoutMap();
+                popoutMap.LoadPopoutMap(currentZoneData.ImageFilePath);
+            }
+            popoutMap.DrawAtCoords(playerLocation.X, playerLocation.Y);
+        }
+
+        public void OpenPopoutMap()
+        {
+            popoutMap = new PopoutMap();
+            popoutMap.LoadPopoutMap(currentZoneData.ImageFilePath);
+            popoutMap.Show();
+        }
+
+        private void buttonOpenPopoutMap_Click(object sender, EventArgs e)
+        {
+            OpenPopoutMap();
+        }
+
+        private void buttonUpdatePopoutMap_Click(object sender, EventArgs e)
+        {
+            UpdatePopoutMap();
         }
     }
 }

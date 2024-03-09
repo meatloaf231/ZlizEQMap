@@ -31,10 +31,8 @@ namespace ZlizEQMap
             }
             catch (Exception ex)
             {
-                Application.Run(new ZlizEQMapForm());
                 throw ex;
             }
-
         }
     }
 }

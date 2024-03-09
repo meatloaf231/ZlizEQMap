@@ -4,7 +4,6 @@ using System.Linq;
 using System.Text;
 using System.Drawing;
 using System.IO;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace ZlizEQMap
 {
@@ -30,39 +29,6 @@ namespace ZlizEQMap
         /// The total amount of coords on the X-axis (horizontal) of the map iamge
         /// </summary>
         public int TotalX { get; set; }
-
-        /// <summary>
-        /// The size in pixels of the Y-axis (vertical) of the map iamge
-        /// </summary>
-        public int ImageY { get; set; }
-
-        /// <summary>
-        /// The size in pixels of the X-axis (horizontal) of the map iamge
-        /// </summary>
-        public int ImageX { get; set; }
-
-
-
-        // Amount of coords per pixel of the map image, on the X axis (horizontal)
-        private float _imageYCoordRatio = 1;
-        public float ImageYCoordRatio
-        {
-            get
-            {
-                return (float)TotalY / (float)ImageY;
-            }
-        }
-
-        // Amount of coords per pixel of the map image, on the Y axis (vertical)
-        private float _imageXCoordRatio = 1;
-        public float ImageXCoordRatio
-        {
-            get
-            {
-                return (float)TotalX / (float)ImageY;
-            }
-        }
-
 
         public List<string> Legend { get; set; }
         public string Continent { get; set; }
