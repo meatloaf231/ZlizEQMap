@@ -51,12 +51,14 @@
             this.picBoxMinimap.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.picBoxMinimap.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.picBoxMinimap.Location = new System.Drawing.Point(42, 32);
             this.picBoxMinimap.Name = "picBoxMinimap";
             this.picBoxMinimap.Size = new System.Drawing.Size(375, 275);
             this.picBoxMinimap.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.picBoxMinimap.TabIndex = 1;
             this.picBoxMinimap.TabStop = false;
+            this.picBoxMinimap.SizeChanged += new System.EventHandler(this.picBoxMinimap_SizeChanged);
             this.picBoxMinimap.Paint += new System.Windows.Forms.PaintEventHandler(this.picBoxMinimap_Paint);
             this.picBoxMinimap.DoubleClick += new System.EventHandler(this.picBoxMinimap_DoubleClick);
             // 

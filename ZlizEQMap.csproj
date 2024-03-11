@@ -138,6 +138,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Classes\Overseer.cs" />
     <Compile Include="Controls\ZlizPictureBox.cs" />
     <Compile Include="Forms\PopoutMap.cs">
       <SubType>Form</SubType>
@@ -151,7 +152,7 @@
     <Compile Include="Forms\SettingsHelp.Designer.cs">
       <DependentUpon>SettingsHelp.cs</DependentUpon>
     </Compile>
-    <Compile Include="Enums.cs" />
+    <Compile Include="Classes\Enums.cs" />
     <Compile Include="Forms\FirstRun.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -167,22 +168,22 @@
     <Compile Include="Forms\ZlizEQMapFormExperimental.Designer.cs">
       <DependentUpon>ZlizEQMapFormExperimental.cs</DependentUpon>
     </Compile>
-    <Compile Include="LegendTextFactory.cs" />
-    <Compile Include="LogFileParser.cs" />
-    <Compile Include="MiniClasses.cs" />
-    <Compile Include="Settings.cs" />
+    <Compile Include="Classes\LegendTextFactory.cs" />
+    <Compile Include="Classes\LogFileParser.cs" />
+    <Compile Include="Classes\MiniClasses.cs" />
+    <Compile Include="Classes\Settings.cs" />
     <Compile Include="Forms\ZlizEQMapForm.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Forms\ZlizEQMapForm.Designer.cs">
       <DependentUpon>ZlizEQMapForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="UnitTestDetector.cs" />
-    <Compile Include="ZoneMapFactory.cs" />
-    <Compile Include="ZoneMap.cs" />
-    <Compile Include="ZoneData.cs" />
-    <Compile Include="ZoneDataFactory.cs" />
-    <Compile Include="Paths.cs" />
+    <Compile Include="Classes\UnitTestDetector.cs" />
+    <Compile Include="Classes\ZoneMapFactory.cs" />
+    <Compile Include="Classes\ZoneMap.cs" />
+    <Compile Include="Classes\ZoneData.cs" />
+    <Compile Include="Classes\ZoneDataFactory.cs" />
+    <Compile Include="Classes\Paths.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Controls\ZlizLabel.cs" />

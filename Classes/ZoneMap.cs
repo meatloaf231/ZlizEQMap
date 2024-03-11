@@ -9,6 +9,7 @@ namespace ZlizEQMap
 {
     public class ZoneMap
     {
+        private ZoneData BaseZoneData;
         private Image _mapImage;
         public Image MapImage
         {
@@ -25,7 +26,8 @@ namespace ZlizEQMap
         /// <summary>
         /// The size in pixels of the Y-axis (vertical) of the map iamge
         /// </summary>
-        public int ImageY {
+        public int ImageY
+        {
             get
             {
                 return MapImage.Size.Height;
@@ -35,16 +37,23 @@ namespace ZlizEQMap
         /// <summary>
         /// The size in pixels of the X-axis (horizontal) of the map iamge
         /// </summary>
-        public int ImageX {
+        public int ImageX
+        {
             get
             {
                 return MapImage.Size.Width;
             }
         }
 
-        public ZoneMap(string imageFilePath)
+        //public ZoneMap(string imageFilePath)
+        //{
+        //    MapImage = Image.FromFile(imageFilePath);
+        //}
+
+        public ZoneMap(ZoneData zoneData)
         {
-            MapImage = Image.FromFile(imageFilePath);
+            BaseZoneData = zoneData;
+            MapImage = Image.FromFile(zoneData.ImageFilePath);
         }
 
         public void LoadMapData(string imageFilePath)

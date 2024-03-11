@@ -16,14 +16,30 @@ namespace ZlizEQMap
         public int configureState = 1;
         public int borderState = 1;
 
-        public List<MapMarker> markers = new List<MapMarker>();
+        public int manualZoom = 100;
+        public float autoZoom = 1F;
 
-        public int zoomfactor = 100;
+        // Since the map itself is not necessarily going to fill the entire picturebox
+        public int mapXOffset = 0;
+        public int mapYOffset = 0;
 
-        public float renderScale = 1F;
+        public int maxmarkers = 5;
 
-        Pen playerPen = new Pen(Color.Red, 2f);
-        Pen waypointPen = new Pen(Color.Blue, 2f);
+        public float renderScale
+        {
+            get
+            {
+                return autoZoom;
+                if (picBoxMinimap.SizeMode == PictureBoxSizeMode.Zoom)
+                {
+                    return autoZoom;
+                }
+                else
+                {
+                    return manualZoom;
+                }
+            }
+        }
 
         public const int WM_NCLBUTTONDOWN = 0xA1;
         public const int HT_CAPTION = 0x2;
@@ -46,38 +62,20 @@ namespace ZlizEQMap
 
         public PopoutMap()
         {
+            Overseer.RedrawMaps += PopoutMap_OverseerSaysRedraw;
+
             InitializeComponent();
+        }
+
+        private void PopoutMap_OverseerSaysRedraw(object sender, EventArgs e)
+        {
+            picBoxMinimap.Invalidate();
         }
 
         public void LoadPopoutMap(string imagePath)
         {
             picBoxMinimap.Load(imagePath);
         }
-
-
-        //const int WM_NCHITTEST = 0x0084;
-        //const int HTBOTTOMRIGHT = 17;
-        //const int BorderSize = 4;
-        //protected override void WndProc(ref Message m)
-        //{
-        //    base.WndProc(ref m);
-
-        //    if (m.Msg == WM_NCHITTEST)
-        //    {
-        //        //cursor position
-        //        var cursorPosition = PointToClient(Cursor.Position);
-
-        //        //border area
-        //        //Rectangle rightBorderRectangle = new Rectangle(ClientSize.Width - BorderSize, 0, BorderSize, ClientSize.Height);
-        //        Rectangle resizeRect = new Rectangle(ClientSize.Width - 20, ClientSize.Height - 20, 20, 20);
-
-        //        if (resizeRect.Contains(cursorPosition))
-        //            m.Result = (IntPtr)HTBOTTOMRIGHT;
-
-        //    }
-        //}
-
-
 
         public void OverwritePopoutMap(PictureBox mainMap)
         {
@@ -86,9 +84,8 @@ namespace ZlizEQMap
 
         public void DrawAtCoords(int x, int y)
         {
-            markers.Clear();
-            MapMarker marker = new MapMarker(x, y);
-            markers.Add(marker);
+            MapEllipse ellipse = new MapEllipse(Overseer.PlayerPen, x, y, 5, 5);
+            Overseer.Markers.Add(ellipse);
             picBoxMinimap.Invalidate();
         }
 
@@ -109,7 +106,6 @@ namespace ZlizEQMap
                 picBoxMinimap.SizeMode = PictureBoxSizeMode.Zoom;
             }
         }
-
 
         private void checkBoxLockState_CheckedChanged(object sender, EventArgs e)
         {
@@ -209,17 +205,53 @@ namespace ZlizEQMap
 
         private void trackBar_Zoom_ValueChanged(object sender, EventArgs e)
         {
-            zoomfactor = trackBar_Zoom.Value;
+            manualZoom = trackBar_Zoom.Value;
         }
 
         private void picBoxMinimap_Paint(object sender, PaintEventArgs e)
         {
-            foreach (MapMarker marker in markers)
+            foreach (IMapMarker marker in Overseer.Markers)
             {
-                // Draw player location X
-                e.Graphics.DrawLine(playerPen, new Point(marker.Location.X - 2, marker.Location.Y - 2), new Point(marker.Location.X + 2, marker.Location.Y + 2));
-                e.Graphics.DrawLine(playerPen, new Point(marker.Location.X + 2, marker.Location.Y - 2), new Point(marker.Location.X - 2, marker.Location.Y + 2));
+                marker.Draw(e.Graphics, renderScale, mapXOffset, mapYOffset);
             }
+        }
+
+        // There's GOTTA be a better way to do this.
+        private void picBoxMinimap_SizeChanged(object sender, EventArgs e)
+        {
+            //Rectangle result = new Rectangle(0, 0, 100, 100);
+            //Image image = Overseer.CurrentZoneMap.MapImage;
+            //Size imageSize = image.Size;
+
+            //int topOffset = picBoxMinimap.Top;
+            //int rightOffset = picBoxMinimap.Right - picBoxMinimap.Width;
+            //int bottomOffset = picBoxMinimap.Bottom - picBoxMinimap.Height;
+            //int leftOffset = picBoxMinimap.Left;
+
+            //Console.WriteLine($"Offsets: {topOffset} / {rightOffset} / {bottomOffset} / {leftOffset} ");
+
+            //float xRatio = (float)ClientRectangle.Width / (float)imageSize.Width;
+            //float yRatio = (float)ClientRectangle.Height / (float)imageSize.Height;
+
+            float ratio = Math.Min((float)ClientRectangle.Width / (float)picBoxMinimap.Image.Width, (float)ClientRectangle.Height / (float)picBoxMinimap.Image.Height);
+            //result.Width = (int)(imageSize.Width * ratio);
+            //result.Height = (int)(imageSize.Height * ratio);
+            //result.X = (ClientRectangle.Width - result.Width) / 2;
+            //result.Y = (ClientRectangle.Height - result.Height) / 2;
+
+            mapXOffset = (picBoxMinimap.Width - (int)(picBoxMinimap.Image.Width * ratio)) / 2;
+            mapYOffset = (picBoxMinimap.Height - (int)(picBoxMinimap.Image.Height * ratio)) / 2;
+
+            // wwwwwwhhhhhhyyyyyyyyyy
+            //Console.WriteLine(
+            //    $"LOG: " +
+            //    $"Dimensions: {picBoxMinimap.Width} / {picBoxMinimap.Height}, " +
+            //    $"Ratio: {xRatio} / {yRatio}, " +
+            //    $"Spacing: {leftOffset} / {topOffset}, " +
+            //    $"Calculated: W/2: {picBoxMinimap.Width / 2} / ratio'd: {imageSize.Width * xRatio} {imageSize.Height * yRatio} / LS: {mapXOffset} / TS: {mapYOffset}"
+            //);
+
+            autoZoom = ratio;
         }
     }
 }

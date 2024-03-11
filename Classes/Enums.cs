@@ -17,4 +17,11 @@ namespace ZlizEQMap
 		West,
 		NorthWest
 	}
+
+	public enum MapMarkerStyle
+	{
+		X,
+		Circle,
+		Arrow
+	}
 }
