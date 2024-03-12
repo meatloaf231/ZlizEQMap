@@ -163,7 +163,7 @@ namespace ZlizEQMap
             this.checkEnableDirection.AutoSize = true;
             this.checkEnableDirection.Checked = true;
             this.checkEnableDirection.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkEnableDirection.Location = new System.Drawing.Point(74, 99);
+            this.checkEnableDirection.Location = new System.Drawing.Point(6, 122);
             this.checkEnableDirection.Name = "checkEnableDirection";
             this.checkEnableDirection.Size = new System.Drawing.Size(68, 17);
             this.checkEnableDirection.TabIndex = 10;
@@ -310,11 +310,11 @@ namespace ZlizEQMap
             // check_ShowAnnotations
             // 
             this.check_ShowAnnotations.AutoSize = true;
-            this.check_ShowAnnotations.Location = new System.Drawing.Point(59, 20);
+            this.check_ShowAnnotations.Location = new System.Drawing.Point(6, 20);
             this.check_ShowAnnotations.Name = "check_ShowAnnotations";
-            this.check_ShowAnnotations.Size = new System.Drawing.Size(54, 17);
+            this.check_ShowAnnotations.Size = new System.Drawing.Size(121, 17);
             this.check_ShowAnnotations.TabIndex = 38;
-            this.check_ShowAnnotations.Text = "Notes";
+            this.check_ShowAnnotations.Text = "Show Notes on Map";
             this.toolTip1.SetToolTip(this.check_ShowAnnotations, "Always-On-Top");
             this.check_ShowAnnotations.UseVisualStyleBackColor = true;
             this.check_ShowAnnotations.CheckedChanged += new System.EventHandler(this.check_ShowAnnotations_CheckedChanged);
@@ -322,7 +322,7 @@ namespace ZlizEQMap
             // check_ShowPlayerLocHistory
             // 
             this.check_ShowPlayerLocHistory.AutoSize = true;
-            this.check_ShowPlayerLocHistory.Location = new System.Drawing.Point(7, 145);
+            this.check_ShowPlayerLocHistory.Location = new System.Drawing.Point(6, 146);
             this.check_ShowPlayerLocHistory.Name = "check_ShowPlayerLocHistory";
             this.check_ShowPlayerLocHistory.Size = new System.Drawing.Size(103, 17);
             this.check_ShowPlayerLocHistory.TabIndex = 40;
