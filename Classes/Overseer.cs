@@ -11,54 +11,71 @@ using System.Windows.Forms;
 
 namespace ZlizEQMap
 {
+    // I probably should've just named this class Cartographer.
+    // It's a big overblown static class that does probably too much.
+    // Could definitely be organized better.
     public static class Overseer
     {
+        // ~~regexes~~ everyone's favorite
         static Regex regExEnteredZone = new Regex(@"^\[.+\] You have entered (.+)\.$", RegexOptions.Compiled);
         static Regex regExLocation = new Regex(@"^\[.+\] Your Location is (.+), (.+), .+$", RegexOptions.Compiled);
         static Regex regExDirection = new Regex(@"^\[.+\] You think you are heading (.+)\.$", RegexOptions.Compiled);
 
-        // Drawing presets
-        public static List<IMapMarker> Markers = new List<IMapMarker>();
-        //public static List<IMapMarker> PlayerCoordinates = new List<IMapMarker>();
-        //public static List<IMapMarker> Waypoints = new List<IMapMarker>();
-        //public static List<IMapMarker> MapNotes = new List<IMapMarker>();
-
+        // Drawing presets - markers, maps, arrows, etc.
+        public static List<IMapDrawable> Markers = new List<IMapDrawable>();
         public static Pen PlayerPen = new Pen(Color.Red, 2f);
+        public static Pen PlayerHistoryPen = new Pen(Color.Red, 2f);
         public static Pen PlayerPenArrow = new Pen(Color.Red, 2f);
         public static Pen WaypointPen = new Pen(Color.Blue, 2f);
+        public static Pen AnnotationPen = new Pen(Color.Green, 2f);
+
+        // Defaults and presets, hooray
         public static int defaultWaypointOffsetValue = 4;
         public static int defaultPlayerMarkerOffsetValue = 4;
         public static int defaultPlayerCircleOffsetValue = 7;
         public static int defaultOrdVal = 7;
         public static int defaultInterordVal = 6;
-        public static int maxMarkers = 5;
+        public static int MaxHistoryLocations = 25;
 
         // Character info and waypoints
+        // Note that since there's two types of coordinates:
+        //  1. Points, which are raw X/Y values from the log parser. I tried to make sure these were named "[whatever]Coords".
+        //  2. MapPoints, which are the points that have been scaled to the map. These are gonna be scaled and weird and unpredictable. I tried to keep these named "[whatever]MapLocation"
+        // Hopefully I used the right ones in the right places. God. It's been a weird week.
         public static DateTime LastCharacterChange = DateTime.Now.Subtract(TimeSpan.FromMinutes(1));
         public static DateTime LastRecordedDirectionDateTime = DateTime.Now;
         public static DateTime LastRecordedLocationDateTime = DateTime.Now;
-        public static MapPoint PlayerLocation = null;
+        public static Point PlayerCoords;
+        public static MapPoint PlayerMapLocation = null;
         public static MapPoint Waypoint = null;
         public static Direction PlayerDirection = Direction.Unknown;
 
-        // File system stuff
+        // Player coordinate history, in raw unscaled values from the logs.
+        public static List<Point> PlayerCoordsHistory { get; set; } = new List<Point>();
+
+        // Player map location history, in scaled values.
+        public static List<MapPoint> PlayerMapLocationHistory { get; set; } = new List<MapPoint>();
+
+        // File system stuff. Weehoo.
         public static FileSystemWatcher Watcher;
         public static LogFileParser Parser;
         
-        // Zone and map info
+        // Zone and map info.
         public static List<ZoneData> Zones;
         public static ZoneData CurrentZoneData = null;
         public static ZoneMap CurrentZoneMap = null;
-
         public static string CurrentTitle = "";
 
-        // Miscellaneous booleans
+        // Miscellaneous booleans. Gotta have em. 
+        public static bool showZoneAnnotations = false;
+        public static bool showPlayerLocationHistory = false;
         public static bool timerEnabled = false;
         public static bool locationIsWithinMap = false;
         public static bool locInZoneHasBeenRecorded = false;
         public static bool initialLoadCompleted = false;
         public static bool forceLogReselection = false;
 
+        // Events! We could definitely use these for more stuff. But this one works for now for at least making sure all the maps get redrawn.
         public static EventHandler RedrawMaps;
 
         public static void RaiseRedrawMaps(object sender, EventArgs e)
@@ -112,7 +129,11 @@ namespace ZlizEQMap
 
             // Okay, we loaded fine, set the rest up now.
             SetupFileSystemWatcher();
+            ZoneAnnotationManager.InitializeZoneAnnotationManager();
+
             PlayerPenArrow.CustomEndCap = new AdjustableArrowCap(5, 4);
+            AnnotationPen.Color = Settings.NotesColor;
+            PlayerCoordsHistory = new List<Point>();
         }
 
         public static void UnLoad()
@@ -284,7 +305,9 @@ namespace ZlizEQMap
         {
             locInZoneHasBeenRecorded = false;
             Waypoint = null;
-            PlayerLocation = null;
+            PlayerMapLocation = null;
+            PlayerMapLocationHistory.Clear();
+            PlayerCoordsHistory.Clear();
 
             ZoneData zoneData = ZoneDataFactory.FetchByFullZoneName(Zones, zoneName, subMapIndex);
             if (zoneData == null)
@@ -324,11 +347,24 @@ namespace ZlizEQMap
             locInZoneHasBeenRecorded = true;
             LastRecordedLocationDateTime = DateTime.Now;
 
-            MapPoint point = GetMapImageLocationPoint(x, y);
+            MapPoint mapPoint = GetMapImageLocationPoint(x, y);
 
-            if (point != null)
+            if (mapPoint != null)
             {
-                PlayerLocation = point;
+                if (PlayerCoordsHistory.Count >= MaxHistoryLocations)
+                {
+                    PlayerCoordsHistory.RemoveAt(PlayerCoordsHistory.Count - 1);
+                }
+                PlayerCoords = new Point(x, y);
+                PlayerCoordsHistory.Insert(0, PlayerCoords);
+
+                if (PlayerMapLocationHistory.Count >= MaxHistoryLocations)
+                {
+                    PlayerMapLocationHistory.RemoveAt(PlayerMapLocationHistory.Count - 1);
+                }
+
+                PlayerMapLocation = mapPoint;
+                PlayerMapLocationHistory.Insert(0, PlayerMapLocation);
                 locationIsWithinMap = true;
             }
             else
@@ -337,24 +373,29 @@ namespace ZlizEQMap
             RaiseRedrawMaps(null, null);
         }
 
+        /// <summary>
+        /// This is the method that converts raw X/Y data to be "scaled" to the map image itself. 
+        /// Any coordinates that are going to be drawn on the map itself need go through this method.
+        /// Note that this is NOT the render scaling - that's a per-map-window basis, since a popout map could be sized differently than the main map, so that has to live elsewhere.
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <returns></returns>
         public static MapPoint GetMapImageLocationPoint(int x, int y)
         {
-            int newLocationXPixel = (int)(CurrentZoneData.ZeroLocation.X - ((float)x) / ImageXCoordRatio);
-            int newLocationYPixel = (int)(CurrentZoneData.ZeroLocation.Y - ((float)y) / ImageYCoordRatio);
+            int newLocationX = (int)(CurrentZoneData.ZeroLocation.X - ((float)x) / ImageXCoordRatio);
+            int newLocationY = (int)(CurrentZoneData.ZeroLocation.Y - ((float)y) / ImageYCoordRatio);
 
-            //int rawscaledX = (int)(newLocationXPixelUnscaled * renderScale);
-            //int rawscaledY = (int)(newLocationYPixelUnscaled * renderScale);
-
-            if (PlayerLocationIsWithinMapImage(newLocationXPixel, newLocationYPixel, CurrentZoneMap.ImageX, CurrentZoneMap.ImageY))
+            if (CheckLocationIsWithinMapImage(newLocationX, newLocationY, CurrentZoneMap.ImageX, CurrentZoneMap.ImageY))
             {
-                MapPoint point = new MapPoint() { X = newLocationXPixel, Y = newLocationYPixel };
+                MapPoint point = new MapPoint() { X = newLocationX, Y = newLocationY };
                 return point;
             }
             else
                 return null;
         }
 
-        private static bool PlayerLocationIsWithinMapImage(int locationXPixel, int locationYPixel, int imageHeight, int imageWidth)
+        private static bool CheckLocationIsWithinMapImage(int locationXPixel, int locationYPixel, int imageWidth, int imageHeight)
         {
             return (locationXPixel > 0 && locationYPixel > 0 && locationXPixel < imageWidth && locationYPixel < imageHeight);
         }
@@ -395,25 +436,24 @@ namespace ZlizEQMap
             RaiseRedrawMaps(null, null);
         }
 
-        internal static void PaintPlease(object sender, PaintEventArgs e, bool useDirectional)
+        internal static void PrepMapMarkersForCanvas(object sender, PaintEventArgs e, bool useDirectional)
         {
             float renderScale = 1F;
+            Markers.Clear();
 
+            // Find and add the current player location - circle for off-map, X for precise, arrow for directional.
             if (locInZoneHasBeenRecorded)
             {
                 int plCOV = (int)Math.Round(defaultPlayerCircleOffsetValue * renderScale);
                 int plMOV = (int)Math.Round(defaultPlayerMarkerOffsetValue * renderScale);
 
-                int plX = PlayerLocation.X;
-                int plY = PlayerLocation.Y;
+                int plX = PlayerMapLocation != null ? PlayerMapLocation.X : 1;
+                int plY = PlayerMapLocation != null ? PlayerMapLocation.Y : 1;
 
                 if (!locationIsWithinMap)
                 {
                     // Draw circle indicating that the location was the last successfully recorded (player is probably out of the bounds of the map now)
-                    if (PlayerLocation != null)
-                        Markers.Add(new MapEllipse(PlayerPen, plX - plCOV, plX - plCOV, 2 * plCOV, 2 * plCOV));
-                    else
-                        Markers.Add(new MapEllipse(PlayerPen, 1, 1, 2 * plCOV, 2 * plCOV));
+                    Markers.Add(new MapEllipse(PlayerPen, plX - plCOV, plX - plCOV, 2 * plCOV, 2 * plCOV));
                 }
                 else
                 {
@@ -439,19 +479,51 @@ namespace ZlizEQMap
                 int wpX = Waypoint.X;
                 int wpY = Waypoint.Y;
 
-                Markers.Add(new MapEllipse(WaypointPen, (wpX - wpOV), (wpY - wpOV), 2 * wpOV, 2 * wpOV));
+                MapEllipse currentWaypoint = new MapEllipse(WaypointPen, (wpX - wpOV), (wpY - wpOV), 2 * wpOV, 2 * wpOV);
+                Markers.Add(currentWaypoint);
             }
 
-            int fullTransparency = 255;
-            int transparencyIncrement = fullTransparency / maxMarkers;
-            int currentTransparency = fullTransparency;
-
-            int markerCap = Math.Min(maxMarkers, Markers.Count);
-
-            for (int markerCounter = 0; markerCounter < markerCap; markerCounter++)
+            if (showZoneAnnotations && ZoneAnnotationManager.ZoneAnnotations.Any())
             {
-                Markers[markerCounter].Pen = new Pen(Color.FromArgb(100, Color.Aqua));
-                currentTransparency = Math.Max(0, currentTransparency - transparencyIncrement);
+                int aOV = (int)Math.Round(defaultWaypointOffsetValue * renderScale);
+
+                List<MapAnnotation> convertedAnnotations = new List<MapAnnotation>();
+                foreach (ZoneAnnotation zAnno in ZoneAnnotationManager.ZoneAnnotations.Where(za => za.Show == true && za.MapShortName == CurrentZoneData.ShortName))
+                {
+                    MapPoint zAMP = GetMapImageLocationPoint(zAnno.X, zAnno.Y);
+
+                    if (zAMP != null)
+                    {
+                        MapEllipse annotationEllipse = new MapEllipse(AnnotationPen, (zAMP.X - aOV), (zAMP.Y - aOV), 2 * aOV, 2 * aOV);
+                        MapAnnotation newMapAnno = new MapAnnotation(annotationEllipse, zAMP.X, zAMP.Y, zAnno.Note);
+
+                        convertedAnnotations.Add(newMapAnno);
+                    }
+                }
+
+                foreach (MapAnnotation annotation in convertedAnnotations)
+                {
+                    Console.WriteLine($"{annotation.X} {annotation.Y} {annotation.Note}");
+                    Markers.Add(annotation);
+                }
+            }
+
+            // Get the player location history line
+            // We do need more than one point to make a line, it turns out
+            if (showPlayerLocationHistory && PlayerMapLocationHistory.Count >= 2)
+            {
+                int fullTransparency = 255;
+                int transparencyIncrement = fullTransparency / MaxHistoryLocations;
+                int currentTransparency = fullTransparency;
+
+                for (int i = 0; i < Math.Min(MaxHistoryLocations, PlayerMapLocationHistory.Count - 1); i++)
+                {
+                    Point p1 = new Point(PlayerMapLocationHistory[i].X, PlayerMapLocationHistory[i].Y);
+                    Point p2 = new Point(PlayerMapLocationHistory[i+1].X, PlayerMapLocationHistory[i+1].Y);
+
+                    Markers.Add(new MapLine(new Pen(Color.FromArgb(currentTransparency, PlayerHistoryPen.Color)), p1, p2));
+                    currentTransparency = Math.Max(currentTransparency - transparencyIncrement, 1);
+                }
             }
         }
 
@@ -460,8 +532,8 @@ namespace ZlizEQMap
             int ordVal = (int)Math.Round(defaultOrdVal * renderScale);
             int interordVal = (int)Math.Round(defaultInterordVal * renderScale);
 
-            int plX = PlayerLocation.X;
-            int plY = PlayerLocation.Y;
+            int plX = PlayerMapLocation.X;
+            int plY = PlayerMapLocation.Y;
 
             switch (PlayerDirection)
             {
@@ -487,18 +559,28 @@ namespace ZlizEQMap
             }
         }
 
-        //private static void RegisterPicBoxForInvalidation(PictureBox picBox)
-        //{
-        //    SettingsHelp settingsHelp = new SettingsHelp();
-        //    settingsHelp.OnEQDirSettingsChanged += new EventHandler(settingsHelp_OnEQDirSettingsChanged);
-        //    settingsHelp.ShowDialog();
-        //}
+        public static void TogglePlayerLocationHistory(bool state)
+        {
+            showPlayerLocationHistory = state;
+            RaiseRedrawMaps(null, null);
+        }
 
-        //void settingsHelp_OnEQDirSettingsChanged(object sender, EventArgs e)
-        //{
-        //    zones = ZoneDataFactory.GetAllZones(Settings.GetZoneDataSet());
-        //    Initialize();
-        //    SwitchZoneByShortName(currentZoneData.ShortName);
-        //}
+        public static void ToggleZoneAnnotations(bool state)
+        {
+            showZoneAnnotations = state;
+            RaiseRedrawMaps(null, null);
+        }
+
+        public static void UpdateNotesColor(Color color)
+        {
+            Settings.NotesColor = color;
+            RaiseRedrawMaps(null, null);
+        }
+
+        public static void UpdateNotesFont(Font font)
+        {
+            Settings.NotesFont = font;
+            RaiseRedrawMaps(null, null);
+        }
     }
 }

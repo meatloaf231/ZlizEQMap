@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.IO;
+using System.Drawing;
+using Newtonsoft.Json;
 
 namespace ZlizEQMap
 {
@@ -33,7 +35,23 @@ namespace ZlizEQMap
         public static bool MinimizeToTray { get; set; }
         public static bool AlwaysOnTop { get; set; }
         public static int LegendFontSize { get; set; }
+        
         public static bool UseExperimentalUI { get; set; }
+        public static bool PopoutMapAlwaysOnTop { get; set; }
+        public static int PopoutMapOpacityLevel { get; set; }
+
+        public static bool NotesShow { get; set; }
+        private static Font NotesFontDefault = new Font("Tahoma", 8.25F, FontStyle.Regular);
+        public static Font NotesFont { get; set; }
+
+        private static Color NotesColorDefault = Color.Green;
+        public static Color NotesColor { get; set; }
+        public static bool NotesClearAfterEntry { get; set; }
+        public static bool NotesAutoUpdate { get; set; }
+
+        public static bool LocHistoryShow { get; set; }
+        public static int LocHistoryNumberToTrack { get; set; }
+
 
         public static string GetEQDirectoryPath()
         {
@@ -78,8 +96,19 @@ namespace ZlizEQMap
             ActiveProfileIndex = 1;
             LogsInLogsDir2 = SettingsLogsInLogsDir.RootDir;
             LegendFontSize = 10;
+            
             UseExperimentalUI = false;
-        }
+            PopoutMapAlwaysOnTop = false;
+            PopoutMapOpacityLevel = 100;
+
+            NotesShow = true;
+            NotesFont = NotesFontDefault;
+            NotesColor = NotesColorDefault;
+            NotesClearAfterEntry = true;
+            NotesAutoUpdate = false;
+            LocHistoryShow = true;
+            LocHistoryNumberToTrack = 25;
+    }
 
         public static void LoadSettings()
         {
@@ -93,6 +122,7 @@ namespace ZlizEQMap
                     {
                         string key = line.Split('=')[0];
                         string value = line.Split('=')[1];
+                        List<string> fullValue = line.Split('=').ToList();
 
                         if (key == "EQDirectoryPath1")
                             EQDirectoryPath1 = value;
@@ -135,8 +165,49 @@ namespace ZlizEQMap
                             AlwaysOnTop = Convert.ToBoolean(value);
                         else if (key == "LegendFontSize")
                             LegendFontSize = Convert.ToInt32(value);
+
                         else if (key == "UseExperimentalUI")
                             UseExperimentalUI = Convert.ToBoolean(value);
+
+                        else if (key == "PopoutMapAlwaysOnTop")
+                            PopoutMapAlwaysOnTop = Convert.ToBoolean(value);
+                        else if (key == "PopoutMapOpacityLevel")
+                            PopoutMapOpacityLevel = Convert.ToInt32(value);
+
+                        else if (key == "NotesShow")
+                            NotesShow = Convert.ToBoolean(value);
+                        else if (key == "NotesFont")
+                            try
+                            {
+                                NotesFont = JsonConvert.DeserializeObject<Font>(value);
+                            }
+                            catch
+                            {
+                                // Bad font value, reset to default
+                                NotesFont = NotesFontDefault;
+                            }
+                        else if (key == "NotesColor")
+                            try
+                            {
+                                NotesColor = JsonConvert.DeserializeObject<Color>(value);
+                            }
+                            catch
+                            {
+                                // Bad color value, reset to default
+                                NotesColor = NotesColorDefault;
+                            }
+                        else if (key == "NotesClearAfterEntry")
+                            NotesClearAfterEntry = Convert.ToBoolean(value);
+                        else if (key == "NotesAutoUpdate")
+                            NotesAutoUpdate = Convert.ToBoolean(value);
+
+                        else if (key == "LocHistoryShow")
+                            LocHistoryShow = Convert.ToBoolean(value);
+                        else if (key == "LocHistoryNumberToTrack")
+                            LocHistoryNumberToTrack = Convert.ToInt32(value);
+                        else {
+                            Console.WriteLine($"Unkown Key: {key}");
+                        }
                     }
                 }
             }
@@ -171,6 +242,18 @@ namespace ZlizEQMap
                     WriteSetting(tw, "AlwaysOnTop", AlwaysOnTop.ToString());
                     WriteSetting(tw, "LegendFontSize", LegendFontSize.ToString());
                     WriteSetting(tw, "UseExperimentalUI", UseExperimentalUI.ToString());
+
+                    WriteSetting(tw, "PopoutMapAlwaysOnTop", PopoutMapAlwaysOnTop.ToString());
+                    WriteSetting(tw, "PopoutMapOpacityLevel", PopoutMapOpacityLevel.ToString());
+
+                    WriteSetting(tw, "NotesShow", NotesShow.ToString());
+                    WriteSetting(tw, "NotesFont", JsonConvert.SerializeObject(NotesFont));
+                    WriteSetting(tw, "NotesColor", JsonConvert.SerializeObject(NotesColor));
+                    WriteSetting(tw, "NotesClearAfterEntry", NotesClearAfterEntry.ToString());
+                    WriteSetting(tw, "NotesAutoUpdate", NotesAutoUpdate.ToString());
+
+                    WriteSetting(tw, "LocHistoryShow", LocHistoryShow.ToString());
+                    WriteSetting(tw, "LocHistoryNumberToTrack", LocHistoryNumberToTrack.ToString());
                 }
             }
         }

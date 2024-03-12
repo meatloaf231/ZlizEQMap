@@ -132,7 +132,6 @@ namespace ZlizEQMap
             //trackBar_Zoom.Visible = !trackBar_Zoom.Visible;
             //checkBoxLockState.Visible = !trackBar_Zoom.Visible;
             //groupBox_DisplayStyle.Visible = !trackBar_Zoom.Visible;
-            var qControls = this.Controls;
             foreach (Control tctl in Controls)
             {
                 if (tctl.Tag != null)
@@ -140,20 +139,23 @@ namespace ZlizEQMap
                     if (tctl.Tag.ToString() == "ToggleVis")
                     {
                         tctl.Visible = !tctl.Visible;
+
+
                     }
                 }
             }
 
-            if (!fsState)
-            {
-                picBoxMinimap.Dock = DockStyle.Fill;
-                fsState = true;
-            }
-            else
-            {
-                picBoxMinimap.Dock = DockStyle.None;
-                fsState = false;
-            }
+            //if (!fsState)
+            //{
+            //    picBoxMinimap.Dock = DockStyle.Fill;
+            //    fsState = true;
+            //}
+            //else
+            //{
+            //    picBoxMinimap.Dock = DockStyle.None;
+            //    picBoxMinimap.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            //    fsState = false;
+            //}
         }
 
         private void buttonConfigurePopupMap_Click(object sender, EventArgs e)
@@ -210,7 +212,7 @@ namespace ZlizEQMap
 
         private void picBoxMinimap_Paint(object sender, PaintEventArgs e)
         {
-            foreach (IMapMarker marker in Overseer.Markers)
+            foreach (IMapDrawable marker in Overseer.Markers)
             {
                 marker.Draw(e.Graphics, renderScale, mapXOffset, mapYOffset);
             }
@@ -252,6 +254,16 @@ namespace ZlizEQMap
             //);
 
             autoZoom = ratio;
+        }
+
+        private void SetAlwaysOnTop()
+        {
+            this.TopMost = check_AOT.Checked;
+        }
+
+        private void check_AOT_CheckedChanged(object sender, EventArgs e)
+        {
+            SetAlwaysOnTop();
         }
     }
 }

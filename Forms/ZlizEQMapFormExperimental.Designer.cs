@@ -47,6 +47,11 @@ namespace ZlizEQMap
             this.textBoxCharName = new System.Windows.Forms.TextBox();
             this.checkAlwaysOnTop = new System.Windows.Forms.CheckBox();
             this.sliderZoom = new System.Windows.Forms.TrackBar();
+            this.check_ShowAnnotations = new System.Windows.Forms.CheckBox();
+            this.check_ShowPlayerLocHistory = new System.Windows.Forms.CheckBox();
+            this.check_ClearNoteAfterEntry = new System.Windows.Forms.CheckBox();
+            this.check_AutoUpdateNoteLocation = new System.Windows.Forms.CheckBox();
+            this.check_AutoParseFromLogs = new System.Windows.Forms.CheckBox();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.panelMain = new System.Windows.Forms.Panel();
             this.panelConnectedZones = new System.Windows.Forms.FlowLayoutPanel();
@@ -67,23 +72,43 @@ namespace ZlizEQMap
             this.buttonCenter = new System.Windows.Forms.Button();
             this.buttonZoom = new System.Windows.Forms.Button();
             this.buttonNormal = new System.Windows.Forms.Button();
-            this.buttonForceRedraw = new System.Windows.Forms.Button();
-            this.label1 = new System.Windows.Forms.Label();
+            this.label_Scale = new System.Windows.Forms.Label();
             this.nud_playerX = new System.Windows.Forms.NumericUpDown();
-            this.label2 = new System.Windows.Forms.Label();
-            this.label3 = new System.Windows.Forms.Label();
+            this.label_PlayerX = new System.Windows.Forms.Label();
+            this.label_PlayerY = new System.Windows.Forms.Label();
             this.nud_playerY = new System.Windows.Forms.NumericUpDown();
-            this.buttonSetPlayerXY = new System.Windows.Forms.Button();
-            this.button_reinit = new System.Windows.Forms.Button();
-            this.label4 = new System.Windows.Forms.Label();
-            this.buttonUpdatePopoutMap = new System.Windows.Forms.Button();
+            this.label_Zoom = new System.Windows.Forms.Label();
+            this.label_Opacity = new System.Windows.Forms.Label();
+            this.nud_HistoryToKeep = new System.Windows.Forms.NumericUpDown();
+            this.label_AnnotationFontSize = new System.Windows.Forms.Label();
+            this.label_HistoryToKeep = new System.Windows.Forms.Label();
+            this.button_AddNote = new System.Windows.Forms.Button();
+            this.txt_NewNote = new System.Windows.Forms.TextBox();
+            this.zoneAnnotationBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.dgv_ZoneAnnotation = new System.Windows.Forms.DataGridView();
+            this.Note = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.XCoord = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.YCoord = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Show = new System.Windows.Forms.DataGridViewCheckBoxColumn();
+            this.txt_NewNoteCoords = new System.Windows.Forms.TextBox();
+            this.label1 = new System.Windows.Forms.Label();
+            this.button_SetNoteCoordsToPlayerLoc = new System.Windows.Forms.Button();
+            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.button_NotesFont = new System.Windows.Forms.Button();
+            this.button_NotesColor = new System.Windows.Forms.Button();
+            this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.colorDialog_Notes = new System.Windows.Forms.ColorDialog();
+            this.fontDialog_Notes = new System.Windows.Forms.FontDialog();
+            this.button_ResetZoom = new System.Windows.Forms.Button();
+            this.tabControl_Main = new System.Windows.Forms.TabControl();
+            this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.splitContainer_Lower = new System.Windows.Forms.SplitContainer();
             this.labelZoneName = new ZlizEQMap.ZlizLabel();
-            this.label5 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.picBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.sliderOpacity)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.sliderZoom)).BeginInit();
             this.panelMain.SuspendLayout();
-            this.panelConnectedZones.SuspendLayout();
             this.panelMainControls.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nud_scale)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainerMapAndLegend)).BeginInit();
@@ -97,6 +122,18 @@ namespace ZlizEQMap
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nud_playerX)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nud_playerY)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nud_HistoryToKeep)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.zoneAnnotationBindingSource)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dgv_ZoneAnnotation)).BeginInit();
+            this.groupBox1.SuspendLayout();
+            this.groupBox2.SuspendLayout();
+            this.tabControl_Main.SuspendLayout();
+            this.tabPage1.SuspendLayout();
+            this.tabPage2.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer_Lower)).BeginInit();
+            this.splitContainer_Lower.Panel1.SuspendLayout();
+            this.splitContainer_Lower.Panel2.SuspendLayout();
+            this.splitContainer_Lower.SuspendLayout();
             this.SuspendLayout();
             // 
             // picBox
@@ -104,7 +141,7 @@ namespace ZlizEQMap
             this.picBox.Location = new System.Drawing.Point(5, 3);
             this.picBox.Name = "picBox";
             this.picBox.Size = new System.Drawing.Size(256, 256);
-            this.picBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.picBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
             this.picBox.TabIndex = 0;
             this.picBox.TabStop = false;
             this.picBox.WaitOnLoad = true;
@@ -112,11 +149,10 @@ namespace ZlizEQMap
             // 
             // checkLegend
             // 
-            this.checkLegend.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.checkLegend.AutoSize = true;
             this.checkLegend.Checked = true;
             this.checkLegend.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkLegend.Location = new System.Drawing.Point(238, 575);
+            this.checkLegend.Location = new System.Drawing.Point(7, 99);
             this.checkLegend.Name = "checkLegend";
             this.checkLegend.Size = new System.Drawing.Size(61, 17);
             this.checkLegend.TabIndex = 11;
@@ -126,11 +162,10 @@ namespace ZlizEQMap
             // 
             // checkEnableDirection
             // 
-            this.checkEnableDirection.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.checkEnableDirection.AutoSize = true;
             this.checkEnableDirection.Checked = true;
             this.checkEnableDirection.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkEnableDirection.Location = new System.Drawing.Point(238, 552);
+            this.checkEnableDirection.Location = new System.Drawing.Point(74, 99);
             this.checkEnableDirection.Name = "checkEnableDirection";
             this.checkEnableDirection.Size = new System.Drawing.Size(68, 17);
             this.checkEnableDirection.TabIndex = 10;
@@ -140,16 +175,12 @@ namespace ZlizEQMap
             // 
             // labelLegend
             // 
-            this.labelLegend.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.labelLegend.AutoSize = false;
-            this.labelLegend.AutoSizeHeightOnly = true;
             this.labelLegend.BackColor = System.Drawing.SystemColors.Window;
             this.labelLegend.BaseStylesheet = null;
-            this.labelLegend.Location = new System.Drawing.Point(3, 5);
+            this.labelLegend.Location = new System.Drawing.Point(6, 42);
             this.labelLegend.MinimumSize = new System.Drawing.Size(100, 22);
             this.labelLegend.Name = "labelLegend";
-            this.labelLegend.Size = new System.Drawing.Size(701, 22);
+            this.labelLegend.Size = new System.Drawing.Size(100, 22);
             this.labelLegend.TabIndex = 13;
             this.labelLegend.Text = "Legend";
             // 
@@ -180,8 +211,7 @@ namespace ZlizEQMap
             // 
             // btnAutosize
             // 
-            this.btnAutosize.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnAutosize.Location = new System.Drawing.Point(16, 549);
+            this.btnAutosize.Location = new System.Drawing.Point(6, 6);
             this.btnAutosize.Name = "btnAutosize";
             this.btnAutosize.Size = new System.Drawing.Size(75, 23);
             this.btnAutosize.TabIndex = 6;
@@ -191,11 +221,10 @@ namespace ZlizEQMap
             // 
             // checkAutoSizeOnMapSwitch
             // 
-            this.checkAutoSizeOnMapSwitch.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.checkAutoSizeOnMapSwitch.AutoSize = true;
             this.checkAutoSizeOnMapSwitch.Checked = true;
             this.checkAutoSizeOnMapSwitch.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkAutoSizeOnMapSwitch.Location = new System.Drawing.Point(97, 553);
+            this.checkAutoSizeOnMapSwitch.Location = new System.Drawing.Point(87, 9);
             this.checkAutoSizeOnMapSwitch.Name = "checkAutoSizeOnMapSwitch";
             this.checkAutoSizeOnMapSwitch.Size = new System.Drawing.Size(93, 17);
             this.checkAutoSizeOnMapSwitch.TabIndex = 7;
@@ -217,13 +246,12 @@ namespace ZlizEQMap
             // 
             // sliderOpacity
             // 
-            this.sliderOpacity.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.sliderOpacity.AutoSize = false;
-            this.sliderOpacity.Location = new System.Drawing.Point(522, 552);
+            this.sliderOpacity.Location = new System.Drawing.Point(60, 35);
             this.sliderOpacity.Maximum = 20;
             this.sliderOpacity.Minimum = 2;
             this.sliderOpacity.Name = "sliderOpacity";
-            this.sliderOpacity.Size = new System.Drawing.Size(200, 20);
+            this.sliderOpacity.Size = new System.Drawing.Size(120, 20);
             this.sliderOpacity.TabIndex = 9;
             this.sliderOpacity.TickStyle = System.Windows.Forms.TickStyle.None;
             this.toolTip1.SetToolTip(this.sliderOpacity, "Opacity Level (10-100%)");
@@ -254,31 +282,85 @@ namespace ZlizEQMap
             // 
             // checkAlwaysOnTop
             // 
-            this.checkAlwaysOnTop.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.checkAlwaysOnTop.AutoSize = true;
-            this.checkAlwaysOnTop.Location = new System.Drawing.Point(419, 553);
+            this.checkAlwaysOnTop.Location = new System.Drawing.Point(186, 38);
             this.checkAlwaysOnTop.Name = "checkAlwaysOnTop";
             this.checkAlwaysOnTop.Size = new System.Drawing.Size(47, 17);
             this.checkAlwaysOnTop.TabIndex = 8;
             this.checkAlwaysOnTop.Text = "AOT";
             this.toolTip1.SetToolTip(this.checkAlwaysOnTop, "Always-On-Top");
             this.checkAlwaysOnTop.UseVisualStyleBackColor = true;
-            this.checkAlwaysOnTop.CheckedChanged += new System.EventHandler(this.checkAlwaysOnTop_CheckedChanged);
             // 
             // sliderZoom
             // 
-            this.sliderZoom.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.sliderZoom.AutoSize = false;
-            this.sliderZoom.Location = new System.Drawing.Point(522, 575);
+            this.sliderZoom.Location = new System.Drawing.Point(60, 61);
             this.sliderZoom.Maximum = 200;
             this.sliderZoom.Minimum = 10;
             this.sliderZoom.Name = "sliderZoom";
-            this.sliderZoom.Size = new System.Drawing.Size(200, 20);
+            this.sliderZoom.Size = new System.Drawing.Size(120, 20);
             this.sliderZoom.TabIndex = 31;
             this.sliderZoom.TickStyle = System.Windows.Forms.TickStyle.None;
             this.toolTip1.SetToolTip(this.sliderZoom, "Opacity Level (10-100%)");
             this.sliderZoom.Value = 100;
             this.sliderZoom.Scroll += new System.EventHandler(this.sliderZoom_Scroll);
+            // 
+            // check_ShowAnnotations
+            // 
+            this.check_ShowAnnotations.AutoSize = true;
+            this.check_ShowAnnotations.Location = new System.Drawing.Point(7, 122);
+            this.check_ShowAnnotations.Name = "check_ShowAnnotations";
+            this.check_ShowAnnotations.Size = new System.Drawing.Size(54, 17);
+            this.check_ShowAnnotations.TabIndex = 38;
+            this.check_ShowAnnotations.Text = "Notes";
+            this.toolTip1.SetToolTip(this.check_ShowAnnotations, "Always-On-Top");
+            this.check_ShowAnnotations.UseVisualStyleBackColor = true;
+            this.check_ShowAnnotations.CheckedChanged += new System.EventHandler(this.check_ShowAnnotations_CheckedChanged);
+            // 
+            // check_ShowPlayerLocHistory
+            // 
+            this.check_ShowPlayerLocHistory.AutoSize = true;
+            this.check_ShowPlayerLocHistory.Location = new System.Drawing.Point(7, 145);
+            this.check_ShowPlayerLocHistory.Name = "check_ShowPlayerLocHistory";
+            this.check_ShowPlayerLocHistory.Size = new System.Drawing.Size(103, 17);
+            this.check_ShowPlayerLocHistory.TabIndex = 40;
+            this.check_ShowPlayerLocHistory.Text = "Location History";
+            this.toolTip1.SetToolTip(this.check_ShowPlayerLocHistory, "Always-On-Top");
+            this.check_ShowPlayerLocHistory.UseVisualStyleBackColor = true;
+            this.check_ShowPlayerLocHistory.CheckedChanged += new System.EventHandler(this.check_ShowPlayerLocHistory_CheckedChanged);
+            // 
+            // check_ClearNoteAfterEntry
+            // 
+            this.check_ClearNoteAfterEntry.AutoSize = true;
+            this.check_ClearNoteAfterEntry.Location = new System.Drawing.Point(6, 76);
+            this.check_ClearNoteAfterEntry.Name = "check_ClearNoteAfterEntry";
+            this.check_ClearNoteAfterEntry.Size = new System.Drawing.Size(107, 17);
+            this.check_ClearNoteAfterEntry.TabIndex = 42;
+            this.check_ClearNoteAfterEntry.Text = "Clear after entry";
+            this.toolTip1.SetToolTip(this.check_ClearNoteAfterEntry, "Always-On-Top");
+            this.check_ClearNoteAfterEntry.UseVisualStyleBackColor = true;
+            // 
+            // check_AutoUpdateNoteLocation
+            // 
+            this.check_AutoUpdateNoteLocation.AutoSize = true;
+            this.check_AutoUpdateNoteLocation.Location = new System.Drawing.Point(166, 145);
+            this.check_AutoUpdateNoteLocation.Name = "check_AutoUpdateNoteLocation";
+            this.check_AutoUpdateNoteLocation.Size = new System.Drawing.Size(87, 17);
+            this.check_AutoUpdateNoteLocation.TabIndex = 47;
+            this.check_AutoUpdateNoteLocation.Text = "Auto-update";
+            this.toolTip1.SetToolTip(this.check_AutoUpdateNoteLocation, "Always-On-Top");
+            this.check_AutoUpdateNoteLocation.UseVisualStyleBackColor = true;
+            // 
+            // check_AutoParseFromLogs
+            // 
+            this.check_AutoParseFromLogs.AutoSize = true;
+            this.check_AutoParseFromLogs.Location = new System.Drawing.Point(15, 74);
+            this.check_AutoParseFromLogs.Name = "check_AutoParseFromLogs";
+            this.check_AutoParseFromLogs.Size = new System.Drawing.Size(120, 17);
+            this.check_AutoParseFromLogs.TabIndex = 51;
+            this.check_AutoParseFromLogs.Text = "Suspend Autoparse";
+            this.toolTip1.SetToolTip(this.check_AutoParseFromLogs, "Always-On-Top");
+            this.check_AutoParseFromLogs.UseVisualStyleBackColor = true;
             // 
             // timer1
             // 
@@ -292,16 +374,14 @@ namespace ZlizEQMap
             this.panelMain.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panelMain.Location = new System.Drawing.Point(0, 0);
             this.panelMain.Name = "panelMain";
-            this.panelMain.Size = new System.Drawing.Size(568, 349);
+            this.panelMain.Size = new System.Drawing.Size(563, 587);
             this.panelMain.TabIndex = 13;
             // 
             // panelConnectedZones
             // 
-            this.panelConnectedZones.Controls.Add(this.labelConnectedZones);
-            this.panelConnectedZones.Dock = System.Windows.Forms.DockStyle.Top;
-            this.panelConnectedZones.Location = new System.Drawing.Point(0, 0);
+            this.panelConnectedZones.Location = new System.Drawing.Point(3, 5);
             this.panelConnectedZones.Name = "panelConnectedZones";
-            this.panelConnectedZones.Size = new System.Drawing.Size(706, 24);
+            this.panelConnectedZones.Size = new System.Drawing.Size(375, 31);
             this.panelConnectedZones.TabIndex = 6;
             this.panelConnectedZones.WrapContents = false;
             // 
@@ -309,7 +389,7 @@ namespace ZlizEQMap
             // 
             this.labelConnectedZones.AutoSize = true;
             this.labelConnectedZones.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.labelConnectedZones.Location = new System.Drawing.Point(3, 0);
+            this.labelConnectedZones.Location = new System.Drawing.Point(3, 3);
             this.labelConnectedZones.Name = "labelConnectedZones";
             this.labelConnectedZones.Size = new System.Drawing.Size(95, 13);
             this.labelConnectedZones.TabIndex = 4;
@@ -322,13 +402,13 @@ namespace ZlizEQMap
             this.flowSubMaps.Dock = System.Windows.Forms.DockStyle.Fill;
             this.flowSubMaps.Location = new System.Drawing.Point(0, 0);
             this.flowSubMaps.Name = "flowSubMaps";
-            this.flowSubMaps.Size = new System.Drawing.Size(130, 349);
+            this.flowSubMaps.Size = new System.Drawing.Size(129, 587);
             this.flowSubMaps.TabIndex = 7;
             // 
             // btnSettingsHelp
             // 
             this.btnSettingsHelp.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnSettingsHelp.Location = new System.Drawing.Point(840, 648);
+            this.btnSettingsHelp.Location = new System.Drawing.Point(897, 1028);
             this.btnSettingsHelp.Name = "btnSettingsHelp";
             this.btnSettingsHelp.Size = new System.Drawing.Size(100, 23);
             this.btnSettingsHelp.TabIndex = 12;
@@ -361,8 +441,7 @@ namespace ZlizEQMap
             // 
             // buttonOpenPopoutMap
             // 
-            this.buttonOpenPopoutMap.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonOpenPopoutMap.Location = new System.Drawing.Point(16, 578);
+            this.buttonOpenPopoutMap.Location = new System.Drawing.Point(186, 6);
             this.buttonOpenPopoutMap.Name = "buttonOpenPopoutMap";
             this.buttonOpenPopoutMap.Size = new System.Drawing.Size(75, 23);
             this.buttonOpenPopoutMap.TabIndex = 15;
@@ -381,21 +460,20 @@ namespace ZlizEQMap
             this.panelMainControls.Controls.Add(this.linkLabelWiki);
             this.panelMainControls.Controls.Add(this.btnSetWaypoint);
             this.panelMainControls.Controls.Add(this.txtWaypoint);
-            this.panelMainControls.Location = new System.Drawing.Point(428, 12);
+            this.panelMainControls.Location = new System.Drawing.Point(374, 12);
             this.panelMainControls.Name = "panelMainControls";
             this.panelMainControls.Size = new System.Drawing.Size(512, 52);
             this.panelMainControls.TabIndex = 17;
             // 
             // nud_scale
             // 
-            this.nud_scale.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.nud_scale.DecimalPlaces = 2;
             this.nud_scale.Increment = new decimal(new int[] {
             25,
             0,
             0,
             131072});
-            this.nud_scale.Location = new System.Drawing.Point(896, 217);
+            this.nud_scale.Location = new System.Drawing.Point(102, 97);
             this.nud_scale.Maximum = new decimal(new int[] {
             1,
             0,
@@ -433,15 +511,12 @@ namespace ZlizEQMap
             this.splitContainerMapAndLegend.Panel2.AutoScroll = true;
             this.splitContainerMapAndLegend.Panel2.Controls.Add(this.flowSubMaps);
             this.splitContainerMapAndLegend.Panel2MinSize = 125;
-            this.splitContainerMapAndLegend.Size = new System.Drawing.Size(706, 351);
-            this.splitContainerMapAndLegend.SplitterDistance = 570;
+            this.splitContainerMapAndLegend.Size = new System.Drawing.Size(700, 589);
+            this.splitContainerMapAndLegend.SplitterDistance = 565;
             this.splitContainerMapAndLegend.TabIndex = 14;
             // 
             // splitContainerMain
             // 
-            this.splitContainerMain.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
             this.splitContainerMain.Location = new System.Drawing.Point(16, 71);
             this.splitContainerMain.Name = "splitContainerMain";
             this.splitContainerMain.Orientation = System.Windows.Forms.Orientation.Horizontal;
@@ -457,39 +532,36 @@ namespace ZlizEQMap
             // 
             this.splitContainerMain.Panel2.AutoScroll = true;
             this.splitContainerMain.Panel2.Controls.Add(this.panel1);
-            this.splitContainerMain.Panel2.Controls.Add(this.panelConnectedZones);
             this.splitContainerMain.Panel2.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.splitContainerMain.Panel2MinSize = 100;
             this.splitContainerMain.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.splitContainerMain.Size = new System.Drawing.Size(706, 472);
-            this.splitContainerMain.SplitterDistance = 351;
+            this.splitContainerMain.Size = new System.Drawing.Size(700, 800);
+            this.splitContainerMain.SplitterDistance = 589;
             this.splitContainerMain.TabIndex = 15;
             // 
             // panel1
             // 
             this.panel1.AutoScroll = true;
-            this.panel1.Controls.Add(this.labelLegend);
+            this.panel1.Controls.Add(this.splitContainer_Lower);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panel1.Location = new System.Drawing.Point(0, 24);
+            this.panel1.Location = new System.Drawing.Point(0, 0);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(706, 93);
+            this.panel1.Size = new System.Drawing.Size(700, 207);
             this.panel1.TabIndex = 14;
             // 
             // buttonAutosize
             // 
-            this.buttonAutosize.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonAutosize.Location = new System.Drawing.Point(867, 72);
+            this.buttonAutosize.Location = new System.Drawing.Point(15, 164);
             this.buttonAutosize.Name = "buttonAutosize";
             this.buttonAutosize.Size = new System.Drawing.Size(73, 23);
             this.buttonAutosize.TabIndex = 17;
-            this.buttonAutosize.Text = "Autosize";
+            this.buttonAutosize.Text = "Auto";
             this.buttonAutosize.UseVisualStyleBackColor = true;
             this.buttonAutosize.Click += new System.EventHandler(this.buttonAutosize_Click);
             // 
             // buttonStretch
             // 
-            this.buttonStretch.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonStretch.Location = new System.Drawing.Point(867, 101);
+            this.buttonStretch.Location = new System.Drawing.Point(94, 164);
             this.buttonStretch.Name = "buttonStretch";
             this.buttonStretch.Size = new System.Drawing.Size(73, 23);
             this.buttonStretch.TabIndex = 18;
@@ -499,8 +571,7 @@ namespace ZlizEQMap
             // 
             // buttonCenter
             // 
-            this.buttonCenter.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonCenter.Location = new System.Drawing.Point(867, 130);
+            this.buttonCenter.Location = new System.Drawing.Point(94, 135);
             this.buttonCenter.Name = "buttonCenter";
             this.buttonCenter.Size = new System.Drawing.Size(73, 23);
             this.buttonCenter.TabIndex = 19;
@@ -510,8 +581,7 @@ namespace ZlizEQMap
             // 
             // buttonZoom
             // 
-            this.buttonZoom.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonZoom.Location = new System.Drawing.Point(867, 159);
+            this.buttonZoom.Location = new System.Drawing.Point(15, 135);
             this.buttonZoom.Name = "buttonZoom";
             this.buttonZoom.Size = new System.Drawing.Size(73, 23);
             this.buttonZoom.TabIndex = 20;
@@ -521,8 +591,7 @@ namespace ZlizEQMap
             // 
             // buttonNormal
             // 
-            this.buttonNormal.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonNormal.Location = new System.Drawing.Point(867, 188);
+            this.buttonNormal.Location = new System.Drawing.Point(62, 193);
             this.buttonNormal.Name = "buttonNormal";
             this.buttonNormal.Size = new System.Drawing.Size(73, 23);
             this.buttonNormal.TabIndex = 21;
@@ -530,36 +599,23 @@ namespace ZlizEQMap
             this.buttonNormal.UseVisualStyleBackColor = true;
             this.buttonNormal.Click += new System.EventHandler(this.buttonNormal_Click);
             // 
-            // buttonForceRedraw
+            // label_Scale
             // 
-            this.buttonForceRedraw.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonForceRedraw.Location = new System.Drawing.Point(840, 244);
-            this.buttonForceRedraw.Name = "buttonForceRedraw";
-            this.buttonForceRedraw.Size = new System.Drawing.Size(100, 23);
-            this.buttonForceRedraw.TabIndex = 22;
-            this.buttonForceRedraw.Text = "Force Redraw";
-            this.buttonForceRedraw.UseVisualStyleBackColor = true;
-            this.buttonForceRedraw.Click += new System.EventHandler(this.buttonForceRedraw_Click);
-            // 
-            // label1
-            // 
-            this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(858, 219);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(32, 13);
-            this.label1.TabIndex = 23;
-            this.label1.Text = "Scale";
+            this.label_Scale.AutoSize = true;
+            this.label_Scale.Location = new System.Drawing.Point(12, 94);
+            this.label_Scale.Name = "label_Scale";
+            this.label_Scale.Size = new System.Drawing.Size(84, 13);
+            this.label_Scale.TabIndex = 23;
+            this.label_Scale.Text = "Force map scale";
             // 
             // nud_playerX
             // 
-            this.nud_playerX.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.nud_playerX.Increment = new decimal(new int[] {
             25,
             0,
             0,
             0});
-            this.nud_playerX.Location = new System.Drawing.Point(896, 273);
+            this.nud_playerX.Location = new System.Drawing.Point(64, 20);
             this.nud_playerX.Maximum = new decimal(new int[] {
             5000,
             0,
@@ -580,35 +636,32 @@ namespace ZlizEQMap
             0});
             this.nud_playerX.ValueChanged += new System.EventHandler(this.nud_playerX_ValueChanged);
             // 
-            // label2
+            // label_PlayerX
             // 
-            this.label2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(844, 275);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(46, 13);
-            this.label2.TabIndex = 26;
-            this.label2.Text = "Player X";
+            this.label_PlayerX.AutoSize = true;
+            this.label_PlayerX.Location = new System.Drawing.Point(12, 22);
+            this.label_PlayerX.Name = "label_PlayerX";
+            this.label_PlayerX.Size = new System.Drawing.Size(46, 13);
+            this.label_PlayerX.TabIndex = 26;
+            this.label_PlayerX.Text = "Player X";
             // 
-            // label3
+            // label_PlayerY
             // 
-            this.label3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(844, 302);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(46, 13);
-            this.label3.TabIndex = 27;
-            this.label3.Text = "Player Y";
+            this.label_PlayerY.AutoSize = true;
+            this.label_PlayerY.Location = new System.Drawing.Point(12, 49);
+            this.label_PlayerY.Name = "label_PlayerY";
+            this.label_PlayerY.Size = new System.Drawing.Size(46, 13);
+            this.label_PlayerY.TabIndex = 27;
+            this.label_PlayerY.Text = "Player Y";
             // 
             // nud_playerY
             // 
-            this.nud_playerY.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.nud_playerY.Increment = new decimal(new int[] {
             25,
             0,
             0,
             0});
-            this.nud_playerY.Location = new System.Drawing.Point(896, 300);
+            this.nud_playerY.Location = new System.Drawing.Point(64, 47);
             this.nud_playerY.Maximum = new decimal(new int[] {
             5000,
             0,
@@ -629,48 +682,293 @@ namespace ZlizEQMap
             0});
             this.nud_playerY.ValueChanged += new System.EventHandler(this.nud_playerY_ValueChanged);
             // 
-            // buttonSetPlayerXY
+            // label_Zoom
             // 
-            this.buttonSetPlayerXY.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonSetPlayerXY.Location = new System.Drawing.Point(840, 327);
-            this.buttonSetPlayerXY.Name = "buttonSetPlayerXY";
-            this.buttonSetPlayerXY.Size = new System.Drawing.Size(100, 23);
-            this.buttonSetPlayerXY.TabIndex = 29;
-            this.buttonSetPlayerXY.Text = "Set PlayerXY";
-            this.buttonSetPlayerXY.UseVisualStyleBackColor = true;
-            this.buttonSetPlayerXY.Click += new System.EventHandler(this.buttonSetPlayerXY_Click);
+            this.label_Zoom.AutoSize = true;
+            this.label_Zoom.Location = new System.Drawing.Point(6, 61);
+            this.label_Zoom.Name = "label_Zoom";
+            this.label_Zoom.Size = new System.Drawing.Size(33, 13);
+            this.label_Zoom.TabIndex = 32;
+            this.label_Zoom.Text = "Zoom";
             // 
-            // button_reinit
+            // label_Opacity
             // 
-            this.button_reinit.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.button_reinit.Location = new System.Drawing.Point(840, 356);
-            this.button_reinit.Name = "button_reinit";
-            this.button_reinit.Size = new System.Drawing.Size(100, 23);
-            this.button_reinit.TabIndex = 30;
-            this.button_reinit.Text = "Reinit Debug";
-            this.button_reinit.UseVisualStyleBackColor = true;
-            this.button_reinit.Click += new System.EventHandler(this.button_reinit_Click);
+            this.label_Opacity.AutoSize = true;
+            this.label_Opacity.Location = new System.Drawing.Point(6, 36);
+            this.label_Opacity.Name = "label_Opacity";
+            this.label_Opacity.Size = new System.Drawing.Size(44, 13);
+            this.label_Opacity.TabIndex = 34;
+            this.label_Opacity.Text = "Opacity";
             // 
-            // label4
+            // nud_HistoryToKeep
             // 
-            this.label4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(483, 577);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(33, 13);
-            this.label4.TabIndex = 32;
-            this.label4.Text = "Zoom";
+            this.nud_HistoryToKeep.Location = new System.Drawing.Point(115, 144);
+            this.nud_HistoryToKeep.Name = "nud_HistoryToKeep";
+            this.nud_HistoryToKeep.Size = new System.Drawing.Size(52, 21);
+            this.nud_HistoryToKeep.TabIndex = 35;
             // 
-            // buttonUpdatePopoutMap
+            // label_AnnotationFontSize
             // 
-            this.buttonUpdatePopoutMap.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonUpdatePopoutMap.Location = new System.Drawing.Point(847, 588);
-            this.buttonUpdatePopoutMap.Name = "buttonUpdatePopoutMap";
-            this.buttonUpdatePopoutMap.Size = new System.Drawing.Size(95, 23);
-            this.buttonUpdatePopoutMap.TabIndex = 33;
-            this.buttonUpdatePopoutMap.Text = "Update Popout";
-            this.buttonUpdatePopoutMap.UseVisualStyleBackColor = true;
-            this.buttonUpdatePopoutMap.Click += new System.EventHandler(this.buttonUpdatePopoutMap_Click);
+            this.label_AnnotationFontSize.AutoSize = true;
+            this.label_AnnotationFontSize.Location = new System.Drawing.Point(7, 150);
+            this.label_AnnotationFontSize.Name = "label_AnnotationFontSize";
+            this.label_AnnotationFontSize.Size = new System.Drawing.Size(136, 13);
+            this.label_AnnotationFontSize.TabIndex = 37;
+            this.label_AnnotationFontSize.Text = "Notes Font Style and Color";
+            // 
+            // label_HistoryToKeep
+            // 
+            this.label_HistoryToKeep.AutoSize = true;
+            this.label_HistoryToKeep.Location = new System.Drawing.Point(173, 146);
+            this.label_HistoryToKeep.Name = "label_HistoryToKeep";
+            this.label_HistoryToKeep.Size = new System.Drawing.Size(55, 13);
+            this.label_HistoryToKeep.TabIndex = 39;
+            this.label_HistoryToKeep.Text = "# to track";
+            // 
+            // button_AddNote
+            // 
+            this.button_AddNote.Location = new System.Drawing.Point(166, 46);
+            this.button_AddNote.Name = "button_AddNote";
+            this.button_AddNote.Size = new System.Drawing.Size(87, 23);
+            this.button_AddNote.TabIndex = 41;
+            this.button_AddNote.Text = "Add Note";
+            this.button_AddNote.UseVisualStyleBackColor = true;
+            this.button_AddNote.Click += new System.EventHandler(this.button_AddNote_Click);
+            // 
+            // txt_NewNote
+            // 
+            this.txt_NewNote.Location = new System.Drawing.Point(6, 49);
+            this.txt_NewNote.Name = "txt_NewNote";
+            this.txt_NewNote.Size = new System.Drawing.Size(127, 21);
+            this.txt_NewNote.TabIndex = 43;
+            this.txt_NewNote.Text = "New Note";
+            // 
+            // dgv_ZoneAnnotation
+            // 
+            this.dgv_ZoneAnnotation.AutoGenerateColumns = false;
+            this.dgv_ZoneAnnotation.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dgv_ZoneAnnotation.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.Note,
+            this.XCoord,
+            this.YCoord,
+            this.Show});
+            this.dgv_ZoneAnnotation.DataSource = this.zoneAnnotationBindingSource;
+            this.dgv_ZoneAnnotation.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.dgv_ZoneAnnotation.Location = new System.Drawing.Point(0, 0);
+            this.dgv_ZoneAnnotation.Name = "dgv_ZoneAnnotation";
+            this.dgv_ZoneAnnotation.RowHeadersWidth = 15;
+            this.dgv_ZoneAnnotation.RowTemplate.Height = 21;
+            this.dgv_ZoneAnnotation.Size = new System.Drawing.Size(295, 207);
+            this.dgv_ZoneAnnotation.TabIndex = 44;
+            this.dgv_ZoneAnnotation.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgv_ZoneAnnotation_CellValueChanged);
+            // 
+            // Note
+            // 
+            this.Note.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
+            this.Note.DataPropertyName = "Note";
+            this.Note.FillWeight = 176.9911F;
+            this.Note.HeaderText = "Note";
+            this.Note.MinimumWidth = 50;
+            this.Note.Name = "Note";
+            // 
+            // XCoord
+            // 
+            this.XCoord.DataPropertyName = "X";
+            this.XCoord.FillWeight = 34.58654F;
+            this.XCoord.HeaderText = "X";
+            this.XCoord.MinimumWidth = 40;
+            this.XCoord.Name = "XCoord";
+            this.XCoord.Resizable = System.Windows.Forms.DataGridViewTriState.False;
+            this.XCoord.Width = 40;
+            // 
+            // YCoord
+            // 
+            this.YCoord.DataPropertyName = "Y";
+            this.YCoord.FillWeight = 46.11596F;
+            this.YCoord.HeaderText = "Y";
+            this.YCoord.MinimumWidth = 40;
+            this.YCoord.Name = "YCoord";
+            this.YCoord.Resizable = System.Windows.Forms.DataGridViewTriState.False;
+            this.YCoord.Width = 40;
+            // 
+            // Show
+            // 
+            this.Show.DataPropertyName = "Show";
+            this.Show.FillWeight = 142.3064F;
+            this.Show.HeaderText = "Show";
+            this.Show.Name = "Show";
+            this.Show.Resizable = System.Windows.Forms.DataGridViewTriState.False;
+            this.Show.Width = 50;
+            // 
+            // txt_NewNoteCoords
+            // 
+            this.txt_NewNoteCoords.Location = new System.Drawing.Point(166, 75);
+            this.txt_NewNoteCoords.Name = "txt_NewNoteCoords";
+            this.txt_NewNoteCoords.Size = new System.Drawing.Size(87, 21);
+            this.txt_NewNoteCoords.TabIndex = 45;
+            this.txt_NewNoteCoords.Text = "0, 0";
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(143, 78);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(21, 13);
+            this.label1.TabIndex = 46;
+            this.label1.Text = "at:";
+            // 
+            // button_SetNoteCoordsToPlayerLoc
+            // 
+            this.button_SetNoteCoordsToPlayerLoc.Location = new System.Drawing.Point(166, 102);
+            this.button_SetNoteCoordsToPlayerLoc.Name = "button_SetNoteCoordsToPlayerLoc";
+            this.button_SetNoteCoordsToPlayerLoc.Size = new System.Drawing.Size(87, 37);
+            this.button_SetNoteCoordsToPlayerLoc.TabIndex = 48;
+            this.button_SetNoteCoordsToPlayerLoc.Text = "Set to Player Location";
+            this.button_SetNoteCoordsToPlayerLoc.UseVisualStyleBackColor = true;
+            this.button_SetNoteCoordsToPlayerLoc.Click += new System.EventHandler(this.button_SetNoteCoordsToPlayerLoc_Click);
+            // 
+            // groupBox1
+            // 
+            this.groupBox1.Controls.Add(this.button_NotesFont);
+            this.groupBox1.Controls.Add(this.button_NotesColor);
+            this.groupBox1.Controls.Add(this.check_AutoUpdateNoteLocation);
+            this.groupBox1.Controls.Add(this.label1);
+            this.groupBox1.Controls.Add(this.button_SetNoteCoordsToPlayerLoc);
+            this.groupBox1.Controls.Add(this.txt_NewNoteCoords);
+            this.groupBox1.Controls.Add(this.label_AnnotationFontSize);
+            this.groupBox1.Controls.Add(this.button_AddNote);
+            this.groupBox1.Controls.Add(this.txt_NewNote);
+            this.groupBox1.Controls.Add(this.check_ClearNoteAfterEntry);
+            this.groupBox1.Location = new System.Drawing.Point(722, 479);
+            this.groupBox1.Name = "groupBox1";
+            this.groupBox1.Size = new System.Drawing.Size(266, 176);
+            this.groupBox1.TabIndex = 49;
+            this.groupBox1.TabStop = false;
+            this.groupBox1.Text = "Notes";
+            // 
+            // button_NotesFont
+            // 
+            this.button_NotesFont.BackColor = System.Drawing.SystemColors.Control;
+            this.button_NotesFont.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.button_NotesFont.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.button_NotesFont.Location = new System.Drawing.Point(10, 123);
+            this.button_NotesFont.Name = "button_NotesFont";
+            this.button_NotesFont.Size = new System.Drawing.Size(79, 24);
+            this.button_NotesFont.TabIndex = 50;
+            this.button_NotesFont.Text = "Edit Font";
+            this.button_NotesFont.UseVisualStyleBackColor = false;
+            this.button_NotesFont.Click += new System.EventHandler(this.button_NotesFont_Click);
+            // 
+            // button_NotesColor
+            // 
+            this.button_NotesColor.BackColor = System.Drawing.SystemColors.ActiveCaption;
+            this.button_NotesColor.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.button_NotesColor.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.button_NotesColor.Location = new System.Drawing.Point(95, 123);
+            this.button_NotesColor.Name = "button_NotesColor";
+            this.button_NotesColor.Size = new System.Drawing.Size(38, 24);
+            this.button_NotesColor.TabIndex = 49;
+            this.button_NotesColor.UseVisualStyleBackColor = false;
+            this.button_NotesColor.Click += new System.EventHandler(this.button_NotesColor_Click);
+            // 
+            // groupBox2
+            // 
+            this.groupBox2.Controls.Add(this.check_AutoParseFromLogs);
+            this.groupBox2.Controls.Add(this.buttonAutosize);
+            this.groupBox2.Controls.Add(this.buttonStretch);
+            this.groupBox2.Controls.Add(this.buttonNormal);
+            this.groupBox2.Controls.Add(this.buttonCenter);
+            this.groupBox2.Controls.Add(this.buttonZoom);
+            this.groupBox2.Controls.Add(this.label_PlayerX);
+            this.groupBox2.Controls.Add(this.nud_playerX);
+            this.groupBox2.Controls.Add(this.label_PlayerY);
+            this.groupBox2.Controls.Add(this.label_Scale);
+            this.groupBox2.Controls.Add(this.nud_playerY);
+            this.groupBox2.Controls.Add(this.nud_scale);
+            this.groupBox2.Location = new System.Drawing.Point(32, 21);
+            this.groupBox2.Name = "groupBox2";
+            this.groupBox2.Size = new System.Drawing.Size(193, 244);
+            this.groupBox2.TabIndex = 50;
+            this.groupBox2.TabStop = false;
+            this.groupBox2.Text = "Debugging";
+            // 
+            // button_ResetZoom
+            // 
+            this.button_ResetZoom.Location = new System.Drawing.Point(186, 61);
+            this.button_ResetZoom.Name = "button_ResetZoom";
+            this.button_ResetZoom.Size = new System.Drawing.Size(44, 20);
+            this.button_ResetZoom.TabIndex = 52;
+            this.button_ResetZoom.Text = "Reset";
+            this.button_ResetZoom.UseVisualStyleBackColor = true;
+            this.button_ResetZoom.Click += new System.EventHandler(this.button_ResetZoom_Click);
+            // 
+            // tabControl_Main
+            // 
+            this.tabControl_Main.Controls.Add(this.tabPage1);
+            this.tabControl_Main.Controls.Add(this.tabPage2);
+            this.tabControl_Main.Location = new System.Drawing.Point(721, 71);
+            this.tabControl_Main.Name = "tabControl_Main";
+            this.tabControl_Main.SelectedIndex = 0;
+            this.tabControl_Main.Size = new System.Drawing.Size(274, 314);
+            this.tabControl_Main.TabIndex = 52;
+            // 
+            // tabPage1
+            // 
+            this.tabPage1.Controls.Add(this.buttonOpenPopoutMap);
+            this.tabPage1.Controls.Add(this.button_ResetZoom);
+            this.tabPage1.Controls.Add(this.btnAutosize);
+            this.tabPage1.Controls.Add(this.check_ShowAnnotations);
+            this.tabPage1.Controls.Add(this.sliderZoom);
+            this.tabPage1.Controls.Add(this.checkAutoSizeOnMapSwitch);
+            this.tabPage1.Controls.Add(this.label_Zoom);
+            this.tabPage1.Controls.Add(this.checkEnableDirection);
+            this.tabPage1.Controls.Add(this.checkAlwaysOnTop);
+            this.tabPage1.Controls.Add(this.check_ShowPlayerLocHistory);
+            this.tabPage1.Controls.Add(this.label_Opacity);
+            this.tabPage1.Controls.Add(this.checkLegend);
+            this.tabPage1.Controls.Add(this.sliderOpacity);
+            this.tabPage1.Controls.Add(this.label_HistoryToKeep);
+            this.tabPage1.Controls.Add(this.nud_HistoryToKeep);
+            this.tabPage1.Location = new System.Drawing.Point(4, 22);
+            this.tabPage1.Name = "tabPage1";
+            this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage1.Size = new System.Drawing.Size(266, 288);
+            this.tabPage1.TabIndex = 0;
+            this.tabPage1.Text = "Options";
+            this.tabPage1.UseVisualStyleBackColor = true;
+            // 
+            // tabPage2
+            // 
+            this.tabPage2.Controls.Add(this.groupBox2);
+            this.tabPage2.Location = new System.Drawing.Point(4, 22);
+            this.tabPage2.Name = "tabPage2";
+            this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage2.Size = new System.Drawing.Size(266, 288);
+            this.tabPage2.TabIndex = 1;
+            this.tabPage2.Text = "Advanced";
+            this.tabPage2.UseVisualStyleBackColor = true;
+            // 
+            // splitContainer_Lower
+            // 
+            this.splitContainer_Lower.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.splitContainer_Lower.Location = new System.Drawing.Point(0, 0);
+            this.splitContainer_Lower.Name = "splitContainer_Lower";
+            // 
+            // splitContainer_Lower.Panel1
+            // 
+            this.splitContainer_Lower.Panel1.AutoScroll = true;
+            this.splitContainer_Lower.Panel1.Controls.Add(this.labelLegend);
+            this.splitContainer_Lower.Panel1.Controls.Add(this.labelConnectedZones);
+            this.splitContainer_Lower.Panel1.Controls.Add(this.panelConnectedZones);
+            this.splitContainer_Lower.Panel1MinSize = 250;
+            // 
+            // splitContainer_Lower.Panel2
+            // 
+            this.splitContainer_Lower.Panel2.Controls.Add(this.dgv_ZoneAnnotation);
+            this.splitContainer_Lower.Panel2MinSize = 250;
+            this.splitContainer_Lower.Size = new System.Drawing.Size(700, 207);
+            this.splitContainer_Lower.SplitterDistance = 401;
+            this.splitContainer_Lower.TabIndex = 53;
             // 
             // labelZoneName
             // 
@@ -681,50 +979,17 @@ namespace ZlizEQMap
             this.labelZoneName.TabIndex = 0;
             this.labelZoneName.Text = "Zone";
             // 
-            // label5
-            // 
-            this.label5.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(472, 554);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(44, 13);
-            this.label5.TabIndex = 34;
-            this.label5.Text = "Opacity";
-            // 
             // ZlizEQMapFormExperimental
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(952, 681);
-            this.Controls.Add(this.label5);
-            this.Controls.Add(this.buttonUpdatePopoutMap);
-            this.Controls.Add(this.label4);
-            this.Controls.Add(this.button_reinit);
-            this.Controls.Add(this.sliderZoom);
-            this.Controls.Add(this.buttonSetPlayerXY);
-            this.Controls.Add(this.nud_playerY);
-            this.Controls.Add(this.label3);
-            this.Controls.Add(this.label2);
-            this.Controls.Add(this.nud_playerX);
-            this.Controls.Add(this.label1);
-            this.Controls.Add(this.buttonForceRedraw);
-            this.Controls.Add(this.buttonNormal);
-            this.Controls.Add(this.nud_scale);
-            this.Controls.Add(this.buttonZoom);
-            this.Controls.Add(this.buttonCenter);
-            this.Controls.Add(this.buttonStretch);
-            this.Controls.Add(this.buttonAutosize);
+            this.ClientSize = new System.Drawing.Size(1009, 1061);
+            this.Controls.Add(this.tabControl_Main);
+            this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.splitContainerMain);
-            this.Controls.Add(this.checkAlwaysOnTop);
-            this.Controls.Add(this.sliderOpacity);
-            this.Controls.Add(this.checkLegend);
-            this.Controls.Add(this.checkEnableDirection);
-            this.Controls.Add(this.checkAutoSizeOnMapSwitch);
             this.Controls.Add(this.panelMainControls);
-            this.Controls.Add(this.btnAutosize);
             this.Controls.Add(this.labelZoneName);
             this.Controls.Add(this.btnSettingsHelp);
-            this.Controls.Add(this.buttonOpenPopoutMap);
             this.Font = new System.Drawing.Font("Tahoma", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Name = "ZlizEQMapFormExperimental";
             this.Text = "ZlizEQMap (Experimental UI)";
@@ -735,8 +1000,7 @@ namespace ZlizEQMap
             ((System.ComponentModel.ISupportInitialize)(this.sliderOpacity)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.sliderZoom)).EndInit();
             this.panelMain.ResumeLayout(false);
-            this.panelConnectedZones.ResumeLayout(false);
-            this.panelConnectedZones.PerformLayout();
+            this.panelMain.PerformLayout();
             this.panelMainControls.ResumeLayout(false);
             this.panelMainControls.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nud_scale)).EndInit();
@@ -751,8 +1015,23 @@ namespace ZlizEQMap
             this.panel1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.nud_playerX)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nud_playerY)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nud_HistoryToKeep)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.zoneAnnotationBindingSource)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dgv_ZoneAnnotation)).EndInit();
+            this.groupBox1.ResumeLayout(false);
+            this.groupBox1.PerformLayout();
+            this.groupBox2.ResumeLayout(false);
+            this.groupBox2.PerformLayout();
+            this.tabControl_Main.ResumeLayout(false);
+            this.tabPage1.ResumeLayout(false);
+            this.tabPage1.PerformLayout();
+            this.tabPage2.ResumeLayout(false);
+            this.splitContainer_Lower.Panel1.ResumeLayout(false);
+            this.splitContainer_Lower.Panel1.PerformLayout();
+            this.splitContainer_Lower.Panel2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer_Lower)).EndInit();
+            this.splitContainer_Lower.ResumeLayout(false);
             this.ResumeLayout(false);
-            this.PerformLayout();
 
         }
 
@@ -793,18 +1072,44 @@ namespace ZlizEQMap
         private Button buttonCenter;
         private Button buttonZoom;
         private Button buttonNormal;
-        private Button buttonForceRedraw;
-        private Label label1;
+        private Label label_Scale;
         private NumericUpDown nud_playerX;
-        private Label label2;
-        private Label label3;
+        private Label label_PlayerX;
+        private Label label_PlayerY;
         private NumericUpDown nud_playerY;
-        private Button buttonSetPlayerXY;
-        private Button button_reinit;
         private TrackBar sliderZoom;
-        private Label label4;
-        private Button buttonUpdatePopoutMap;
-        private Label label5;
+        private Label label_Zoom;
+        private Label label_Opacity;
+        private NumericUpDown nud_HistoryToKeep;
+        private Label label_AnnotationFontSize;
+        private CheckBox check_ShowAnnotations;
+        private Label label_HistoryToKeep;
+        private CheckBox check_ShowPlayerLocHistory;
+        private Button button_AddNote;
+        private CheckBox check_ClearNoteAfterEntry;
+        private TextBox txt_NewNote;
+        private BindingSource zoneAnnotationBindingSource;
+        private DataGridView dgv_ZoneAnnotation;
+        private TextBox txt_NewNoteCoords;
+        private Label label1;
+        private CheckBox check_AutoUpdateNoteLocation;
+        private Button button_SetNoteCoordsToPlayerLoc;
+        private GroupBox groupBox1;
+        private GroupBox groupBox2;
+        private CheckBox check_AutoParseFromLogs;
+        private DataGridViewTextBoxColumn Note;
+        private DataGridViewTextBoxColumn XCoord;
+        private DataGridViewTextBoxColumn YCoord;
+        private DataGridViewCheckBoxColumn Show;
+        private ColorDialog colorDialog_Notes;
+        private Button button_NotesColor;
+        private FontDialog fontDialog_Notes;
+        private Button button_NotesFont;
+        private Button button_ResetZoom;
+        private TabControl tabControl_Main;
+        private TabPage tabPage1;
+        private TabPage tabPage2;
+        private SplitContainer splitContainer_Lower;
     }
 }
 

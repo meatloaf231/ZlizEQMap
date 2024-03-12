@@ -41,6 +41,7 @@
             this.panel_Resize = new System.Windows.Forms.Panel();
             this.label_Zoom = new System.Windows.Forms.Label();
             this.label_Opacity = new System.Windows.Forms.Label();
+            this.check_AOT = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.picBoxMinimap)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar_Opacity)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar_Zoom)).BeginInit();
@@ -48,13 +49,11 @@
             // 
             // picBoxMinimap
             // 
-            this.picBoxMinimap.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
             this.picBoxMinimap.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.picBoxMinimap.Location = new System.Drawing.Point(42, 32);
+            this.picBoxMinimap.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.picBoxMinimap.Location = new System.Drawing.Point(0, 0);
             this.picBoxMinimap.Name = "picBoxMinimap";
-            this.picBoxMinimap.Size = new System.Drawing.Size(375, 275);
+            this.picBoxMinimap.Size = new System.Drawing.Size(450, 350);
             this.picBoxMinimap.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.picBoxMinimap.TabIndex = 1;
             this.picBoxMinimap.TabStop = false;
@@ -81,8 +80,12 @@
             // 
             this.buttonConfigurePopupMap.BackColor = System.Drawing.Color.Transparent;
             this.buttonConfigurePopupMap.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("buttonConfigurePopupMap.BackgroundImage")));
-            this.buttonConfigurePopupMap.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.buttonConfigurePopupMap.Location = new System.Drawing.Point(0, 0);
+            this.buttonConfigurePopupMap.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+            this.buttonConfigurePopupMap.FlatAppearance.BorderSize = 0;
+            this.buttonConfigurePopupMap.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Orange;
+            this.buttonConfigurePopupMap.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Tomato;
+            this.buttonConfigurePopupMap.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.buttonConfigurePopupMap.Location = new System.Drawing.Point(2, 2);
             this.buttonConfigurePopupMap.Name = "buttonConfigurePopupMap";
             this.buttonConfigurePopupMap.Size = new System.Drawing.Size(24, 24);
             this.buttonConfigurePopupMap.TabIndex = 3;
@@ -140,7 +143,9 @@
             this.buttonClosePopupMap.BackColor = System.Drawing.Color.Transparent;
             this.buttonClosePopupMap.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("buttonClosePopupMap.BackgroundImage")));
             this.buttonClosePopupMap.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.buttonClosePopupMap.Location = new System.Drawing.Point(426, 0);
+            this.buttonClosePopupMap.FlatAppearance.BorderSize = 0;
+            this.buttonClosePopupMap.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.buttonClosePopupMap.Location = new System.Drawing.Point(426, 2);
             this.buttonClosePopupMap.Name = "buttonClosePopupMap";
             this.buttonClosePopupMap.Size = new System.Drawing.Size(24, 24);
             this.buttonClosePopupMap.TabIndex = 8;
@@ -211,11 +216,25 @@
             this.label_Opacity.Tag = "ToggleVis";
             this.label_Opacity.Text = "Opacity";
             // 
+            // check_AOT
+            // 
+            this.check_AOT.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.check_AOT.AutoSize = true;
+            this.check_AOT.Location = new System.Drawing.Point(286, 329);
+            this.check_AOT.Name = "check_AOT";
+            this.check_AOT.Size = new System.Drawing.Size(48, 17);
+            this.check_AOT.TabIndex = 13;
+            this.check_AOT.Tag = "ToggleVis";
+            this.check_AOT.Text = "AOT";
+            this.check_AOT.UseVisualStyleBackColor = true;
+            this.check_AOT.CheckedChanged += new System.EventHandler(this.check_AOT_CheckedChanged);
+            // 
             // PopoutMap
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(450, 350);
+            this.Controls.Add(this.check_AOT);
             this.Controls.Add(this.label_Opacity);
             this.Controls.Add(this.label_Zoom);
             this.Controls.Add(this.radioButton_Centered);
@@ -252,5 +271,6 @@
         private System.Windows.Forms.Panel panel_Resize;
         private System.Windows.Forms.Label label_Zoom;
         private System.Windows.Forms.Label label_Opacity;
+        private System.Windows.Forms.CheckBox check_AOT;
     }
 }

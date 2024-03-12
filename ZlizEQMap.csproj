@@ -126,6 +126,9 @@
     <Reference Include="HtmlRenderer.WinForms">
       <HintPath>ExternalBinaries\HtmlRenderer.WinForms.dll</HintPath>
     </Reference>
+    <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>packages\Newtonsoft.Json.13.0.3\lib\net40\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -138,6 +141,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Classes\Notes.cs" />
+    <Compile Include="Classes\ZoneAnnotationManager.cs" />
+    <Compile Include="Classes\ZoneAnnotation.cs" />
     <Compile Include="Classes\Overseer.cs" />
     <Compile Include="Controls\ZlizPictureBox.cs" />
     <Compile Include="Forms\PopoutMap.cs">
@@ -202,6 +208,7 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\ZlizEQMapFormExperimental.resx">
       <DependentUpon>ZlizEQMapFormExperimental.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -213,6 +220,7 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
+    <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -447,7 +455,9 @@
       <Install>true</Install>
     </BootstrapperPackage>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Properties\DataSources\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>xcopy "$(ProjectDir)ZoneMaps\*.*" "$(ProjectDir)bin\$(Configuration)\ZoneMaps" /Y /I /E

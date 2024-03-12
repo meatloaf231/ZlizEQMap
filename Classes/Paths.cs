@@ -64,5 +64,13 @@ namespace ZlizEQMap
 				return Path.Combine(SettingsFileDirectory, "ZlizEQMap.ini");
 			}
 		}
-	}
+
+        public static string NotesFilePath
+        {
+            get
+            {
+                return Path.Combine(SettingsFileDirectory, "Notes.json");
+            }
+        }
+    }
 }
