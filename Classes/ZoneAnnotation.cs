@@ -15,14 +15,16 @@ namespace ZlizEQMap
         public bool Show { get; set; }
         
         public string MapShortName { get; set; }
+        public int SubMap { get; set; }
 
 
-        public ZoneAnnotation(string note, int x, int y, string mapShortName, bool show = true)
+        public ZoneAnnotation(string note, int x, int y, string mapShortName, int subMap, bool show = true)
         {
             Note = note;
             X = x;
             Y = y;
             MapShortName = mapShortName;
+            SubMap = subMap;
             Show = show;
         }
     }

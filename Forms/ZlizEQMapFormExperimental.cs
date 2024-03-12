@@ -341,7 +341,7 @@ namespace ZlizEQMap
         {
             if (initialLoadCompleted)
             {
-                int width = 1000;
+                int width = 1025;
                 if (picBox.Width + 60 > width)
                     width = picBox.Width + 70;
 
@@ -649,7 +649,7 @@ namespace ZlizEQMap
         {
             Point noteCoords = ParseTextToPoint(txt_NewNoteCoords.Text);
 
-            ZoneAnnotationManager.AddNote(new ZoneAnnotation(txt_NewNote.Text, noteCoords.X, noteCoords.Y, Overseer.CurrentZoneData.ShortName));
+            ZoneAnnotationManager.AddNote(new ZoneAnnotation(txt_NewNote.Text, noteCoords.X, noteCoords.Y, Overseer.CurrentZoneData.ShortName, Overseer.CurrentZoneData.SubMapIndex));
             ZoneAnnotationManager.SaveNotes();
 
             if (check_ClearNoteAfterEntry.Checked)
@@ -664,7 +664,7 @@ namespace ZlizEQMap
         private void ReloadNoteData()
         {
             zoneAnnotationBindingSource.Clear();
-            foreach (var anno in ZoneAnnotationManager.ZoneAnnotations.Where(za => za.MapShortName == Overseer.CurrentZoneData.ShortName))
+            foreach (var anno in ZoneAnnotationManager.ZoneAnnotations.Where(za => za.MapShortName == Overseer.CurrentZoneData.ShortName && za.SubMap == Overseer.CurrentZoneData.SubMapIndex))
             {
                 zoneAnnotationBindingSource.Add(anno);
             }
@@ -717,6 +717,11 @@ namespace ZlizEQMap
         {
             sliderZoom.Value = 100;
             SetZoomSlider();
+        }
+
+        private void ZlizEQMapFormExperimental_Load(object sender, EventArgs e)
+        {
+
         }
     }
 }

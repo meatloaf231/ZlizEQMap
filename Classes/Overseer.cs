@@ -488,7 +488,7 @@ namespace ZlizEQMap
                 int aOV = (int)Math.Round(defaultWaypointOffsetValue * renderScale);
 
                 List<MapAnnotation> convertedAnnotations = new List<MapAnnotation>();
-                foreach (ZoneAnnotation zAnno in ZoneAnnotationManager.ZoneAnnotations.Where(za => za.Show == true && za.MapShortName == CurrentZoneData.ShortName))
+                foreach (ZoneAnnotation zAnno in ZoneAnnotationManager.ZoneAnnotations.Where(za => za.Show == true && za.MapShortName == CurrentZoneData.ShortName && za.SubMap == CurrentZoneData.SubMapIndex))
                 {
                     MapPoint zAMP = GetMapImageLocationPoint(zAnno.X, zAnno.Y);
 
