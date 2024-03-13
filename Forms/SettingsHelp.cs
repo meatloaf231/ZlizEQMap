@@ -8,6 +8,7 @@ using System.Text;
 using System.Windows.Forms;
 using System.IO;
 using System.Diagnostics;
+using ZlizEQMap.Forms;
 
 namespace ZlizEQMap
 {
@@ -36,7 +37,7 @@ namespace ZlizEQMap
             txtEQDirectory2.Text = Settings.EQDirectoryPath2;
             radioLogsLogs2.Checked = Settings.LogsInLogsDir2 == SettingsLogsInLogsDir.LogsDir;
             radioLogsRoot2.Checked = Settings.LogsInLogsDir2 == SettingsLogsInLogsDir.RootDir;
-            checkUseExperimentalUI.Checked = Settings.UseExperimentalUI;
+            checkUseLegacyUI.Checked = Settings.UseLegacyUI;
 
             if (Settings.ActiveProfileIndex == 1)
                 radioProfile1.Checked = true;
@@ -111,7 +112,7 @@ namespace ZlizEQMap
             Settings.LegendFontSize = Convert.ToInt32(txtLegendFontSize.Text);
             Settings.ZoneDataSet1 = comboZoneData1.Text;
             Settings.ZoneDataSet2 = comboZoneData2.Text;
-            Settings.UseExperimentalUI = checkUseExperimentalUI.Checked;
+            Settings.UseLegacyUI = checkUseLegacyUI.Checked;
 
             Settings.SaveSettings();
             labelSettingsSaved.Visible = true;
@@ -167,6 +168,16 @@ namespace ZlizEQMap
                 radioProfile2.Font = new Font(radioProfile2.Font, FontStyle.Bold);
             else
                 radioProfile2.Font = new Font(radioProfile2.Font, FontStyle.Regular);
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            SettingsLoader loader = new SettingsLoader();
+            loader.ShowDialog();
+            if (loader.results.Any())
+            {
+                Console.WriteLine($"results: {loader.results.Count}" );
+            }
         }
     }
 }

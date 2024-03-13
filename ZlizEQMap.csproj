@@ -141,7 +141,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Classes\Notes.cs" />
     <Compile Include="Classes\ZoneAnnotationManager.cs" />
     <Compile Include="Classes\ZoneAnnotation.cs" />
     <Compile Include="Classes\Overseer.cs" />
@@ -165,6 +164,18 @@
     <Compile Include="Forms\FirstRun.Designer.cs">
       <DependentUpon>FirstRun.cs</DependentUpon>
     </Compile>
+    <Compile Include="Forms\SettingsLoader.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\SettingsLoader.Designer.cs">
+      <DependentUpon>SettingsLoader.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\ZlizEQMapForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\ZlizEQMapForm.Designer.cs">
+      <DependentUpon>ZlizEQMapForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\ZlizEQMapForm.DesignerCustom.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -178,14 +189,7 @@
     <Compile Include="Classes\LogFileParser.cs" />
     <Compile Include="Classes\MiniClasses.cs" />
     <Compile Include="Classes\Settings.cs" />
-    <Compile Include="Forms\ZlizEQMapForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\ZlizEQMapForm.Designer.cs">
-      <DependentUpon>ZlizEQMapForm.cs</DependentUpon>
-    </Compile>
     <Compile Include="Classes\UnitTestDetector.cs" />
-    <Compile Include="Classes\ZoneMapFactory.cs" />
     <Compile Include="Classes\ZoneMap.cs" />
     <Compile Include="Classes\ZoneData.cs" />
     <Compile Include="Classes\ZoneDataFactory.cs" />
@@ -194,6 +198,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Controls\ZlizLabel.cs" />
     <Compile Include="Controls\ZlizPanel.cs" />
+    <Compile Include="Settings.cs" />
     <EmbeddedResource Include="Forms\FirstRun.resx">
       <DependentUpon>FirstRun.cs</DependentUpon>
     </EmbeddedResource>
@@ -202,6 +207,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\SettingsHelp.resx">
       <DependentUpon>SettingsHelp.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\SettingsLoader.resx">
+      <DependentUpon>SettingsLoader.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\ZlizEQMapForm.resx">
       <DependentUpon>ZlizEQMapForm.cs</DependentUpon>
@@ -220,7 +228,9 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
+    <None Include="app.config" />
     <None Include="packages.config" />
+    <None Include="Properties\DataSources\Settings.datasource" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -455,9 +465,7 @@
       <Install>true</Install>
     </BootstrapperPackage>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Properties\DataSources\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>xcopy "$(ProjectDir)ZoneMaps\*.*" "$(ProjectDir)bin\$(Configuration)\ZoneMaps" /Y /I /E

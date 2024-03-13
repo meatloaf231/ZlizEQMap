@@ -31,7 +31,7 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SettingsHelp));
             this.btnClose = new System.Windows.Forms.Button();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.checkUseExperimentalUI = new System.Windows.Forms.CheckBox();
+            this.checkUseLegacyUI = new System.Windows.Forms.CheckBox();
             this.txtLegendFontSize = new System.Windows.Forms.TextBox();
             this.label12 = new System.Windows.Forms.Label();
             this.radioProfile2 = new System.Windows.Forms.RadioButton();
@@ -91,9 +91,9 @@
             // 
             // groupBox1
             // 
-            this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+            this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.groupBox1.Controls.Add(this.checkUseExperimentalUI);
+            this.groupBox1.Controls.Add(this.checkUseLegacyUI);
             this.groupBox1.Controls.Add(this.txtLegendFontSize);
             this.groupBox1.Controls.Add(this.label12);
             this.groupBox1.Controls.Add(this.radioProfile2);
@@ -112,15 +112,15 @@
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Settings";
             // 
-            // checkUseExperimentalUI
+            // checkUseLegacyUI
             // 
-            this.checkUseExperimentalUI.AutoSize = true;
-            this.checkUseExperimentalUI.Location = new System.Drawing.Point(110, 357);
-            this.checkUseExperimentalUI.Name = "checkUseExperimentalUI";
-            this.checkUseExperimentalUI.Size = new System.Drawing.Size(122, 17);
-            this.checkUseExperimentalUI.TabIndex = 16;
-            this.checkUseExperimentalUI.Text = "Use Experimental UI";
-            this.checkUseExperimentalUI.UseVisualStyleBackColor = true;
+            this.checkUseLegacyUI.AutoSize = true;
+            this.checkUseLegacyUI.Location = new System.Drawing.Point(110, 357);
+            this.checkUseLegacyUI.Name = "checkUseLegacyUI";
+            this.checkUseLegacyUI.Size = new System.Drawing.Size(175, 17);
+            this.checkUseLegacyUI.TabIndex = 16;
+            this.checkUseLegacyUI.Text = "Use Legacy UI (requires restart)";
+            this.checkUseLegacyUI.UseVisualStyleBackColor = true;
             // 
             // txtLegendFontSize
             // 
@@ -376,7 +376,7 @@
             // 
             // labelSettingsSaved
             // 
-            this.labelSettingsSaved.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
+            this.labelSettingsSaved.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.labelSettingsSaved.AutoSize = true;
             this.labelSettingsSaved.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -427,7 +427,7 @@
             // 
             // groupBox2
             // 
-            this.groupBox2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+            this.groupBox2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBox2.Controls.Add(this.linkLabelReadme);
             this.groupBox2.Controls.Add(this.label1);
@@ -460,7 +460,7 @@
             // 
             // groupBox3
             // 
-            this.groupBox3.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+            this.groupBox3.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBox3.Controls.Add(this.labelVersion);
             this.groupBox3.Controls.Add(this.linkLabelZlizUI);
@@ -594,6 +594,6 @@
         private System.Windows.Forms.Label labelVersion;
         private System.Windows.Forms.Label label12;
         private System.Windows.Forms.TextBox txtLegendFontSize;
-        private System.Windows.Forms.CheckBox checkUseExperimentalUI;
+        private System.Windows.Forms.CheckBox checkUseLegacyUI;
     }
 }

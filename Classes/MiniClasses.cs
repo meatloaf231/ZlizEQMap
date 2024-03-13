@@ -7,25 +7,20 @@ using System.Net;
 using System.Security.AccessControl;
 using System.Text;
 
+// "These should all be in their own files!" then I'd have to open each one in it's own document and that sucks and i dont wanna
 namespace ZlizEQMap
 {
-    //public class MapMarker
-    //{
-    //    public MapPoint Location { get; set; }
-    //    public int Style { get; set; }
+    public class MapPoint
+    {
+        public int Y { get; set; }
+        public int X { get; set; }
+    }
 
-    //    public MapMarker()
-    //    {
-    //        Location = new MapPoint() { X = 0, Y = 0 };
-    //        Style = 0;
-    //    }
-
-    //    public MapMarker(int x, int y)
-    //    {
-    //        Location = new MapPoint() { X = x, Y = y };
-    //        Style = 0;
-    //    }
-    //}
+    public class PointSet
+    {
+        public Point Point1 { get; set; }
+        public Point Point2 { get; set; }
+    }
 
     public interface IMapDrawable
     {
@@ -50,7 +45,6 @@ namespace ZlizEQMap
 
         public void Draw(Graphics g, float renderScale, int xOffset = 0, int yOffset = 0)
         {
-            //Pen = new Pen(Color.FromArgb(opacity,   2F)
             g.DrawEllipse(MapPen, (X * renderScale) + xOffset, (Y * renderScale) + yOffset, Width * renderScale, Height * renderScale);
         }
     }
@@ -105,12 +99,6 @@ namespace ZlizEQMap
         }
     }
 
-    public class MapPoint
-    {
-        public int Y { get; set; }
-        public int X { get; set; }
-    }
-
     public class MapAnnotation : MapPoint, IMapDrawable
     {
         public string Note { get; set; }
@@ -129,74 +117,10 @@ namespace ZlizEQMap
         public void Draw(Graphics g, float renderScale = 1, int xOffset = 0, int yOffset = 0)
         {
             MapMarker.Draw(g, renderScale, xOffset, yOffset);
-            //Font fonttest = new Font("Arial", 12 * renderScale, FontStyle.Bold);
-            //PointF testpoint = new PointF((X * renderScale) + xOffset, (Y * renderScale) + yOffset);
-            g.DrawString(Note, Settings.NotesFont, MapMarker.MapPen.Brush, (X * renderScale) + xOffset, (Y * renderScale) + yOffset);
+            if (!string.IsNullOrWhiteSpace(Note))
+            {
+                g.DrawString(Note, Settings.NotesFont, MapMarker.MapPen.Brush, (X * renderScale) + xOffset, (Y * renderScale) + yOffset);
+            }
         }
-    }
-
-    //public abstract class MapMarkerCollection : IMapDrawable
-    //{
-    //    public ICollection<IMapDrawable> Markers { get; set; }
-
-    //    public void Draw(Graphics g, float renderScale, int xOffset, int yOffset)
-    //    {
-    //        foreach (IMapDrawable marker in Markers)
-    //        {
-    //            marker.Draw(g, renderScale, xOffset, yOffset);
-    //        }
-    //    }
-    //}
-
-    //public class NavigationMarkers : IMapDrawable
-    //{
-    //    public Pen PlayerPen = new Pen(Color.Red, 2f);
-    //    public Pen PlayerHistoryPen = new Pen(Color.Yellow, 2f);
-    //    public Pen PlayerPenArrow = new Pen(Color.Red, 2f);
-    //    public Pen WaypointPen = new Pen(Color.Blue, 2f);
-
-    //    public int MaxHistoryLocations { get; set; } = 1;
-    //    public List<Point> PlayerLocHistory { get; set; }
-    //    public MapCross CurrentPlayerLocationMarker { get; set; }
-    //    public MapEllipse CurrentWaypointMarker { get; set; }
-
-
-    //    public NavigationMarkers()
-    //    {
-    //        PlayerLocHistory = new List<Point>();
-    //    }
-
-    //    public void UpdatePlayerLocation(int x, int y)
-    //    {
-    //        PlayerLocHistory.Add(new Point(x, y));
-    //    }
-
-    //    public void Draw(Graphics g, float renderScale = 1F, int xOffset = 0, int yOffset = 0)
-    //    {
-    //        // Draw the waypoint marker(s)
-    //        CurrentWaypointMarker.Draw(g, renderScale, xOffset, yOffset);
-    //        CurrentPlayerLocationMarker.Draw(g, renderScale, xOffset, yOffset);
-    //        RenderPlayerLocHistoryAsLine(g);
-    //    }
-
-    //    private void RenderPlayerLocHistoryAsLine(Graphics g) {
-    //        //g.DrawLines(Pen, PlayerLocHistory.ToArray());
-
-    //        // We do need more than one point to make a line, it turns out
-    //        if (PlayerLocHistory.Count > 1)
-    //        {
-    //            for (int i = Math.Min(MaxHistoryLocations, PlayerLocHistory.Count); i > 0; i--)
-    //            {
-    //                g.DrawLine(PlayerHistoryPen, PlayerLocHistory[i], PlayerLocHistory[i - 1]);
-    //            }
-    //        }
-    //    }
-    //}
-
-
-    public class PointSet
-    {
-        public Point Point1 { get; set; }
-        public Point Point2 { get; set; }
     }
 }

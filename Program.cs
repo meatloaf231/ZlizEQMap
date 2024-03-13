@@ -19,16 +19,16 @@ namespace ZlizEQMap
 
             try
             {
-                Settings.InitializeDefaultSettings();
-                Settings.LoadSettings();
+                Settings.InitializeSettings();
                 Overseer.InitializeOverseer();
-                if (Settings.UseExperimentalUI)
+                
+                if (Settings.UseLegacyUI)
                 {
-                    Application.Run(new ZlizEQMapFormExperimental());
+                    Application.Run(new ZlizEQMapForm());
                 }
                 else
                 {
-                    Application.Run(new ZlizEQMapForm());
+                    Application.Run(new ZlizEQMapFormExperimental());
                 }
             }
             catch (Exception ex)

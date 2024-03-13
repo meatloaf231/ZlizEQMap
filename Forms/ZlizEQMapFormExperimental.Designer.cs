@@ -52,7 +52,6 @@ namespace ZlizEQMap
             this.check_ClearNoteAfterEntry = new System.Windows.Forms.CheckBox();
             this.check_AutoUpdateNoteLocation = new System.Windows.Forms.CheckBox();
             this.check_AutoParseFromLogs = new System.Windows.Forms.CheckBox();
-            this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.panelMain = new System.Windows.Forms.Panel();
             this.panelConnectedZones = new System.Windows.Forms.FlowLayoutPanel();
             this.labelConnectedZones = new System.Windows.Forms.Label();
@@ -67,6 +66,7 @@ namespace ZlizEQMap
             this.splitContainerMapAndLegend = new System.Windows.Forms.SplitContainer();
             this.splitContainerMain = new System.Windows.Forms.SplitContainer();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.panelLegend = new System.Windows.Forms.Panel();
             this.buttonAutosize = new System.Windows.Forms.Button();
             this.buttonStretch = new System.Windows.Forms.Button();
             this.buttonCenter = new System.Windows.Forms.Button();
@@ -103,7 +103,6 @@ namespace ZlizEQMap
             this.tabControl_Main = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.tabPage2 = new System.Windows.Forms.TabPage();
-            this.panelLegend = new System.Windows.Forms.Panel();
             this.labelZoneName = new ZlizEQMap.ZlizLabel();
             ((System.ComponentModel.ISupportInitialize)(this.picBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.sliderOpacity)).BeginInit();
@@ -121,6 +120,7 @@ namespace ZlizEQMap
             this.splitContainerMain.Panel2.SuspendLayout();
             this.splitContainerMain.SuspendLayout();
             this.panel1.SuspendLayout();
+            this.panelLegend.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nud_playerX)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nud_playerY)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nud_HistoryToKeep)).BeginInit();
@@ -131,7 +131,6 @@ namespace ZlizEQMap
             this.tabControl_Main.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.tabPage2.SuspendLayout();
-            this.panelLegend.SuspendLayout();
             this.SuspendLayout();
             // 
             // picBox
@@ -315,9 +314,10 @@ namespace ZlizEQMap
             this.check_ShowAnnotations.Size = new System.Drawing.Size(121, 17);
             this.check_ShowAnnotations.TabIndex = 38;
             this.check_ShowAnnotations.Text = "Show Notes on Map";
+            this.check_ShowAnnotations.ThreeState = true;
             this.toolTip1.SetToolTip(this.check_ShowAnnotations, "Always-On-Top");
             this.check_ShowAnnotations.UseVisualStyleBackColor = true;
-            this.check_ShowAnnotations.CheckedChanged += new System.EventHandler(this.check_ShowAnnotations_CheckedChanged);
+            this.check_ShowAnnotations.CheckStateChanged += new System.EventHandler(this.check_ShowAnnotations_CheckStateChanged);
             // 
             // check_ShowPlayerLocHistory
             // 
@@ -363,11 +363,6 @@ namespace ZlizEQMap
             this.check_AutoParseFromLogs.Text = "Suspend Autoparse";
             this.toolTip1.SetToolTip(this.check_AutoParseFromLogs, "Always-On-Top");
             this.check_AutoParseFromLogs.UseVisualStyleBackColor = true;
-            // 
-            // timer1
-            // 
-            this.timer1.Interval = 500;
-            this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
             // 
             // panelMain
             // 
@@ -556,6 +551,16 @@ namespace ZlizEQMap
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(700, 167);
             this.panel1.TabIndex = 14;
+            // 
+            // panelLegend
+            // 
+            this.panelLegend.AutoScroll = true;
+            this.panelLegend.Controls.Add(this.labelLegend);
+            this.panelLegend.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panelLegend.Location = new System.Drawing.Point(0, 31);
+            this.panelLegend.Name = "panelLegend";
+            this.panelLegend.Size = new System.Drawing.Size(700, 136);
+            this.panelLegend.TabIndex = 14;
             // 
             // buttonAutosize
             // 
@@ -958,16 +963,6 @@ namespace ZlizEQMap
             this.tabPage2.Text = "Advanced";
             this.tabPage2.UseVisualStyleBackColor = true;
             // 
-            // panelLegend
-            // 
-            this.panelLegend.AutoScroll = true;
-            this.panelLegend.Controls.Add(this.labelLegend);
-            this.panelLegend.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panelLegend.Location = new System.Drawing.Point(0, 31);
-            this.panelLegend.Name = "panelLegend";
-            this.panelLegend.Size = new System.Drawing.Size(700, 136);
-            this.panelLegend.TabIndex = 14;
-            // 
             // labelZoneName
             // 
             this.labelZoneName.Font = new System.Drawing.Font("Times New Roman", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -1015,6 +1010,7 @@ namespace ZlizEQMap
             ((System.ComponentModel.ISupportInitialize)(this.splitContainerMain)).EndInit();
             this.splitContainerMain.ResumeLayout(false);
             this.panel1.ResumeLayout(false);
+            this.panelLegend.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.nud_playerX)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nud_playerY)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nud_HistoryToKeep)).EndInit();
@@ -1028,7 +1024,6 @@ namespace ZlizEQMap
             this.tabPage1.ResumeLayout(false);
             this.tabPage1.PerformLayout();
             this.tabPage2.ResumeLayout(false);
-            this.panelLegend.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -1045,7 +1040,6 @@ namespace ZlizEQMap
         private System.Windows.Forms.Button btnAutosize;
         private System.Windows.Forms.CheckBox checkAutoSizeOnMapSwitch;
         private System.Windows.Forms.ToolTip toolTip1;
-        private System.Windows.Forms.Timer timer1;
         private System.Windows.Forms.Panel panelMain;
         private System.Windows.Forms.Label labelConnectedZones;
         private System.Windows.Forms.FlowLayoutPanel panelConnectedZones;

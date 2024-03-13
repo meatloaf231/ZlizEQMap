@@ -11,6 +11,8 @@ namespace ZlizEQMap
 {
     public partial class PopoutMap : Form
     {
+        DateTime LastRecordedZoneChange = DateTime.Now;
+
         public Boolean testval;
         public int lockState = 0;
         public int configureState = 1;
@@ -29,7 +31,6 @@ namespace ZlizEQMap
         {
             get
             {
-                return autoZoom;
                 if (picBoxMinimap.SizeMode == PictureBoxSizeMode.Zoom)
                 {
                     return autoZoom;
@@ -128,10 +129,6 @@ namespace ZlizEQMap
         bool fsState = false;
         private void ToggleControls()
         {
-            //trackBar_Opacity.Visible = !trackBar_Opacity.Visible;
-            //trackBar_Zoom.Visible = !trackBar_Zoom.Visible;
-            //checkBoxLockState.Visible = !trackBar_Zoom.Visible;
-            //groupBox_DisplayStyle.Visible = !trackBar_Zoom.Visible;
             foreach (Control tctl in Controls)
             {
                 if (tctl.Tag != null)
@@ -139,23 +136,9 @@ namespace ZlizEQMap
                     if (tctl.Tag.ToString() == "ToggleVis")
                     {
                         tctl.Visible = !tctl.Visible;
-
-
                     }
                 }
             }
-
-            //if (!fsState)
-            //{
-            //    picBoxMinimap.Dock = DockStyle.Fill;
-            //    fsState = true;
-            //}
-            //else
-            //{
-            //    picBoxMinimap.Dock = DockStyle.None;
-            //    picBoxMinimap.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            //    fsState = false;
-            //}
         }
 
         private void buttonConfigurePopupMap_Click(object sender, EventArgs e)
@@ -212,46 +195,30 @@ namespace ZlizEQMap
 
         private void picBoxMinimap_Paint(object sender, PaintEventArgs e)
         {
+            if (LastRecordedZoneChange < Overseer.LastRecordedZoneChange)
+            {
+                ZoneChangedUpdateUI();
+            }
+
             foreach (IMapDrawable marker in Overseer.Markers)
             {
                 marker.Draw(e.Graphics, renderScale, mapXOffset, mapYOffset);
             }
         }
 
+
+        private void ZoneChangedUpdateUI()
+        {
+            picBoxMinimap.Load(Overseer.CurrentZoneData.ImageFilePath);
+        }
+
         // There's GOTTA be a better way to do this.
         private void picBoxMinimap_SizeChanged(object sender, EventArgs e)
         {
-            //Rectangle result = new Rectangle(0, 0, 100, 100);
-            //Image image = Overseer.CurrentZoneMap.MapImage;
-            //Size imageSize = image.Size;
-
-            //int topOffset = picBoxMinimap.Top;
-            //int rightOffset = picBoxMinimap.Right - picBoxMinimap.Width;
-            //int bottomOffset = picBoxMinimap.Bottom - picBoxMinimap.Height;
-            //int leftOffset = picBoxMinimap.Left;
-
-            //Console.WriteLine($"Offsets: {topOffset} / {rightOffset} / {bottomOffset} / {leftOffset} ");
-
-            //float xRatio = (float)ClientRectangle.Width / (float)imageSize.Width;
-            //float yRatio = (float)ClientRectangle.Height / (float)imageSize.Height;
-
             float ratio = Math.Min((float)ClientRectangle.Width / (float)picBoxMinimap.Image.Width, (float)ClientRectangle.Height / (float)picBoxMinimap.Image.Height);
-            //result.Width = (int)(imageSize.Width * ratio);
-            //result.Height = (int)(imageSize.Height * ratio);
-            //result.X = (ClientRectangle.Width - result.Width) / 2;
-            //result.Y = (ClientRectangle.Height - result.Height) / 2;
 
             mapXOffset = (picBoxMinimap.Width - (int)(picBoxMinimap.Image.Width * ratio)) / 2;
             mapYOffset = (picBoxMinimap.Height - (int)(picBoxMinimap.Image.Height * ratio)) / 2;
-
-            // wwwwwwhhhhhhyyyyyyyyyy
-            //Console.WriteLine(
-            //    $"LOG: " +
-            //    $"Dimensions: {picBoxMinimap.Width} / {picBoxMinimap.Height}, " +
-            //    $"Ratio: {xRatio} / {yRatio}, " +
-            //    $"Spacing: {leftOffset} / {topOffset}, " +
-            //    $"Calculated: W/2: {picBoxMinimap.Width / 2} / ratio'd: {imageSize.Width * xRatio} {imageSize.Height * yRatio} / LS: {mapXOffset} / TS: {mapYOffset}"
-            //);
 
             autoZoom = ratio;
         }

@@ -18,6 +18,8 @@ namespace ZlizEQMap
 {
     public partial class ZlizEQMapFormExperimental : Form
     {
+        DateTime LastRecordedZoneChange = DateTime.Now;
+
         bool initialLoadCompleted = false;
         int flowSubMapssubMapsTotalHeight = 1;
         float renderScale = 1.0F;
@@ -76,7 +78,7 @@ namespace ZlizEQMap
 
             check_AutoUpdateNoteLocation.Checked = Settings.NotesAutoUpdate;
             check_ClearNoteAfterEntry.Checked = Settings.NotesClearAfterEntry;
-            check_ShowAnnotations.Checked = Settings.NotesShow;
+            check_ShowAnnotations.CheckState = (CheckState)Settings.NotesShow;
             check_ShowPlayerLocHistory.Checked = Settings.LocHistoryShow;
             
             nud_HistoryToKeep.Value = Settings.LocHistoryNumberToTrack;
@@ -249,6 +251,11 @@ namespace ZlizEQMap
 
         private void picBox_Paint(object sender, PaintEventArgs e)
         {
+            if (LastRecordedZoneChange < Overseer.LastRecordedZoneChange)
+            {
+                ZoneChangedUpdateUI();
+            }
+
             Overseer.PrepMapMarkersForCanvas(sender, e, checkEnableDirection.Checked);
 
             foreach (IMapDrawable marker in Overseer.Markers)
@@ -383,11 +390,6 @@ namespace ZlizEQMap
             Settings.AlwaysOnTop = checkAlwaysOnTop.Checked;
 
             Settings.SaveSettings();
-        }
-
-        private void timer1_Tick(object sender, EventArgs e)
-        {
-            Overseer.TimerTick(sender, e);
         }
 
         private void ReCalcFlowSubMapsHeight()
@@ -623,16 +625,6 @@ namespace ZlizEQMap
             ResizeMap();
         }
 
-        public void UpdatePopoutMap()
-        {
-            if (popoutMap == null || popoutMap.IsDisposed)
-            {
-                popoutMap = new PopoutMap();
-                popoutMap.LoadPopoutMap(Overseer.CurrentZoneData.ImageFilePath);
-            }
-            popoutMap.DrawAtCoords(Overseer.PlayerMapLocation.X, Overseer.PlayerMapLocation.Y);
-        }
-
         public void OpenPopoutMap()
         {
             popoutMap = new PopoutMap();
@@ -682,11 +674,6 @@ namespace ZlizEQMap
             txt_NewNoteCoords.Text = $"{Overseer.PlayerCoords.X}, {Overseer.PlayerCoords.Y}";
         }
 
-        private void check_ShowAnnotations_CheckedChanged(object sender, EventArgs e)
-        {
-            Overseer.ToggleZoneAnnotations(check_ShowAnnotations.Checked);
-        }
-
         private void dgv_ZoneAnnotation_CellValueChanged(object sender, DataGridViewCellEventArgs e)
         {
             ZoneAnnotationManager.SaveNotes();
@@ -722,6 +709,11 @@ namespace ZlizEQMap
         private void ZlizEQMapFormExperimental_Load(object sender, EventArgs e)
         {
 
+        }
+
+        private void check_ShowAnnotations_CheckStateChanged(object sender, EventArgs e)
+        {
+            Overseer.ToggleZoneAnnotations((int)check_ShowAnnotations.CheckState);
         }
     }
 }

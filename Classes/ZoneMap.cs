@@ -9,7 +9,6 @@ namespace ZlizEQMap
 {
     public class ZoneMap
     {
-        private ZoneData BaseZoneData;
         private Image _mapImage;
         public Image MapImage
         {
@@ -45,14 +44,13 @@ namespace ZlizEQMap
             }
         }
 
-        //public ZoneMap(string imageFilePath)
-        //{
-        //    MapImage = Image.FromFile(imageFilePath);
-        //}
+        public ZoneMap(string imageFilePath)
+        {
+            MapImage = Image.FromFile(imageFilePath);
+        }
 
         public ZoneMap(ZoneData zoneData)
         {
-            BaseZoneData = zoneData;
             MapImage = Image.FromFile(zoneData.ImageFilePath);
         }
 

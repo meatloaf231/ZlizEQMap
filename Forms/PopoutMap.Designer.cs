@@ -65,7 +65,7 @@
             // 
             this.trackBar_Opacity.AutoSize = false;
             this.trackBar_Opacity.LargeChange = 10;
-            this.trackBar_Opacity.Location = new System.Drawing.Point(42, 6);
+            this.trackBar_Opacity.Location = new System.Drawing.Point(110, 6);
             this.trackBar_Opacity.Maximum = 100;
             this.trackBar_Opacity.Name = "trackBar_Opacity";
             this.trackBar_Opacity.Size = new System.Drawing.Size(200, 20);
@@ -80,29 +80,29 @@
             // 
             this.buttonConfigurePopupMap.BackColor = System.Drawing.Color.Transparent;
             this.buttonConfigurePopupMap.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("buttonConfigurePopupMap.BackgroundImage")));
-            this.buttonConfigurePopupMap.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+            this.buttonConfigurePopupMap.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
             this.buttonConfigurePopupMap.FlatAppearance.BorderSize = 0;
-            this.buttonConfigurePopupMap.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Orange;
-            this.buttonConfigurePopupMap.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Tomato;
+            this.buttonConfigurePopupMap.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Tomato;
+            this.buttonConfigurePopupMap.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Orange;
             this.buttonConfigurePopupMap.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.buttonConfigurePopupMap.Location = new System.Drawing.Point(2, 2);
+            this.buttonConfigurePopupMap.Location = new System.Drawing.Point(3, 3);
             this.buttonConfigurePopupMap.Name = "buttonConfigurePopupMap";
-            this.buttonConfigurePopupMap.Size = new System.Drawing.Size(24, 24);
+            this.buttonConfigurePopupMap.Size = new System.Drawing.Size(18, 18);
             this.buttonConfigurePopupMap.TabIndex = 3;
             this.buttonConfigurePopupMap.UseVisualStyleBackColor = false;
             this.buttonConfigurePopupMap.Click += new System.EventHandler(this.buttonConfigurePopupMap_Click);
             // 
             // radioButton_Centered
             // 
-            this.radioButton_Centered.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.radioButton_Centered.AutoSize = true;
-            this.radioButton_Centered.Location = new System.Drawing.Point(119, 323);
+            this.radioButton_Centered.Location = new System.Drawing.Point(5, 261);
             this.radioButton_Centered.Name = "radioButton_Centered";
             this.radioButton_Centered.Size = new System.Drawing.Size(68, 17);
             this.radioButton_Centered.TabIndex = 4;
-            this.radioButton_Centered.Tag = "ToggleVis";
+            this.radioButton_Centered.Tag = "";
             this.radioButton_Centered.Text = "Centered";
             this.radioButton_Centered.UseVisualStyleBackColor = true;
+            this.radioButton_Centered.Visible = false;
             this.radioButton_Centered.CheckedChanged += new System.EventHandler(this.DisplayStyleRadioButtons_CheckedChanged);
             // 
             // trackBar_Zoom
@@ -117,24 +117,25 @@
             this.trackBar_Zoom.Size = new System.Drawing.Size(20, 200);
             this.trackBar_Zoom.SmallChange = 5;
             this.trackBar_Zoom.TabIndex = 5;
-            this.trackBar_Zoom.Tag = "ToggleVis";
+            this.trackBar_Zoom.Tag = "";
             this.trackBar_Zoom.TickStyle = System.Windows.Forms.TickStyle.None;
             this.trackBar_Zoom.Value = 100;
+            this.trackBar_Zoom.Visible = false;
             this.trackBar_Zoom.ValueChanged += new System.EventHandler(this.trackBar_Zoom_ValueChanged);
             // 
             // radioButton_ZoomSize
             // 
-            this.radioButton_ZoomSize.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.radioButton_ZoomSize.AutoSize = true;
             this.radioButton_ZoomSize.Checked = true;
-            this.radioButton_ZoomSize.Location = new System.Drawing.Point(42, 323);
+            this.radioButton_ZoomSize.Location = new System.Drawing.Point(5, 284);
             this.radioButton_ZoomSize.Name = "radioButton_ZoomSize";
             this.radioButton_ZoomSize.Size = new System.Drawing.Size(71, 17);
             this.radioButton_ZoomSize.TabIndex = 6;
             this.radioButton_ZoomSize.TabStop = true;
-            this.radioButton_ZoomSize.Tag = "ToggleVis";
+            this.radioButton_ZoomSize.Tag = "";
             this.radioButton_ZoomSize.Text = "Fit to Size";
             this.radioButton_ZoomSize.UseVisualStyleBackColor = true;
+            this.radioButton_ZoomSize.Visible = false;
             this.radioButton_ZoomSize.CheckedChanged += new System.EventHandler(this.DisplayStyleRadioButtons_CheckedChanged);
             // 
             // buttonClosePopupMap
@@ -144,10 +145,12 @@
             this.buttonClosePopupMap.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("buttonClosePopupMap.BackgroundImage")));
             this.buttonClosePopupMap.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
             this.buttonClosePopupMap.FlatAppearance.BorderSize = 0;
+            this.buttonClosePopupMap.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Tomato;
+            this.buttonClosePopupMap.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Orange;
             this.buttonClosePopupMap.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.buttonClosePopupMap.Location = new System.Drawing.Point(426, 2);
+            this.buttonClosePopupMap.Location = new System.Drawing.Point(430, 2);
             this.buttonClosePopupMap.Name = "buttonClosePopupMap";
-            this.buttonClosePopupMap.Size = new System.Drawing.Size(24, 24);
+            this.buttonClosePopupMap.Size = new System.Drawing.Size(18, 18);
             this.buttonClosePopupMap.TabIndex = 8;
             this.buttonClosePopupMap.UseVisualStyleBackColor = false;
             this.buttonClosePopupMap.Click += new System.EventHandler(this.buttonClosePopupMap_Click);
@@ -159,9 +162,9 @@
             this.panel_DragMove.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("panel_DragMove.BackgroundImage")));
             this.panel_DragMove.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
             this.panel_DragMove.Cursor = System.Windows.Forms.Cursors.SizeAll;
-            this.panel_DragMove.Location = new System.Drawing.Point(396, 326);
+            this.panel_DragMove.Location = new System.Drawing.Point(407, 332);
             this.panel_DragMove.Name = "panel_DragMove";
-            this.panel_DragMove.Size = new System.Drawing.Size(24, 24);
+            this.panel_DragMove.Size = new System.Drawing.Size(18, 18);
             this.panel_DragMove.TabIndex = 9;
             this.panel_DragMove.Tag = "";
             this.panel_DragMove.MouseDown += new System.Windows.Forms.MouseEventHandler(this.HandleClickAndDrag);
@@ -170,14 +173,15 @@
             // 
             this.checkBoxLockState.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.checkBoxLockState.AutoSize = true;
-            this.checkBoxLockState.Location = new System.Drawing.Point(340, 329);
+            this.checkBoxLockState.Location = new System.Drawing.Point(351, 332);
             this.checkBoxLockState.Name = "checkBoxLockState";
             this.checkBoxLockState.Size = new System.Drawing.Size(50, 17);
             this.checkBoxLockState.TabIndex = 10;
-            this.checkBoxLockState.Tag = "ToggleVis";
+            this.checkBoxLockState.Tag = "";
             this.checkBoxLockState.Text = "Lock";
             this.checkBoxLockState.ThreeState = true;
             this.checkBoxLockState.UseVisualStyleBackColor = true;
+            this.checkBoxLockState.Visible = false;
             this.checkBoxLockState.CheckStateChanged += new System.EventHandler(this.checkBoxLockState_CheckedChanged);
             // 
             // panel_Resize
@@ -187,9 +191,9 @@
             this.panel_Resize.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("panel_Resize.BackgroundImage")));
             this.panel_Resize.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
             this.panel_Resize.Cursor = System.Windows.Forms.Cursors.SizeNWSE;
-            this.panel_Resize.Location = new System.Drawing.Point(426, 326);
+            this.panel_Resize.Location = new System.Drawing.Point(431, 332);
             this.panel_Resize.Name = "panel_Resize";
-            this.panel_Resize.Size = new System.Drawing.Size(24, 24);
+            this.panel_Resize.Size = new System.Drawing.Size(18, 18);
             this.panel_Resize.TabIndex = 10;
             this.panel_Resize.Tag = "";
             this.panel_Resize.MouseDown += new System.Windows.Forms.MouseEventHandler(this.panel_Resize_MouseDown);
@@ -203,13 +207,14 @@
             this.label_Zoom.Name = "label_Zoom";
             this.label_Zoom.Size = new System.Drawing.Size(34, 13);
             this.label_Zoom.TabIndex = 11;
-            this.label_Zoom.Tag = "ToggleVis";
+            this.label_Zoom.Tag = "";
             this.label_Zoom.Text = "Zoom";
+            this.label_Zoom.Visible = false;
             // 
             // label_Opacity
             // 
             this.label_Opacity.AutoSize = true;
-            this.label_Opacity.Location = new System.Drawing.Point(248, 9);
+            this.label_Opacity.Location = new System.Drawing.Point(61, 9);
             this.label_Opacity.Name = "label_Opacity";
             this.label_Opacity.Size = new System.Drawing.Size(43, 13);
             this.label_Opacity.TabIndex = 12;
@@ -218,9 +223,8 @@
             // 
             // check_AOT
             // 
-            this.check_AOT.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.check_AOT.AutoSize = true;
-            this.check_AOT.Location = new System.Drawing.Point(286, 329);
+            this.check_AOT.Location = new System.Drawing.Point(331, 7);
             this.check_AOT.Name = "check_AOT";
             this.check_AOT.Size = new System.Drawing.Size(48, 17);
             this.check_AOT.TabIndex = 13;

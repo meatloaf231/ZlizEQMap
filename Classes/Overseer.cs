@@ -7,13 +7,13 @@ using System.Linq;
 using System.Security.Policy;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Timers;
 using System.Windows.Forms;
 
 namespace ZlizEQMap
 {
     // I probably should've just named this class Cartographer.
-    // It's a big overblown static class that does probably too much.
-    // Could definitely be organized better.
+    // It's a big dumb static class that does way too much. I could spend another few days re-engineering it but whatever. It does the job.
     public static class Overseer
     {
         // ~~regexes~~ everyone's favorite
@@ -45,6 +45,7 @@ namespace ZlizEQMap
         public static DateTime LastCharacterChange = DateTime.Now.Subtract(TimeSpan.FromMinutes(1));
         public static DateTime LastRecordedDirectionDateTime = DateTime.Now;
         public static DateTime LastRecordedLocationDateTime = DateTime.Now;
+        public static DateTime LastRecordedZoneChange = DateTime.Now;
         public static Point PlayerCoords;
         public static MapPoint PlayerMapLocation = null;
         public static MapPoint Waypoint = null;
@@ -67,13 +68,15 @@ namespace ZlizEQMap
         public static string CurrentTitle = "";
 
         // Miscellaneous booleans. Gotta have em. 
-        public static bool showZoneAnnotations = false;
+        public static int showZoneAnnotations = 1;
         public static bool showPlayerLocationHistory = false;
         public static bool timerEnabled = false;
         public static bool locationIsWithinMap = false;
         public static bool locInZoneHasBeenRecorded = false;
         public static bool initialLoadCompleted = false;
         public static bool forceLogReselection = false;
+
+        public static System.Timers.Timer fileSystemCheckTimer;
 
         // Events! We could definitely use these for more stuff. But this one works for now for at least making sure all the maps get redrawn.
         public static EventHandler RedrawMaps;
@@ -104,10 +107,10 @@ namespace ZlizEQMap
             }
         }
 
+        // OVERSEER ONLINE
         public static void InitializeOverseer()
         {
             Load();
-            // OVERSEER ONLINE
         }
 
         private static void Load()
@@ -126,14 +129,22 @@ namespace ZlizEQMap
             {
                 Environment.Exit(0);
             }
-
+            
             // Okay, we loaded fine, set the rest up now.
+            fileSystemCheckTimer = new System.Timers.Timer();
+            fileSystemCheckTimer.Interval = 500;
+            fileSystemCheckTimer.Elapsed += FileSystemCheckTimer_Elapsed;
             SetupFileSystemWatcher();
             ZoneAnnotationManager.InitializeZoneAnnotationManager();
 
             PlayerPenArrow.CustomEndCap = new AdjustableArrowCap(5, 4);
             AnnotationPen.Color = Settings.NotesColor;
             PlayerCoordsHistory = new List<Point>();
+        }
+
+        private static void FileSystemCheckTimer_Elapsed(object sender, ElapsedEventArgs e)
+        {
+            TimerTick(sender, e);
         }
 
         public static void UnLoad()
@@ -147,29 +158,27 @@ namespace ZlizEQMap
                 Directory.CreateDirectory(Paths.SettingsFileDirectory);
 
             if (!Settings.SettingsFileExists)
-                return HandleFirstRun(true);
+                return HandleFirstRun();
             else
             {
                 Settings.LoadSettings();
 
                 if (!Directory.Exists(Settings.GetEQDirectoryPath()))
-                    return HandleFirstRun(false);
+                    return HandleFirstRun();
 
                 Zones = ZoneDataFactory.GetAllZones(Settings.GetZoneDataSet());
                 return true;
             }
         }
 
-        private static bool HandleFirstRun(bool initializeDefaultSettings)
+        private static bool HandleFirstRun()
         {
             FirstRun form = new FirstRun();
             form.ShowDialog();
 
             if (form.EQDirectoryValid)
             {
-                if (initializeDefaultSettings)
-                    Settings.InitializeDefaultSettings();
-
+                Settings.InitializeSettings();
                 Settings.EQDirectoryPath1 = form.EQDirectory;
                 Settings.LogsInLogsDir1 = form.LogsInLogsDir;
                 Settings.ZoneDataSet1 = form.ZoneDataSet;
@@ -202,7 +211,7 @@ namespace ZlizEQMap
                 Watcher.Dispose();
                 Watcher.EnableRaisingEvents = false;
                 Parser = null;
-                //timer1.Enabled = false;
+                fileSystemCheckTimer.Enabled = false;
             }
 
             Watcher = new FileSystemWatcher();
@@ -223,8 +232,8 @@ namespace ZlizEQMap
                 if (Parser == null || e.FullPath != Parser.LogFilePath)
                 {
                     Parser = new LogFileParser(e.FullPath);
-                    //SetFormTitle(CurrentZoneData.FullName);
-                    //timer1.Enabled = true;
+                    UpdateTitle(CurrentZoneData.FullName);
+                    fileSystemCheckTimer.Enabled = true;
                     timerEnabled = true;
                     LastCharacterChange = DateTime.Now;
                 }
@@ -318,7 +327,8 @@ namespace ZlizEQMap
             UpdateTitle(zoneName);
             
             CurrentZoneData = zoneData;
-            CurrentZoneMap = new ZoneMap(CurrentZoneData);
+            CurrentZoneMap = new ZoneMap(CurrentZoneData.ImageFilePath);
+            LastRecordedZoneChange = DateTime.Now;
 
             return true;
         }
@@ -483,7 +493,7 @@ namespace ZlizEQMap
                 Markers.Add(currentWaypoint);
             }
 
-            if (showZoneAnnotations && ZoneAnnotationManager.ZoneAnnotations.Any())
+            if (showZoneAnnotations != 0 && ZoneAnnotationManager.ZoneAnnotations.Any())
             {
                 int aOV = (int)Math.Round(defaultWaypointOffsetValue * renderScale);
 
@@ -494,7 +504,8 @@ namespace ZlizEQMap
 
                     if (zAMP != null)
                     {
-                        MapEllipse annotationEllipse = new MapEllipse(AnnotationPen, (zAMP.X - aOV), (zAMP.Y - aOV), 2 * aOV, 2 * aOV);
+                        MapEllipse annotationEllipse = new MapEllipse(AnnotationPen, (zAMP.X - aOV), (zAMP.Y - aOV), 2 * 5, 2 * 5);
+                        string note = showZoneAnnotations == 1 ? zAnno.Note : "";
                         MapAnnotation newMapAnno = new MapAnnotation(annotationEllipse, zAMP.X, zAMP.Y, zAnno.Note);
 
                         convertedAnnotations.Add(newMapAnno);
@@ -565,7 +576,7 @@ namespace ZlizEQMap
             RaiseRedrawMaps(null, null);
         }
 
-        public static void ToggleZoneAnnotations(bool state)
+        public static void ToggleZoneAnnotations(int state)
         {
             showZoneAnnotations = state;
             RaiseRedrawMaps(null, null);
