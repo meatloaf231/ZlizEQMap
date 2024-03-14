@@ -41,9 +41,9 @@ namespace ZlizEQMap
                
         public static string ZoneDataSet1 { get; set; }
         public static string ZoneDataSet2 { get; set; }
-               
-        public static SettingsLogsInLogsDir LogsInLogsDir1 { get; set; }
-        public static SettingsLogsInLogsDir LogsInLogsDir2 { get; set; } = SettingsLogsInLogsDir.RootDir;
+
+        public static SettingsLogsInLogsDir LogsInLogsDir1 { get; set; } = SettingsLogsInLogsDir.RootDir;
+        public static SettingsLogsInLogsDir LogsInLogsDir2 { get; set; } = SettingsLogsInLogsDir.LogsDir;
                
         public static int ActiveProfileIndex { get; set; } = 1;
         public static bool CheckAutoSizeOnMapSwitch { get; set; } = true;
@@ -66,10 +66,9 @@ namespace ZlizEQMap
         public static Color NotesColor { get; set; } = Color.Green;
         public static bool NotesClearAfterEntry { get; set; } = false;
         public static bool NotesAutoUpdate { get; set; } = false;
+        public static bool NotesAutoSave { get; set; } = false;
         public static bool LocHistoryShow { get; set; } = true;
         public static int LocHistoryNumberToTrack { get; set; } = 25;
-
-
 
         public static string GetEQDirectoryPath()
         {
@@ -145,18 +144,34 @@ namespace ZlizEQMap
                 using (TextReader tr = new StreamReader(fs))
                 {
                     string line = "";
-
+                    string key = "";
+                    string value = "";
                     while ((line = tr.ReadLine()) != null)
                     {
                         try
                         {
-                            string key = line.Split('=')[0];
-                            string value = line.Split('=')[1];
+                            string[] readValues = line.Split('=');
+
+                            key = readValues[0];
+                            if (readValues.Length != 2)
+                            {
+                                // Well, that's not what we expected, it might be one of the font settings with a weird string in it. Just combine everything after the first =
+                                value = string.Join("=", readValues.ToList().GetRange(1, readValues.Length - 1));
+                            }
+                            else
+                            {
+                                value = readValues[1];
+                            }
+
                             string currentValue = "";
 
+                            Console.WriteLine($"{key}, {value}");
+
                             // if this wasn't a static class we could use reflection to do this
-                            // or we could just, yknow, make a collection object and serialize the whole thing
+                            // or we could make a collection object and serialize the whole thing instead of parsing em one value at a time
+                            // or we could use a regular dotnet winforms settings object, like Settings.settings, that's built in
                             // but here we are lmao
+                            // it can be refactored in the future but it's really not that important
                             switch (key)
                             {
                                 case "EQDirectoryPath1":
@@ -267,6 +282,10 @@ namespace ZlizEQMap
                                     NotesAutoUpdate = ProcessSetting(NotesAutoUpdate, value, ref currentValue);
                                     break;
 
+                                case "NotesAutoSave":
+                                    NotesAutoSave = ProcessSetting(NotesAutoSave, value, ref currentValue);
+                                    break;
+
                                 case "LocHistoryShow":
                                     LocHistoryShow = ProcessSetting(LocHistoryShow, value, ref currentValue);
                                     break;
@@ -334,10 +353,12 @@ namespace ZlizEQMap
                     WriteSetting(tw, "PopoutMapOpacityLevel", PopoutMapOpacityLevel.ToString());
 
                     WriteSetting(tw, "NotesShow", NotesShow.ToString());
+                    var fontTString = JsonConvert.SerializeObject(NotesFont);
                     WriteSetting(tw, "NotesFont", JsonConvert.SerializeObject(NotesFont));
                     WriteSetting(tw, "NotesColor", JsonConvert.SerializeObject(NotesColor));
                     WriteSetting(tw, "NotesClearAfterEntry", NotesClearAfterEntry.ToString());
                     WriteSetting(tw, "NotesAutoUpdate", NotesAutoUpdate.ToString());
+                    WriteSetting(tw, "NotesAutoSave", NotesAutoSave.ToString());
 
                     WriteSetting(tw, "LocHistoryShow", LocHistoryShow.ToString());
                     WriteSetting(tw, "LocHistoryNumberToTrack", LocHistoryNumberToTrack.ToString());

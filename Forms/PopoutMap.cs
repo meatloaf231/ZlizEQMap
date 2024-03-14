@@ -11,7 +11,7 @@ namespace ZlizEQMap
 {
     public partial class PopoutMap : Form
     {
-        DateTime LastRecordedZoneChange = DateTime.Now;
+        CartographyService Cartographer;
 
         public Boolean testval;
         public int lockState = 0;
@@ -31,7 +31,7 @@ namespace ZlizEQMap
         {
             get
             {
-                if (picBoxMinimap.SizeMode == PictureBoxSizeMode.Zoom)
+                if (picBox_PopoutMap.SizeMode == PictureBoxSizeMode.Zoom)
                 {
                     return autoZoom;
                 }
@@ -61,34 +61,40 @@ namespace ZlizEQMap
             }
         }
 
-        public PopoutMap()
+        public PopoutMap(CartographyService cartographer)
         {
-            Overseer.RedrawMaps += PopoutMap_OverseerSaysRedraw;
-
+            Cartographer = cartographer;
             InitializeComponent();
+            Initialize();
         }
 
-        private void PopoutMap_OverseerSaysRedraw(object sender, EventArgs e)
+        private void Initialize()
         {
-            picBoxMinimap.Invalidate();
+            CartographyService.RedrawMapsEH += PopoutMap_CartographerSaysRedraw;
+            //CartographyService.ZoneChangedEH += PopoutMap_CartographerSaysZoneChanged;
         }
 
-        public void LoadPopoutMap(string imagePath)
+        private void PopoutMap_CartographerSaysRedraw(object sender, EventArgs e)
         {
-            picBoxMinimap.Load(imagePath);
+            picBox_PopoutMap.Invalidate();
         }
 
-        public void OverwritePopoutMap(PictureBox mainMap)
+        //private void PopoutMap_CartographerSaysZoneChanged(object sender, EventArgs e)
+        //{
+        //    picBox_PopoutMap.Invalidate();
+        //    LoadMapIntoPopoutMap(Cartographer.CurrentZoneData.ImageFilePath);
+        //}
+
+        public void LoadMapByPath(string imagePath)
         {
-            picBoxMinimap = mainMap;
+            picBox_PopoutMap.Load(imagePath);
+            MapHasBeenResized();
         }
 
-        public void DrawAtCoords(int x, int y)
-        {
-            MapEllipse ellipse = new MapEllipse(Overseer.PlayerPen, x, y, 5, 5);
-            Overseer.Markers.Add(ellipse);
-            picBoxMinimap.Invalidate();
-        }
+        //public void OverwritePopoutMap(PictureBox mainMap)
+        //{
+        //    picBox_PopoutMap = mainMap;
+        //}
 
         private void buttonClosePopupMap_Click(object sender, EventArgs e)
         {
@@ -99,12 +105,12 @@ namespace ZlizEQMap
         {
             if (radioButton_Centered.Checked)
             {
-                picBoxMinimap.SizeMode = PictureBoxSizeMode.CenterImage;
+                picBox_PopoutMap.SizeMode = PictureBoxSizeMode.CenterImage;
             }
 
             if (radioButton_ZoomSize.Checked)
             {
-                picBoxMinimap.SizeMode = PictureBoxSizeMode.Zoom;
+                picBox_PopoutMap.SizeMode = PictureBoxSizeMode.Zoom;
             }
         }
 
@@ -146,7 +152,7 @@ namespace ZlizEQMap
             ToggleControls();
         }
 
-        private void picBoxMinimap_DoubleClick(object sender, EventArgs e)
+        private void picBox_PopoutMap_DoubleClick(object sender, EventArgs e)
         {
             ToggleControls();
         }
@@ -193,32 +199,26 @@ namespace ZlizEQMap
             manualZoom = trackBar_Zoom.Value;
         }
 
-        private void picBoxMinimap_Paint(object sender, PaintEventArgs e)
+        private void picBox_PopoutMap_Paint(object sender, PaintEventArgs e)
         {
-            if (LastRecordedZoneChange < Overseer.LastRecordedZoneChange)
-            {
-                ZoneChangedUpdateUI();
-            }
-
-            foreach (IMapDrawable marker in Overseer.Markers)
+            foreach (IMapDrawable marker in Cartographer.Markers)
             {
                 marker.Draw(e.Graphics, renderScale, mapXOffset, mapYOffset);
             }
         }
 
-
-        private void ZoneChangedUpdateUI()
+        // There's GOTTA be a better way to do this.
+        private void picBox_PopoutMap_SizeChanged(object sender, EventArgs e)
         {
-            picBoxMinimap.Load(Overseer.CurrentZoneData.ImageFilePath);
+            MapHasBeenResized();
         }
 
-        // There's GOTTA be a better way to do this.
-        private void picBoxMinimap_SizeChanged(object sender, EventArgs e)
+        private void MapHasBeenResized()
         {
-            float ratio = Math.Min((float)ClientRectangle.Width / (float)picBoxMinimap.Image.Width, (float)ClientRectangle.Height / (float)picBoxMinimap.Image.Height);
+            float ratio = Math.Min((float)ClientRectangle.Width / (float)picBox_PopoutMap.Image.Width, (float)ClientRectangle.Height / (float)picBox_PopoutMap.Image.Height);
 
-            mapXOffset = (picBoxMinimap.Width - (int)(picBoxMinimap.Image.Width * ratio)) / 2;
-            mapYOffset = (picBoxMinimap.Height - (int)(picBoxMinimap.Image.Height * ratio)) / 2;
+            mapXOffset = (picBox_PopoutMap.Width - (int)(picBox_PopoutMap.Image.Width * ratio)) / 2;
+            mapYOffset = (picBox_PopoutMap.Height - (int)(picBox_PopoutMap.Image.Height * ratio)) / 2;
 
             autoZoom = ratio;
         }

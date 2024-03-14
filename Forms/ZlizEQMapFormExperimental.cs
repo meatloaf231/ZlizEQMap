@@ -18,6 +18,7 @@ namespace ZlizEQMap
 {
     public partial class ZlizEQMapFormExperimental : Form
     {
+        CartographyService Cartographer;
         DateTime LastRecordedZoneChange = DateTime.Now;
 
         bool initialLoadCompleted = false;
@@ -28,6 +29,7 @@ namespace ZlizEQMap
 
         public ZlizEQMapFormExperimental()
         {
+            Cartographer = new CartographyService();
             InitializeComponent();
             SetControlProperties();
             Initialize();
@@ -38,30 +40,36 @@ namespace ZlizEQMap
             PopulateZoneComboBox();
             SetControlsFromSettings();
 
-            Overseer.OSSwitchToZoneByShortName(Settings.LastSelectedZone);
-            ZoneChangedUpdateUI();
-
-            Overseer.RedrawMaps += ZlizEQMapFormExperimental_OverseerSaysRedraw;
+            Cartographer.OSSwitchToZoneByShortName(Settings.LastSelectedZone);
+            
+            CartographyService.RedrawMapsEH += ZlizEQMapFormExperimental_CartographerSaysRedraw;
+            //CartographyService.ZoneChangedEH += ZlizEQMapFormExperimental_CartographerSaysZoneChanged;
 
             initialLoadCompleted = true;
 
             if (checkAutoSizeOnMapSwitch.Checked)
                 AutoSizeForm();
 
-            dgv_ZoneAnnotation.DataSource = zoneAnnotationBindingSource;
-            dgv_ZoneAnnotation.AutoGenerateColumns = false;
-            dgv_ZoneAnnotation.AutoSize = false;
+            BindNoteDataToDGV();
 
-            ReloadNoteData();
+            timer_ParseLogsTimer.Enabled = true;
+            timer_ParseLogsTimer.Interval = 500;
 
             btnAutosize.Select();
             picBox.Invalidate();
         }
 
-        private void ZlizEQMapFormExperimental_OverseerSaysRedraw(object sender, EventArgs e)
+
+        private void ZlizEQMapFormExperimental_CartographerSaysRedraw(object sender, EventArgs e)
         {
             picBox.Invalidate();
         }
+
+        //private void ZlizEQMapFormExperimental_CartographerSaysZoneChanged(object sender, EventArgs e)
+        //{
+        //    picBox.Invalidate();
+        //    ZoneChangedUpdateUI();
+        //}
 
         private void SetControlsFromSettings()
         {
@@ -69,19 +77,20 @@ namespace ZlizEQMap
             checkGroupByContinent.Checked = Settings.CheckGroupByContinent;
             checkEnableDirection.Checked = Settings.CheckEnableDirection;
             checkLegend.Checked = Settings.CheckEnableLegend;
-            
+
             sliderOpacity.Value = Settings.OpacityLevel;
             SetFormOpacity();
             
             checkAlwaysOnTop.Checked = Settings.AlwaysOnTop;
             SetAlwaysOnTop();
 
+            check_AutosaveNotes.Checked = Settings.NotesAutoSave;
             check_AutoUpdateNoteLocation.Checked = Settings.NotesAutoUpdate;
             check_ClearNoteAfterEntry.Checked = Settings.NotesClearAfterEntry;
             check_ShowAnnotations.CheckState = (CheckState)Settings.NotesShow;
             check_ShowPlayerLocHistory.Checked = Settings.LocHistoryShow;
             
-            nud_HistoryToKeep.Value = Settings.LocHistoryNumberToTrack;
+            nud_HistoryToTrack.Value = Settings.LocHistoryNumberToTrack;
             button_NotesFont.Font = Settings.NotesFont;
             button_NotesColor.BackColor = Settings.NotesColor;
         }
@@ -92,7 +101,7 @@ namespace ZlizEQMap
 
             if (!checkGroupByContinent.Checked)
             {
-                foreach (ZoneData map in Overseer.Zones.Where(x => x.SubMapIndex == 1).OrderBy(x => x.FullName))
+                foreach (ZoneData map in Cartographer.Zones.Where(x => x.SubMapIndex == 1).OrderBy(x => x.FullName))
                 {
                     comboZone.Items.Add(map.FullName);
                 }
@@ -101,7 +110,7 @@ namespace ZlizEQMap
             {
                 List<string> continents = new List<string>();
 
-                foreach (ZoneData map in Overseer.Zones.OrderBy(x => x.ContinentSortOrder))
+                foreach (ZoneData map in Cartographer.Zones.OrderBy(x => x.ContinentSortOrder))
                 {
                     if (!continents.Contains(map.Continent))
                         continents.Add(map.Continent);
@@ -111,15 +120,15 @@ namespace ZlizEQMap
                 {
                     comboZone.Items.Add(String.Format("-------------------- {0} --------------------", continent));
 
-                    foreach (ZoneData map in Overseer.Zones.Where(x => x.Continent == continent && x.SubMapIndex == 1).OrderBy(x => x.FullName))
+                    foreach (ZoneData map in Cartographer.Zones.Where(x => x.Continent == continent && x.SubMapIndex == 1).OrderBy(x => x.FullName))
                     {
                         comboZone.Items.Add(map.FullName);
                     }
                 }
             }
 
-            if (Overseer.CurrentZoneData != null)
-                comboZone.SelectedItem = Overseer.CurrentZoneData.FullName;
+            if (Cartographer.CurrentZoneData != null)
+                comboZone.SelectedItem = Cartographer.CurrentZoneData.FullName;
         }
 
         private void SetFormTitle(string newTitle)
@@ -129,16 +138,23 @@ namespace ZlizEQMap
 
         private void ZoneChangedUpdateUI()
         {
-            labelZoneName.Text = Overseer.CurrentZoneData.FullName;
-            picBox.Load(Overseer.CurrentZoneData.ImageFilePath);
-            SetFormTitle(Overseer.CurrentZoneData.FullName);
-            PopulateSubMaps(Overseer.CurrentZoneData);
-            comboZone.SelectedItem = Overseer.CurrentZoneData.FullName;
-            labelLegend.Text = LegendTextFactory.GetLegendText(Overseer.CurrentZoneData);
+            LastRecordedZoneChange = DateTime.Now;
+            labelZoneName.Text = Cartographer.CurrentZoneData.FullName;
+            picBox.Load(Cartographer.CurrentZoneData.ImageFilePath);
+            SetFormTitle(Cartographer.CurrentZoneData.FullName);
+            PopulateSubMaps(Cartographer.CurrentZoneData);
+            comboZone.SelectedItem = Cartographer.CurrentZoneData.FullName;
+            labelLegend.Text = LegendTextFactory.GetLegendText(Cartographer.CurrentZoneData);
+            zoneAnnotationBindingSource.ResetBindings(false);
 
             PopulateConnectedZones();
             SetButtonWaypointText();
-            ReloadNoteData();
+            FilterNotesToCurrentZone();
+
+            if (popoutMap != null)
+            {
+                popoutMap.LoadMapByPath(Cartographer.CurrentZoneData.ImageFilePath);
+            }
 
             if (checkAutoSizeOnMapSwitch.Checked)
                 AutoSizeForm();
@@ -146,7 +162,7 @@ namespace ZlizEQMap
 
         private void SwitchZone(string zoneName, int subMapIndex)
         {
-            if (!Overseer.OSSwitchToZone(zoneName, subMapIndex))
+            if (!Cartographer.OSSwitchToZone(zoneName, subMapIndex))
             {
                 MessageBox.Show(String.Format("Unable to find zone '{0}' in Zone Data", zoneName), "ZlizEQMap", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
@@ -157,14 +173,14 @@ namespace ZlizEQMap
 
         private void PopulateConnectedZones()
         {
-            if (Overseer.CurrentZoneData.ConnectedZones.Count > 0)
+            if (Cartographer.CurrentZoneData.ConnectedZones.Count > 0)
             {
                 panelConnectedZones.Visible = true;
                 panelConnectedZones.Controls.Clear();
                 panelConnectedZones.Controls.Add(labelConnectedZones);
                 panelConnectedZones.Text = "Connected Zones:";
 
-                foreach (ZoneData zone in Overseer.CurrentZoneData.ConnectedZones.OrderBy(x => x.FullName))
+                foreach (ZoneData zone in Cartographer.CurrentZoneData.ConnectedZones.OrderBy(x => x.FullName))
                 {
                     LinkLabel ll = new LinkLabel();
                     ll.Text = zone.FullName;
@@ -190,7 +206,7 @@ namespace ZlizEQMap
             subMapPictureBoxes.Clear();
             flowSubMaps.Height = 1;
             flowSubMaps.Visible = false;
-            var subZones = Overseer.Zones.Where(x => x.FullName == zoneData.FullName);
+            var subZones = Cartographer.Zones.Where(x => x.FullName == zoneData.FullName);
             int i = 0;
 
             if (subZones.Count() > 1)
@@ -251,72 +267,22 @@ namespace ZlizEQMap
 
         private void picBox_Paint(object sender, PaintEventArgs e)
         {
-            if (LastRecordedZoneChange < Overseer.LastRecordedZoneChange)
+            if (LastRecordedZoneChange < Cartographer.LastRecordedZoneChange)
             {
                 ZoneChangedUpdateUI();
             }
 
-            Overseer.PrepMapMarkersForCanvas(sender, e, checkEnableDirection.Checked);
+            Cartographer.PrepMapMarkersForCanvas(sender, e, checkEnableDirection.Checked);
 
-            foreach (IMapDrawable marker in Overseer.Markers)
+            foreach (IMapDrawable marker in Cartographer.Markers)
             {
                 marker.Draw(e.Graphics, renderScale);
             }
-
-            //if (Overseer.locInZoneHasBeenRecorded)
-            //{
-            //    int playerCircleOffsetValue = (int)Math.Round(Overseer.defaultPlayerCircleOffsetValue * renderScale);
-            //    int playerMarkerOffsetValue = (int)Math.Round(Overseer.defaultPlayerMarkerOffsetValue * renderScale);
-
-            //    int plX = Overseer.PlayerLocation.X;
-            //    int plY = Overseer.PlayerLocation.Y;
-
-            //    if (!Overseer.locationIsWithinMap)
-            //    {
-            //        // Draw circle indicating that the location was the last successfully recorded (player is probably out of the bounds of the map now)
-            //        if (Overseer.PlayerLocation != null)
-            //            e.Graphics.DrawEllipse(
-            //                Overseer.PlayerPen,
-            //                plX - playerCircleOffsetValue,
-            //                plX - playerCircleOffsetValue, 
-            //                2 * playerCircleOffsetValue, 
-            //                2 * playerCircleOffsetValue);
-            //        else
-            //            e.Graphics.DrawEllipse(Overseer.PlayerPen, 1, 1, 2 * playerCircleOffsetValue, 2 * playerCircleOffsetValue);
-            //    }
-            //    else
-            //    {
-            //        if (Overseer.PlayerDirection == Direction.Unknown || !checkEnableDirection.Checked || Overseer.LastRecordedLocationDateTime - Overseer.LastRecordedDirectionDateTime > TimeSpan.FromMilliseconds(1500))
-            //        {
-            //            // Draw player location X
-            //            e.Graphics.DrawLine(
-            //                Overseer.PlayerPen, 
-            //                new Point(plX - playerMarkerOffsetValue, plY - playerMarkerOffsetValue), 
-            //                new Point(plX + playerMarkerOffsetValue, plY + playerMarkerOffsetValue));
-
-            //            e.Graphics.DrawLine(
-            //                Overseer.PlayerPen, 
-            //                new Point(plX + playerMarkerOffsetValue, plY - playerMarkerOffsetValue), 
-            //                new Point(plX - playerMarkerOffsetValue, plY + playerMarkerOffsetValue));
-            //        }
-            //        else if (Overseer.LastRecordedLocationDateTime - Overseer.LastRecordedDirectionDateTime <= TimeSpan.FromMilliseconds(1500))
-            //        {
-            //            PointSet pointSet = GetDirectionLinePointSet();
-            //            e.Graphics.DrawLine(Overseer.PlayerPenArrow, pointSet.Point1, pointSet.Point2);
-            //        }
-            //    }
-            //}
-
-            //if (Overseer.Waypoint != null)
-            //{
-            //    int waypointOffsetValue = (int)Math.Round(Overseer.defaultWaypointOffsetValue * renderScale);
-            //    e.Graphics.DrawEllipse(Overseer.WaypointPen, (Overseer.Waypoint.X - waypointOffsetValue), (Overseer.Waypoint.Y - waypointOffsetValue), 2 * waypointOffsetValue, 2 * waypointOffsetValue);
-            //}
         }
 
         private void checkEnableDirection_CheckedChanged(object sender, EventArgs e)
         {
-            Overseer.RaiseRedrawMaps(null, null);
+            Cartographer.RaiseRedrawMaps(null, null);
         }
 
         private void checkLegend_CheckedChanged(object sender, EventArgs e)
@@ -348,11 +314,13 @@ namespace ZlizEQMap
         {
             if (initialLoadCompleted)
             {
+                picBox.SizeMode = PictureBoxSizeMode.AutoSize;
+
                 int width = 1025;
                 if (picBox.Width + 60 > width)
                     width = picBox.Width + 70;
 
-                var subMaps = Overseer.Zones.Where(x => x.FullName == Overseer.CurrentZoneData.FullName);
+                var subMaps = Cartographer.Zones.Where(x => x.FullName == Cartographer.CurrentZoneData.FullName);
 
                 if (subMaps.Count() > 1)
                     width += flowSubMaps.Width;
@@ -376,18 +344,26 @@ namespace ZlizEQMap
 
         private void ZlizEQMapFormExperimental_FormClosing(object sender, FormClosingEventArgs e)
         {
-            Overseer.UnLoad();
+            Cartographer.UnLoad();
 
             Settings.CheckAutoSizeOnMapSwitch = checkAutoSizeOnMapSwitch.Checked;
             Settings.CheckEnableDirection = checkEnableDirection.Checked;
             Settings.CheckEnableLegend = checkLegend.Checked;
             Settings.CheckGroupByContinent = checkGroupByContinent.Checked;
 
-            if (Overseer.CurrentZoneData != null)
-                Settings.LastSelectedZone = Overseer.CurrentZoneData.ShortName;
+            if (Cartographer.CurrentZoneData != null)
+                Settings.LastSelectedZone = Cartographer.CurrentZoneData.ShortName;
 
             Settings.OpacityLevel = sliderOpacity.Value;
             Settings.AlwaysOnTop = checkAlwaysOnTop.Checked;
+            Settings.NotesClearAfterEntry = check_ClearNoteAfterEntry.Checked;
+            Settings.NotesAutoUpdate = check_AutoUpdateNoteLocation.Checked;
+            Settings.NotesAutoSave = check_AutosaveNotes.Checked;
+            Settings.NotesShow = (int)check_ShowAnnotations.CheckState;
+
+            Settings.LocHistoryShow = check_ShowPlayerLocHistory.Checked;
+            Settings.LocHistoryNumberToTrack = (int)nud_HistoryToTrack.Value;
+
 
             Settings.SaveSettings();
         }
@@ -409,7 +385,7 @@ namespace ZlizEQMap
 
         private void linkLabelWiki_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            Process.Start(String.Format("{0}{1}", Settings.WikiRootURL, Overseer.CurrentZoneData.FullName));
+            Process.Start(String.Format("{0}{1}", Settings.WikiRootURL, Cartographer.CurrentZoneData.FullName));
         }
 
         private void btnSettingsHelp_Click(object sender, EventArgs e)
@@ -422,7 +398,7 @@ namespace ZlizEQMap
 
         void settingsHelp_OnEQDirSettingsChanged(object sender, EventArgs e)
         {
-            Overseer.EQDirSettingsChanged();
+            Cartographer.EQDirSettingsChanged();
             Initialize();
         }
 
@@ -485,13 +461,13 @@ namespace ZlizEQMap
         private void ForceSetWaypoint()
         {
             Point parsedWaypoint = ParseTextToPoint(txtWaypoint.Text);
-            Overseer.SetWaypoint(parsedWaypoint.X, parsedWaypoint.Y);
+            Cartographer.SetWaypoint(parsedWaypoint.X, parsedWaypoint.Y);
             SetButtonWaypointText();
         }
 
         private void SetButtonWaypointText()
         {
-            if (Overseer.Waypoint == null)
+            if (Cartographer.Waypoint == null)
                 btnSetWaypoint.Text = "Set WP";
             else
                 btnSetWaypoint.Text = "Clear";
@@ -499,7 +475,7 @@ namespace ZlizEQMap
 
         private void textBoxCharName_TextChanged(object sender, EventArgs e)
         {
-            Overseer.CharacterNameChange(textBoxCharName.Text);
+            Cartographer.CharacterNameChange(textBoxCharName.Text);
         }
 
         private void InitializeDebugging()
@@ -512,7 +488,7 @@ namespace ZlizEQMap
 
         private void btnSetWaypoint_Click(object sender, EventArgs e)
         {
-            if (Overseer.Waypoint == null)
+            if (Cartographer.Waypoint == null)
             {
                 string[] items = txtWaypoint.Text.Split(',');
 
@@ -523,30 +499,25 @@ namespace ZlizEQMap
 
                     if (Int32.TryParse(items[0].Trim(), out y) && Int32.TryParse(items[1].Trim(), out x))
                     {
-                        Overseer.SetWaypoint(x, y);
+                        Cartographer.SetWaypoint(x, y);
                     }
                 }
             }
             else
-                Overseer.ClearWaypoint();
+                Cartographer.ClearWaypoint();
 
             SetButtonWaypointText();
         }
 
         private void ForceSetPlayerLocation()
         {
-            Overseer.UpdatePlayerLocation((int)nud_playerX.Value, (int)nud_playerY.Value);
+            Cartographer.UpdatePlayerLocation((int)nud_playerX.Value, (int)nud_playerY.Value);
         }
 
         private void ResizeMap()
         {
-            //var test = currentZoneData.ZeroLocation;
-
-            //picBox.Width = currentZoneData.ImageX * renderScale;
-            //picBox.Height = currentZoneData.ImageY * renderScale;
-
-            var roundedX = Math.Round(Overseer.CurrentZoneMap.ImageX * renderScale);
-            var roundedY = Math.Round(Overseer.CurrentZoneMap.ImageY * renderScale);
+            var roundedX = Math.Round(Cartographer.CurrentZoneMap.ImageX * renderScale);
+            var roundedY = Math.Round(Cartographer.CurrentZoneMap.ImageY * renderScale);
 
             picBox.Width = (int)roundedX;
             picBox.Height = (int)roundedY;
@@ -614,11 +585,28 @@ namespace ZlizEQMap
 
         private void sliderZoom_Scroll(object sender, EventArgs e)
         {
-            SetZoomSlider();
+            SetMapZoomFromSlider();
         }
 
-        private void SetZoomSlider()
+        private void button_ResetZoom_Click(object sender, EventArgs e)
         {
+            ResetZoom();
+        }
+
+        private void ResetZoom()
+        {
+            ResetZoomValue();
+            SetMapZoomFromSlider();
+        }
+
+        private void ResetZoomValue()
+        {
+            sliderZoom.Value = 100;
+        }
+
+        private void SetMapZoomFromSlider()
+        {
+            picBox.SizeMode = PictureBoxSizeMode.Zoom;
             float sliderValue = (float)sliderZoom.Value;
             float calc = sliderValue / 100F;
             renderScale = calc;
@@ -627,8 +615,8 @@ namespace ZlizEQMap
 
         public void OpenPopoutMap()
         {
-            popoutMap = new PopoutMap();
-            popoutMap.LoadPopoutMap(Overseer.CurrentZoneData.ImageFilePath);
+            popoutMap = new PopoutMap(Cartographer);
+            popoutMap.LoadMapByPath(Cartographer.CurrentZoneData.ImageFilePath);
             popoutMap.Show();
         }
 
@@ -641,43 +629,54 @@ namespace ZlizEQMap
         {
             Point noteCoords = ParseTextToPoint(txt_NewNoteCoords.Text);
 
-            ZoneAnnotationManager.AddNote(new ZoneAnnotation(txt_NewNote.Text, noteCoords.X, noteCoords.Y, Overseer.CurrentZoneData.ShortName, Overseer.CurrentZoneData.SubMapIndex));
-            ZoneAnnotationManager.SaveNotes();
+            Cartographer.AddNote(txt_NewNote.Text, noteCoords.X, noteCoords.Y);
+            zoneAnnotationBindingSource.ResetBindings(false);
+
+            if (check_AutosaveNotes.Checked)
+            {
+                Cartographer.SaveNotes();
+            }
 
             if (check_ClearNoteAfterEntry.Checked)
             {
                 txt_NewNote.Clear();
                 txt_NewNoteCoords.Clear();
             }
-
-            ReloadNoteData();
         }
-
-        private void ReloadNoteData()
+        
+        private void BindNoteDataToDGV()
         {
-            zoneAnnotationBindingSource.Clear();
-            foreach (var anno in ZoneAnnotationManager.ZoneAnnotations.Where(za => za.MapShortName == Overseer.CurrentZoneData.ShortName && za.SubMap == Overseer.CurrentZoneData.SubMapIndex))
+            if (initialLoadCompleted)
             {
-                zoneAnnotationBindingSource.Add(anno);
+                zoneAnnotationBindingSource.DataSource = Cartographer.CurrentZoneAnnotations;
+                dgv_ZoneAnnotation.DataSource = zoneAnnotationBindingSource;
+                dgv_ZoneAnnotation.AutoGenerateColumns = false;
+                dgv_ZoneAnnotation.AutoSize = false;
             }
-
-            Overseer.RaiseRedrawMaps(null, null);
         }
+
+        public void FilterNotesToCurrentZone()
+        {
+            zoneAnnotationBindingSource.ResetBindings(false);
+        }
+
 
         private void check_ShowPlayerLocHistory_CheckedChanged(object sender, EventArgs e)
         {
-            Overseer.TogglePlayerLocationHistory(check_ShowPlayerLocHistory.Checked);
+            Cartographer.TogglePlayerLocationHistory(check_ShowPlayerLocHistory.Checked);
         }
 
         private void button_SetNoteCoordsToPlayerLoc_Click(object sender, EventArgs e)
         {
-            txt_NewNoteCoords.Text = $"{Overseer.PlayerCoords.X}, {Overseer.PlayerCoords.Y}";
+            txt_NewNoteCoords.Text = $"{Cartographer.PlayerCoords.X}, {Cartographer.PlayerCoords.Y}";
         }
 
         private void dgv_ZoneAnnotation_CellValueChanged(object sender, DataGridViewCellEventArgs e)
         {
-            ZoneAnnotationManager.SaveNotes();
-            Overseer.RaiseRedrawMaps(null, null);
+            if (check_AutosaveNotes.Checked)
+            {
+                Cartographer.SaveNotes();
+            }
         }
 
         private void button_NotesColor_Click(object sender, EventArgs e)
@@ -686,7 +685,7 @@ namespace ZlizEQMap
             if (result == DialogResult.OK)
             {
                 button_NotesColor.BackColor = colorDialog_Notes.Color;
-                Overseer.UpdateNotesColor(colorDialog_Notes.Color);
+                Cartographer.UpdateNotesColor(colorDialog_Notes.Color);
             }
         }
 
@@ -696,14 +695,8 @@ namespace ZlizEQMap
             if (result == DialogResult.OK)
             {
                 button_NotesFont.Font = fontDialog_Notes.Font;
-                Overseer.UpdateNotesFont(fontDialog_Notes.Font);
+                Cartographer.UpdateNotesFont(fontDialog_Notes.Font);
             }
-        }
-
-        private void button_ResetZoom_Click(object sender, EventArgs e)
-        {
-            sliderZoom.Value = 100;
-            SetZoomSlider();
         }
 
         private void ZlizEQMapFormExperimental_Load(object sender, EventArgs e)
@@ -713,7 +706,27 @@ namespace ZlizEQMap
 
         private void check_ShowAnnotations_CheckStateChanged(object sender, EventArgs e)
         {
-            Overseer.ToggleZoneAnnotations((int)check_ShowAnnotations.CheckState);
+            Cartographer.ToggleZoneAnnotations((int)check_ShowAnnotations.CheckState);
+        }
+
+        private void timer_ParseLogsTimer_Tick(object sender, EventArgs e)
+        {
+            Cartographer.CheckLogParserForNewLines();
+        }
+
+        private void button_SaveNotes_Click(object sender, EventArgs e)
+        {
+            Cartographer.SaveNotes();
+        }
+
+        private void check_AutosaveNotes_CheckedChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label_AnnotationFontSize_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

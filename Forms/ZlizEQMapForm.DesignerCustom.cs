@@ -43,7 +43,16 @@ namespace ZlizEQMap
             notifyIcon1.Text = "ZlizEQMapMini";
             notifyIcon1.Icon = ZlizEQMap.Properties.Resources.wufist_14;
             checkAlwaysOnTop.BackColor = Color.Transparent;
-            sliderOpacity.BackColor = Color.FromArgb(251, 246, 224);
+            
+            panel1.BackColor = Color.Transparent;
+            panelConnectedZones.BackColor = Color.Transparent;
+            panelLegend.BackColor = Color.Transparent;
+            panelMainControls.BackColor = Color.Transparent;
+            panelMain.BackColor = Color.Transparent;
+
+            splitContainerMain.BackColor = Color.Transparent;
+            splitContainerMain.Panel1.BackColor = Color.Transparent;
+            splitContainerMain.Panel2.BackColor = Color.Transparent;
         }
     }
 }

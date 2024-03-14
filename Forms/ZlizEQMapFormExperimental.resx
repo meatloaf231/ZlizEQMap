@@ -118,13 +118,22 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <metadata name="toolTip1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>435, 17</value>
+    <value>491, 21</value>
   </metadata>
   <metadata name="notifyIcon1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>233, 17</value>
   </metadata>
   <metadata name="zoneAnnotationBindingSource.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>17, 17</value>
+  </metadata>
+  <metadata name="Index.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>True</value>
+  </metadata>
+  <metadata name="MapShortName.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>True</value>
+  </metadata>
+  <metadata name="SubMap.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>True</value>
   </metadata>
   <metadata name="Note.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
@@ -139,9 +148,27 @@
     <value>True</value>
   </metadata>
   <metadata name="colorDialog_Notes.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>532, 17</value>
+    <value>584, 23</value>
   </metadata>
   <metadata name="fontDialog_Notes.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>683, 17</value>
+    <value>735, 23</value>
   </metadata>
+  <metadata name="timer_ParseLogsTimer.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>341, 18</value>
+  </metadata>
+  <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+  <data name="$this.BackgroundImage" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        /9j/4AAQSkZJRgABAQEASABIAAD/2wBDAAEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQECAQEBAQEB
+        AgICAgICAgICAgICAgICAgICAgICAgICAgICAgL/2wBDAQEBAQEBAQICAgICAgICAgICAgICAgICAgIC
+        AgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgL/wAARCAAUABQDAREAAhEBAxEB/8QA
+        GAAAAwEBAAAAAAAAAAAAAAAAAgMFBAr/xAAjEAADAAICAgICAwAAAAAAAAABAgMREgQTISIAMiNBBXLC
+        /8QAFwEBAQEBAAAAAAAAAAAAAAAAAAEGB//EABYRAQEBAAAAAAAAAAAAAAAAAAABQf/aAAwDAQACEQMR
+        AD8A7cJSQZB7tjAVV5UseTS1/wAsyzceSlmxsvYcn8rD3DgfOPNAObu+Xd5IOVQ0C6qVoWCCoPYqKAQy
+        plkrT7qCxLBqJnNryYW0nSxwo3HWFZX2Iw3UB+gCM+QpC5ZQGIU0gjdTjalxghJtOHJaXSeH07IoZQSG
+        c4OV9uwBk3+SgPEeuzt2UQkWzyKaziN+lWaQPtlCr6rr4OZ+dlaGwkbp2T48+SpP25HJqHQlQzSUxHkA
+        k+SA2Scg/ZqH8WCcqKUrsXvx5M7LhWBFAPUj+v8Akeioqy4MRo5H8bInI5PJpC23vv18vrSzI+ULDXI2
+        UorElVB+UU+PwY1kHfs3P2ZKNLb9jKx1Hgeo8eFAH6+B/9k=
+</value>
+  </data>
 </root>

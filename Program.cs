@@ -20,8 +20,7 @@ namespace ZlizEQMap
             try
             {
                 Settings.InitializeSettings();
-                Overseer.InitializeOverseer();
-                
+                                
                 if (Settings.UseLegacyUI)
                 {
                     Application.Run(new ZlizEQMapForm());

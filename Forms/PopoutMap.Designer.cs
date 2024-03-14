@@ -29,7 +29,7 @@
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(PopoutMap));
-            this.picBoxMinimap = new System.Windows.Forms.PictureBox();
+            this.picBox_PopoutMap = new System.Windows.Forms.PictureBox();
             this.trackBar_Opacity = new System.Windows.Forms.TrackBar();
             this.buttonConfigurePopupMap = new System.Windows.Forms.Button();
             this.radioButton_Centered = new System.Windows.Forms.RadioButton();
@@ -42,24 +42,25 @@
             this.label_Zoom = new System.Windows.Forms.Label();
             this.label_Opacity = new System.Windows.Forms.Label();
             this.check_AOT = new System.Windows.Forms.CheckBox();
-            ((System.ComponentModel.ISupportInitialize)(this.picBoxMinimap)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.picBox_PopoutMap)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar_Opacity)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar_Zoom)).BeginInit();
             this.SuspendLayout();
             // 
-            // picBoxMinimap
+            // picBox_PopoutMap
             // 
-            this.picBoxMinimap.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.picBoxMinimap.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.picBoxMinimap.Location = new System.Drawing.Point(0, 0);
-            this.picBoxMinimap.Name = "picBoxMinimap";
-            this.picBoxMinimap.Size = new System.Drawing.Size(450, 350);
-            this.picBoxMinimap.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.picBoxMinimap.TabIndex = 1;
-            this.picBoxMinimap.TabStop = false;
-            this.picBoxMinimap.SizeChanged += new System.EventHandler(this.picBoxMinimap_SizeChanged);
-            this.picBoxMinimap.Paint += new System.Windows.Forms.PaintEventHandler(this.picBoxMinimap_Paint);
-            this.picBoxMinimap.DoubleClick += new System.EventHandler(this.picBoxMinimap_DoubleClick);
+            this.picBox_PopoutMap.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("picBox_PopoutMap.BackgroundImage")));
+            this.picBox_PopoutMap.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.picBox_PopoutMap.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.picBox_PopoutMap.Location = new System.Drawing.Point(0, 0);
+            this.picBox_PopoutMap.Name = "picBox_PopoutMap";
+            this.picBox_PopoutMap.Size = new System.Drawing.Size(450, 350);
+            this.picBox_PopoutMap.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.picBox_PopoutMap.TabIndex = 1;
+            this.picBox_PopoutMap.TabStop = false;
+            this.picBox_PopoutMap.SizeChanged += new System.EventHandler(this.picBox_PopoutMap_SizeChanged);
+            this.picBox_PopoutMap.Paint += new System.Windows.Forms.PaintEventHandler(this.picBox_PopoutMap_Paint);
+            this.picBox_PopoutMap.DoubleClick += new System.EventHandler(this.picBox_PopoutMap_DoubleClick);
             // 
             // trackBar_Opacity
             // 
@@ -237,6 +238,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("$this.BackgroundImage")));
             this.ClientSize = new System.Drawing.Size(450, 350);
             this.Controls.Add(this.check_AOT);
             this.Controls.Add(this.label_Opacity);
@@ -250,11 +252,11 @@
             this.Controls.Add(this.trackBar_Zoom);
             this.Controls.Add(this.buttonConfigurePopupMap);
             this.Controls.Add(this.trackBar_Opacity);
-            this.Controls.Add(this.picBoxMinimap);
+            this.Controls.Add(this.picBox_PopoutMap);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Name = "PopoutMap";
             this.Text = "Minimap";
-            ((System.ComponentModel.ISupportInitialize)(this.picBoxMinimap)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.picBox_PopoutMap)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar_Opacity)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar_Zoom)).EndInit();
             this.ResumeLayout(false);
@@ -263,7 +265,7 @@
         }
 
         #endregion
-        private System.Windows.Forms.PictureBox picBoxMinimap;
+        private System.Windows.Forms.PictureBox picBox_PopoutMap;
         private System.Windows.Forms.TrackBar trackBar_Opacity;
         private System.Windows.Forms.Button buttonConfigurePopupMap;
         private System.Windows.Forms.RadioButton radioButton_Centered;

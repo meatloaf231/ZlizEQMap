@@ -32,6 +32,7 @@ namespace ZlizEQMap
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ZlizEQMapFormExperimental));
             this.picBox = new System.Windows.Forms.PictureBox();
             this.checkLegend = new System.Windows.Forms.CheckBox();
             this.checkEnableDirection = new System.Windows.Forms.CheckBox();
@@ -52,6 +53,7 @@ namespace ZlizEQMap
             this.check_ClearNoteAfterEntry = new System.Windows.Forms.CheckBox();
             this.check_AutoUpdateNoteLocation = new System.Windows.Forms.CheckBox();
             this.check_AutoParseFromLogs = new System.Windows.Forms.CheckBox();
+            this.check_AutosaveNotes = new System.Windows.Forms.CheckBox();
             this.panelMain = new System.Windows.Forms.Panel();
             this.panelConnectedZones = new System.Windows.Forms.FlowLayoutPanel();
             this.labelConnectedZones = new System.Windows.Forms.Label();
@@ -79,22 +81,19 @@ namespace ZlizEQMap
             this.nud_playerY = new System.Windows.Forms.NumericUpDown();
             this.label_Zoom = new System.Windows.Forms.Label();
             this.label_Opacity = new System.Windows.Forms.Label();
-            this.nud_HistoryToKeep = new System.Windows.Forms.NumericUpDown();
+            this.nud_HistoryToTrack = new System.Windows.Forms.NumericUpDown();
             this.label_AnnotationFontSize = new System.Windows.Forms.Label();
             this.label_HistoryToKeep = new System.Windows.Forms.Label();
             this.button_AddNote = new System.Windows.Forms.Button();
             this.txt_NewNote = new System.Windows.Forms.TextBox();
             this.zoneAnnotationBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.dgv_ZoneAnnotation = new System.Windows.Forms.DataGridView();
-            this.Note = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.XCoord = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.YCoord = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Show = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             this.txt_NewNoteCoords = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.button_SetNoteCoordsToPlayerLoc = new System.Windows.Forms.Button();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.button_NotesFont = new System.Windows.Forms.Button();
+            this.button_SaveNotes = new System.Windows.Forms.Button();
             this.button_NotesColor = new System.Windows.Forms.Button();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.colorDialog_Notes = new System.Windows.Forms.ColorDialog();
@@ -103,7 +102,15 @@ namespace ZlizEQMap
             this.tabControl_Main = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.timer_ParseLogsTimer = new System.Windows.Forms.Timer(this.components);
             this.labelZoneName = new ZlizEQMap.ZlizLabel();
+            this.Index = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.MapShortName = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.SubMap = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Note = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.XCoord = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.YCoord = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Show = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             ((System.ComponentModel.ISupportInitialize)(this.picBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.sliderOpacity)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.sliderZoom)).BeginInit();
@@ -123,7 +130,7 @@ namespace ZlizEQMap
             this.panelLegend.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nud_playerX)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nud_playerY)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nud_HistoryToKeep)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nud_HistoryToTrack)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.zoneAnnotationBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgv_ZoneAnnotation)).BeginInit();
             this.groupBox1.SuspendLayout();
@@ -309,7 +316,7 @@ namespace ZlizEQMap
             // check_ShowAnnotations
             // 
             this.check_ShowAnnotations.AutoSize = true;
-            this.check_ShowAnnotations.Location = new System.Drawing.Point(6, 20);
+            this.check_ShowAnnotations.Location = new System.Drawing.Point(6, 171);
             this.check_ShowAnnotations.Name = "check_ShowAnnotations";
             this.check_ShowAnnotations.Size = new System.Drawing.Size(121, 17);
             this.check_ShowAnnotations.TabIndex = 38;
@@ -334,7 +341,7 @@ namespace ZlizEQMap
             // check_ClearNoteAfterEntry
             // 
             this.check_ClearNoteAfterEntry.AutoSize = true;
-            this.check_ClearNoteAfterEntry.Location = new System.Drawing.Point(6, 75);
+            this.check_ClearNoteAfterEntry.Location = new System.Drawing.Point(6, 91);
             this.check_ClearNoteAfterEntry.Name = "check_ClearNoteAfterEntry";
             this.check_ClearNoteAfterEntry.Size = new System.Drawing.Size(107, 17);
             this.check_ClearNoteAfterEntry.TabIndex = 42;
@@ -345,11 +352,11 @@ namespace ZlizEQMap
             // check_AutoUpdateNoteLocation
             // 
             this.check_AutoUpdateNoteLocation.AutoSize = true;
-            this.check_AutoUpdateNoteLocation.Location = new System.Drawing.Point(166, 144);
+            this.check_AutoUpdateNoteLocation.Location = new System.Drawing.Point(202, 54);
             this.check_AutoUpdateNoteLocation.Name = "check_AutoUpdateNoteLocation";
-            this.check_AutoUpdateNoteLocation.Size = new System.Drawing.Size(87, 17);
+            this.check_AutoUpdateNoteLocation.Size = new System.Drawing.Size(49, 17);
             this.check_AutoUpdateNoteLocation.TabIndex = 47;
-            this.check_AutoUpdateNoteLocation.Text = "Auto-update";
+            this.check_AutoUpdateNoteLocation.Text = "Auto";
             this.toolTip1.SetToolTip(this.check_AutoUpdateNoteLocation, "Always-On-Top");
             this.check_AutoUpdateNoteLocation.UseVisualStyleBackColor = true;
             // 
@@ -363,6 +370,18 @@ namespace ZlizEQMap
             this.check_AutoParseFromLogs.Text = "Suspend Autoparse";
             this.toolTip1.SetToolTip(this.check_AutoParseFromLogs, "Always-On-Top");
             this.check_AutoParseFromLogs.UseVisualStyleBackColor = true;
+            // 
+            // check_AutosaveNotes
+            // 
+            this.check_AutosaveNotes.AutoSize = true;
+            this.check_AutosaveNotes.Location = new System.Drawing.Point(6, 150);
+            this.check_AutosaveNotes.Name = "check_AutosaveNotes";
+            this.check_AutosaveNotes.Size = new System.Drawing.Size(106, 17);
+            this.check_AutosaveNotes.TabIndex = 51;
+            this.check_AutosaveNotes.Text = "Auto-save notes";
+            this.toolTip1.SetToolTip(this.check_AutosaveNotes, "Always-On-Top");
+            this.check_AutosaveNotes.UseVisualStyleBackColor = true;
+            this.check_AutosaveNotes.CheckedChanged += new System.EventHandler(this.check_AutosaveNotes_CheckedChanged);
             // 
             // panelMain
             // 
@@ -715,19 +734,20 @@ namespace ZlizEQMap
             // 
             // nud_HistoryToKeep
             // 
-            this.nud_HistoryToKeep.Location = new System.Drawing.Point(115, 144);
-            this.nud_HistoryToKeep.Name = "nud_HistoryToKeep";
-            this.nud_HistoryToKeep.Size = new System.Drawing.Size(52, 21);
-            this.nud_HistoryToKeep.TabIndex = 35;
+            this.nud_HistoryToTrack.Location = new System.Drawing.Point(115, 144);
+            this.nud_HistoryToTrack.Name = "nud_HistoryToKeep";
+            this.nud_HistoryToTrack.Size = new System.Drawing.Size(52, 21);
+            this.nud_HistoryToTrack.TabIndex = 35;
             // 
             // label_AnnotationFontSize
             // 
             this.label_AnnotationFontSize.AutoSize = true;
-            this.label_AnnotationFontSize.Location = new System.Drawing.Point(7, 149);
+            this.label_AnnotationFontSize.Location = new System.Drawing.Point(6, 122);
             this.label_AnnotationFontSize.Name = "label_AnnotationFontSize";
-            this.label_AnnotationFontSize.Size = new System.Drawing.Size(136, 13);
+            this.label_AnnotationFontSize.Size = new System.Drawing.Size(106, 13);
             this.label_AnnotationFontSize.TabIndex = 37;
-            this.label_AnnotationFontSize.Text = "Notes Font Style and Color";
+            this.label_AnnotationFontSize.Text = "Font style and color:";
+            this.label_AnnotationFontSize.Click += new System.EventHandler(this.label_AnnotationFontSize_Click);
             // 
             // label_HistoryToKeep
             // 
@@ -740,7 +760,7 @@ namespace ZlizEQMap
             // 
             // button_AddNote
             // 
-            this.button_AddNote.Location = new System.Drawing.Point(166, 45);
+            this.button_AddNote.Location = new System.Drawing.Point(179, 19);
             this.button_AddNote.Name = "button_AddNote";
             this.button_AddNote.Size = new System.Drawing.Size(87, 23);
             this.button_AddNote.TabIndex = 41;
@@ -750,9 +770,9 @@ namespace ZlizEQMap
             // 
             // txt_NewNote
             // 
-            this.txt_NewNote.Location = new System.Drawing.Point(6, 48);
+            this.txt_NewNote.Location = new System.Drawing.Point(6, 20);
             this.txt_NewNote.Name = "txt_NewNote";
-            this.txt_NewNote.Size = new System.Drawing.Size(127, 21);
+            this.txt_NewNote.Size = new System.Drawing.Size(165, 21);
             this.txt_NewNote.TabIndex = 43;
             this.txt_NewNote.Text = "New Note";
             // 
@@ -762,6 +782,9 @@ namespace ZlizEQMap
             this.dgv_ZoneAnnotation.AutoGenerateColumns = false;
             this.dgv_ZoneAnnotation.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgv_ZoneAnnotation.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.Index,
+            this.MapShortName,
+            this.SubMap,
             this.Note,
             this.XCoord,
             this.YCoord,
@@ -775,56 +798,18 @@ namespace ZlizEQMap
             this.dgv_ZoneAnnotation.TabIndex = 44;
             this.dgv_ZoneAnnotation.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgv_ZoneAnnotation_CellValueChanged);
             // 
-            // Note
-            // 
-            this.Note.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            this.Note.DataPropertyName = "Note";
-            this.Note.FillWeight = 176.9911F;
-            this.Note.HeaderText = "Note";
-            this.Note.MinimumWidth = 50;
-            this.Note.Name = "Note";
-            // 
-            // XCoord
-            // 
-            this.XCoord.DataPropertyName = "X";
-            this.XCoord.FillWeight = 34.58654F;
-            this.XCoord.HeaderText = "X";
-            this.XCoord.MinimumWidth = 40;
-            this.XCoord.Name = "XCoord";
-            this.XCoord.Resizable = System.Windows.Forms.DataGridViewTriState.False;
-            this.XCoord.Width = 40;
-            // 
-            // YCoord
-            // 
-            this.YCoord.DataPropertyName = "Y";
-            this.YCoord.FillWeight = 46.11596F;
-            this.YCoord.HeaderText = "Y";
-            this.YCoord.MinimumWidth = 40;
-            this.YCoord.Name = "YCoord";
-            this.YCoord.Resizable = System.Windows.Forms.DataGridViewTriState.False;
-            this.YCoord.Width = 40;
-            // 
-            // Show
-            // 
-            this.Show.DataPropertyName = "Show";
-            this.Show.FillWeight = 142.3064F;
-            this.Show.HeaderText = "Show";
-            this.Show.Name = "Show";
-            this.Show.Resizable = System.Windows.Forms.DataGridViewTriState.False;
-            this.Show.Width = 50;
-            // 
             // txt_NewNoteCoords
             // 
-            this.txt_NewNoteCoords.Location = new System.Drawing.Point(166, 74);
+            this.txt_NewNoteCoords.Location = new System.Drawing.Point(37, 51);
             this.txt_NewNoteCoords.Name = "txt_NewNoteCoords";
-            this.txt_NewNoteCoords.Size = new System.Drawing.Size(87, 21);
+            this.txt_NewNoteCoords.Size = new System.Drawing.Size(66, 21);
             this.txt_NewNoteCoords.TabIndex = 45;
             this.txt_NewNoteCoords.Text = "0, 0";
             // 
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(143, 77);
+            this.label1.Location = new System.Drawing.Point(10, 55);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(21, 13);
             this.label1.TabIndex = 46;
@@ -832,25 +817,26 @@ namespace ZlizEQMap
             // 
             // button_SetNoteCoordsToPlayerLoc
             // 
-            this.button_SetNoteCoordsToPlayerLoc.Location = new System.Drawing.Point(166, 101);
+            this.button_SetNoteCoordsToPlayerLoc.Location = new System.Drawing.Point(109, 50);
             this.button_SetNoteCoordsToPlayerLoc.Name = "button_SetNoteCoordsToPlayerLoc";
-            this.button_SetNoteCoordsToPlayerLoc.Size = new System.Drawing.Size(87, 37);
+            this.button_SetNoteCoordsToPlayerLoc.Size = new System.Drawing.Size(87, 23);
             this.button_SetNoteCoordsToPlayerLoc.TabIndex = 48;
-            this.button_SetNoteCoordsToPlayerLoc.Text = "Set to Player Location";
+            this.button_SetNoteCoordsToPlayerLoc.Text = "Player X/Y";
             this.button_SetNoteCoordsToPlayerLoc.UseVisualStyleBackColor = true;
             this.button_SetNoteCoordsToPlayerLoc.Click += new System.EventHandler(this.button_SetNoteCoordsToPlayerLoc_Click);
             // 
             // groupBox1
             // 
             this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBox1.Controls.Add(this.check_AutosaveNotes);
             this.groupBox1.Controls.Add(this.button_NotesFont);
+            this.groupBox1.Controls.Add(this.button_SaveNotes);
+            this.groupBox1.Controls.Add(this.label_AnnotationFontSize);
             this.groupBox1.Controls.Add(this.button_NotesColor);
             this.groupBox1.Controls.Add(this.check_AutoUpdateNoteLocation);
-            this.groupBox1.Controls.Add(this.check_ShowAnnotations);
             this.groupBox1.Controls.Add(this.label1);
             this.groupBox1.Controls.Add(this.button_SetNoteCoordsToPlayerLoc);
             this.groupBox1.Controls.Add(this.txt_NewNoteCoords);
-            this.groupBox1.Controls.Add(this.label_AnnotationFontSize);
             this.groupBox1.Controls.Add(this.button_AddNote);
             this.groupBox1.Controls.Add(this.txt_NewNote);
             this.groupBox1.Controls.Add(this.check_ClearNoteAfterEntry);
@@ -866,20 +852,30 @@ namespace ZlizEQMap
             this.button_NotesFont.BackColor = System.Drawing.SystemColors.Control;
             this.button_NotesFont.Cursor = System.Windows.Forms.Cursors.Hand;
             this.button_NotesFont.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.button_NotesFont.Location = new System.Drawing.Point(10, 122);
+            this.button_NotesFont.Location = new System.Drawing.Point(131, 116);
             this.button_NotesFont.Name = "button_NotesFont";
-            this.button_NotesFont.Size = new System.Drawing.Size(79, 24);
+            this.button_NotesFont.Size = new System.Drawing.Size(90, 24);
             this.button_NotesFont.TabIndex = 50;
             this.button_NotesFont.Text = "Edit Font";
             this.button_NotesFont.UseVisualStyleBackColor = false;
             this.button_NotesFont.Click += new System.EventHandler(this.button_NotesFont_Click);
+            // 
+            // button_SaveNotes
+            // 
+            this.button_SaveNotes.Location = new System.Drawing.Point(178, 146);
+            this.button_SaveNotes.Name = "button_SaveNotes";
+            this.button_SaveNotes.Size = new System.Drawing.Size(87, 23);
+            this.button_SaveNotes.TabIndex = 52;
+            this.button_SaveNotes.Text = "Save Notes";
+            this.button_SaveNotes.UseVisualStyleBackColor = true;
+            this.button_SaveNotes.Click += new System.EventHandler(this.button_SaveNotes_Click);
             // 
             // button_NotesColor
             // 
             this.button_NotesColor.BackColor = System.Drawing.SystemColors.ActiveCaption;
             this.button_NotesColor.Cursor = System.Windows.Forms.Cursors.Hand;
             this.button_NotesColor.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.button_NotesColor.Location = new System.Drawing.Point(95, 122);
+            this.button_NotesColor.Location = new System.Drawing.Point(227, 116);
             this.button_NotesColor.Name = "button_NotesColor";
             this.button_NotesColor.Size = new System.Drawing.Size(38, 24);
             this.button_NotesColor.TabIndex = 49;
@@ -938,12 +934,13 @@ namespace ZlizEQMap
             this.tabPage1.Controls.Add(this.label_Zoom);
             this.tabPage1.Controls.Add(this.checkEnableDirection);
             this.tabPage1.Controls.Add(this.checkAlwaysOnTop);
+            this.tabPage1.Controls.Add(this.check_ShowAnnotations);
             this.tabPage1.Controls.Add(this.check_ShowPlayerLocHistory);
             this.tabPage1.Controls.Add(this.label_Opacity);
             this.tabPage1.Controls.Add(this.checkLegend);
             this.tabPage1.Controls.Add(this.sliderOpacity);
             this.tabPage1.Controls.Add(this.label_HistoryToKeep);
-            this.tabPage1.Controls.Add(this.nud_HistoryToKeep);
+            this.tabPage1.Controls.Add(this.nud_HistoryToTrack);
             this.tabPage1.Location = new System.Drawing.Point(4, 22);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
@@ -963,6 +960,11 @@ namespace ZlizEQMap
             this.tabPage2.Text = "Advanced";
             this.tabPage2.UseVisualStyleBackColor = true;
             // 
+            // timer_ParseLogsTimer
+            // 
+            this.timer_ParseLogsTimer.Interval = 500;
+            this.timer_ParseLogsTimer.Tick += new System.EventHandler(this.timer_ParseLogsTimer_Tick);
+            // 
             // labelZoneName
             // 
             this.labelZoneName.Font = new System.Drawing.Font("Times New Roman", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -972,10 +974,81 @@ namespace ZlizEQMap
             this.labelZoneName.TabIndex = 0;
             this.labelZoneName.Text = "Zone";
             // 
+            // Index
+            // 
+            this.Index.Frozen = true;
+            this.Index.HeaderText = "#";
+            this.Index.Name = "Index";
+            this.Index.ReadOnly = true;
+            this.Index.Width = 25;
+            // 
+            // MapShortName
+            // 
+            this.MapShortName.DataPropertyName = "MapShortName";
+            this.MapShortName.Frozen = true;
+            this.MapShortName.HeaderText = "MapShortName";
+            this.MapShortName.Name = "MapShortName";
+            this.MapShortName.ReadOnly = true;
+            this.MapShortName.Visible = false;
+            this.MapShortName.Width = 50;
+            // 
+            // SubMap
+            // 
+            this.SubMap.DataPropertyName = "SubMap";
+            this.SubMap.Frozen = true;
+            this.SubMap.HeaderText = "SubMap";
+            this.SubMap.Name = "SubMap";
+            this.SubMap.ReadOnly = true;
+            this.SubMap.Visible = false;
+            this.SubMap.Width = 50;
+            // 
+            // Note
+            // 
+            this.Note.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
+            this.Note.DataPropertyName = "Note";
+            this.Note.FillWeight = 176.9911F;
+            this.Note.Frozen = true;
+            this.Note.HeaderText = "Note";
+            this.Note.MinimumWidth = 50;
+            this.Note.Name = "Note";
+            // 
+            // XCoord
+            // 
+            this.XCoord.DataPropertyName = "X";
+            this.XCoord.FillWeight = 34.58654F;
+            this.XCoord.Frozen = true;
+            this.XCoord.HeaderText = "X";
+            this.XCoord.MinimumWidth = 40;
+            this.XCoord.Name = "XCoord";
+            this.XCoord.Resizable = System.Windows.Forms.DataGridViewTriState.False;
+            this.XCoord.Width = 40;
+            // 
+            // YCoord
+            // 
+            this.YCoord.DataPropertyName = "Y";
+            this.YCoord.FillWeight = 46.11596F;
+            this.YCoord.Frozen = true;
+            this.YCoord.HeaderText = "Y";
+            this.YCoord.MinimumWidth = 40;
+            this.YCoord.Name = "YCoord";
+            this.YCoord.Resizable = System.Windows.Forms.DataGridViewTriState.False;
+            this.YCoord.Width = 40;
+            // 
+            // Show
+            // 
+            this.Show.DataPropertyName = "Show";
+            this.Show.FillWeight = 142.3064F;
+            this.Show.Frozen = true;
+            this.Show.HeaderText = "Show";
+            this.Show.Name = "Show";
+            this.Show.Resizable = System.Windows.Forms.DataGridViewTriState.False;
+            this.Show.Width = 50;
+            // 
             // ZlizEQMapFormExperimental
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("$this.BackgroundImage")));
             this.ClientSize = new System.Drawing.Size(1009, 761);
             this.Controls.Add(this.dgv_ZoneAnnotation);
             this.Controls.Add(this.tabControl_Main);
@@ -1013,7 +1086,7 @@ namespace ZlizEQMap
             this.panelLegend.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.nud_playerX)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nud_playerY)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nud_HistoryToKeep)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nud_HistoryToTrack)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.zoneAnnotationBindingSource)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgv_ZoneAnnotation)).EndInit();
             this.groupBox1.ResumeLayout(false);
@@ -1072,7 +1145,7 @@ namespace ZlizEQMap
         private TrackBar sliderZoom;
         private Label label_Zoom;
         private Label label_Opacity;
-        private NumericUpDown nud_HistoryToKeep;
+        private NumericUpDown nud_HistoryToTrack;
         private Label label_AnnotationFontSize;
         private CheckBox check_ShowAnnotations;
         private Label label_HistoryToKeep;
@@ -1089,10 +1162,6 @@ namespace ZlizEQMap
         private GroupBox groupBox1;
         private GroupBox groupBox2;
         private CheckBox check_AutoParseFromLogs;
-        private DataGridViewTextBoxColumn Note;
-        private DataGridViewTextBoxColumn XCoord;
-        private DataGridViewTextBoxColumn YCoord;
-        private DataGridViewCheckBoxColumn Show;
         private ColorDialog colorDialog_Notes;
         private Button button_NotesColor;
         private FontDialog fontDialog_Notes;
@@ -1102,6 +1171,16 @@ namespace ZlizEQMap
         private TabPage tabPage1;
         private TabPage tabPage2;
         private Panel panelLegend;
+        private Timer timer_ParseLogsTimer;
+        private CheckBox check_AutosaveNotes;
+        private Button button_SaveNotes;
+        private DataGridViewTextBoxColumn Index;
+        private DataGridViewTextBoxColumn MapShortName;
+        private DataGridViewTextBoxColumn SubMap;
+        private DataGridViewTextBoxColumn Note;
+        private DataGridViewTextBoxColumn XCoord;
+        private DataGridViewTextBoxColumn YCoord;
+        private DataGridViewCheckBoxColumn Show;
     }
 }
 

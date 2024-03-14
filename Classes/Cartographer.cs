@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.IO;
 using System.Linq;
+using System.Runtime.Remoting.Messaging;
 using System.Security.Policy;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -12,83 +14,84 @@ using System.Windows.Forms;
 
 namespace ZlizEQMap
 {
-    // I probably should've just named this class Cartographer.
     // It's a big dumb static class that does way too much. I could spend another few days re-engineering it but whatever. It does the job.
-    public static class Overseer
+    public class CartographyService
     {
         // ~~regexes~~ everyone's favorite
-        static Regex regExEnteredZone = new Regex(@"^\[.+\] You have entered (.+)\.$", RegexOptions.Compiled);
-        static Regex regExLocation = new Regex(@"^\[.+\] Your Location is (.+), (.+), .+$", RegexOptions.Compiled);
-        static Regex regExDirection = new Regex(@"^\[.+\] You think you are heading (.+)\.$", RegexOptions.Compiled);
+        Regex regExEnteredZone = new Regex(@"^\[.+\] You have entered (.+)\.$", RegexOptions.Compiled);
+        Regex regExLocation = new Regex(@"^\[.+\] Your Location is (.+), (.+), .+$", RegexOptions.Compiled);
+        Regex regExDirection = new Regex(@"^\[.+\] You think you are heading (.+)\.$", RegexOptions.Compiled);
 
         // Drawing presets - markers, maps, arrows, etc.
-        public static List<IMapDrawable> Markers = new List<IMapDrawable>();
-        public static Pen PlayerPen = new Pen(Color.Red, 2f);
-        public static Pen PlayerHistoryPen = new Pen(Color.Red, 2f);
-        public static Pen PlayerPenArrow = new Pen(Color.Red, 2f);
-        public static Pen WaypointPen = new Pen(Color.Blue, 2f);
-        public static Pen AnnotationPen = new Pen(Color.Green, 2f);
+        public List<IMapDrawable> Markers = new List<IMapDrawable>();
+        public Pen PlayerPen = new Pen(Color.Red, 2f);
+        public Pen PlayerHistoryPen = new Pen(Color.Red, 2f);
+        public Pen PlayerPenArrow = new Pen(Color.Red, 2f);
+        public Pen WaypointPen = new Pen(Color.Blue, 2f);
+        public Pen AnnotationPen = new Pen(Color.Green, 2f);
 
         // Defaults and presets, hooray
-        public static int defaultWaypointOffsetValue = 4;
-        public static int defaultPlayerMarkerOffsetValue = 4;
-        public static int defaultPlayerCircleOffsetValue = 7;
-        public static int defaultOrdVal = 7;
-        public static int defaultInterordVal = 6;
-        public static int MaxHistoryLocations = 25;
+        public int defaultWaypointOffsetValue = 4;
+        public int defaultPlayerMarkerOffsetValue = 4;
+        public int defaultPlayerCircleOffsetValue = 7;
+        public int defaultOrdVal = 7;
+        public int defaultInterordVal = 6;
+        public int MaxHistoryLocations = 25;
 
         // Character info and waypoints
         // Note that since there's two types of coordinates:
         //  1. Points, which are raw X/Y values from the log parser. I tried to make sure these were named "[whatever]Coords".
         //  2. MapPoints, which are the points that have been scaled to the map. These are gonna be scaled and weird and unpredictable. I tried to keep these named "[whatever]MapLocation"
         // Hopefully I used the right ones in the right places. God. It's been a weird week.
-        public static DateTime LastCharacterChange = DateTime.Now.Subtract(TimeSpan.FromMinutes(1));
-        public static DateTime LastRecordedDirectionDateTime = DateTime.Now;
-        public static DateTime LastRecordedLocationDateTime = DateTime.Now;
-        public static DateTime LastRecordedZoneChange = DateTime.Now;
-        public static Point PlayerCoords;
-        public static MapPoint PlayerMapLocation = null;
-        public static MapPoint Waypoint = null;
-        public static Direction PlayerDirection = Direction.Unknown;
+        public DateTime LastCharacterChange = DateTime.Now.Subtract(TimeSpan.FromMinutes(1));
+        public DateTime LastRecordedDirectionDateTime = DateTime.Now;
+        public DateTime LastRecordedLocationDateTime = DateTime.Now;
+        public DateTime LastRecordedZoneChange = DateTime.Now;
+        public Point PlayerCoords;
+        public MapPoint PlayerMapLocation = null;
+        public MapPoint Waypoint = null;
+        public Direction PlayerDirection = Direction.Unknown;
 
         // Player coordinate history, in raw unscaled values from the logs.
-        public static List<Point> PlayerCoordsHistory { get; set; } = new List<Point>();
+        public List<Point> PlayerCoordsHistory { get; set; } = new List<Point>();
 
         // Player map location history, in scaled values.
-        public static List<MapPoint> PlayerMapLocationHistory { get; set; } = new List<MapPoint>();
+        public List<MapPoint> PlayerMapLocationHistory { get; set; } = new List<MapPoint>();
 
         // File system stuff. Weehoo.
-        public static FileSystemWatcher Watcher;
-        public static LogFileParser Parser;
+        public FileSystemWatcher Watcher;
+        public LogFileParser Parser;
         
         // Zone and map info.
-        public static List<ZoneData> Zones;
-        public static ZoneData CurrentZoneData = null;
-        public static ZoneMap CurrentZoneMap = null;
-        public static string CurrentTitle = "";
+        private ZoneAnnotationService ZoneAnnotationManager = new ZoneAnnotationService();
+        public List<ZoneAnnotation> CurrentZoneAnnotations = new List<ZoneAnnotation>();
 
-        // Miscellaneous booleans. Gotta have em. 
-        public static int showZoneAnnotations = 1;
-        public static bool showPlayerLocationHistory = false;
-        public static bool timerEnabled = false;
-        public static bool locationIsWithinMap = false;
-        public static bool locInZoneHasBeenRecorded = false;
-        public static bool initialLoadCompleted = false;
-        public static bool forceLogReselection = false;
+        public List<ZoneData> Zones;
+        public ZoneData CurrentZoneData = null;
+        public ZoneMap CurrentZoneMap = null;
+        public string CurrentTitle = "";
 
-        public static System.Timers.Timer fileSystemCheckTimer;
+        // Miscellaneous booleans and state trackers. Gotta have em. 
+        public int showZoneAnnotations = 1;
+        public bool showPlayerLocationHistory = false;
+        public bool timerEnabled = false;
+        public bool locationIsWithinMap = false;
+        public bool locInZoneHasBeenRecorded = false;
+        public bool initialLoadCompleted = false;
+        public bool forceLogReselection = false;
 
-        // Events! We could definitely use these for more stuff. But this one works for now for at least making sure all the maps get redrawn.
-        public static EventHandler RedrawMaps;
+        // Events! We could definitely use these for more stuff. But this one works for now for at least making sure the maps get redrawn.
+        public static EventHandler RedrawMapsEH;
+        //public static EventHandler ZoneChangedEH;
 
-        public static void RaiseRedrawMaps(object sender, EventArgs e)
+        public void RaiseRedrawMaps(object sender, EventArgs e)
         {
-            RedrawMaps?.DynamicInvoke(sender, e);
+            RedrawMapsEH?.DynamicInvoke(sender, e);
         }
 
         // Math stuff, reducing number of redundant calls.
         // Amount of coords per pixel of the map image, on the X axis (horizontal)
-        public static float ImageYCoordRatio
+        public float ImageYCoordRatio
         {
             get
             {
@@ -98,7 +101,7 @@ namespace ZlizEQMap
         }
 
         // Amount of coords per pixel of the map image, on the Y axis (vertical)
-        public static float ImageXCoordRatio
+        public float ImageXCoordRatio
         {
             get
             {
@@ -107,13 +110,12 @@ namespace ZlizEQMap
             }
         }
 
-        // OVERSEER ONLINE
-        public static void InitializeOverseer()
+        public CartographyService()
         {
             Load();
         }
 
-        private static void Load()
+        private void Load()
         {
             if (HandleSettings())
             {
@@ -131,28 +133,22 @@ namespace ZlizEQMap
             }
             
             // Okay, we loaded fine, set the rest up now.
-            fileSystemCheckTimer = new System.Timers.Timer();
-            fileSystemCheckTimer.Interval = 500;
-            fileSystemCheckTimer.Elapsed += FileSystemCheckTimer_Elapsed;
             SetupFileSystemWatcher();
-            ZoneAnnotationManager.InitializeZoneAnnotationManager();
 
             PlayerPenArrow.CustomEndCap = new AdjustableArrowCap(5, 4);
-            AnnotationPen.Color = Settings.NotesColor;
             PlayerCoordsHistory = new List<Point>();
+            showPlayerLocationHistory = Settings.LocHistoryShow;
+            
+            showZoneAnnotations = Settings.NotesShow;
+            AnnotationPen.Color = Settings.NotesColor;
         }
 
-        private static void FileSystemCheckTimer_Elapsed(object sender, ElapsedEventArgs e)
-        {
-            TimerTick(sender, e);
-        }
-
-        public static void UnLoad()
+        public void UnLoad()
         {
             Watcher.Dispose();
         }
 
-        private static bool HandleSettings()
+        private bool HandleSettings()
         {
             if (!Directory.Exists(Paths.SettingsFileDirectory))
                 Directory.CreateDirectory(Paths.SettingsFileDirectory);
@@ -171,7 +167,7 @@ namespace ZlizEQMap
             }
         }
 
-        private static bool HandleFirstRun()
+        private bool HandleFirstRun()
         {
             FirstRun form = new FirstRun();
             form.ShowDialog();
@@ -190,7 +186,7 @@ namespace ZlizEQMap
                 return false;
         }
 
-        private static string GetLogFileDirectory()
+        private string GetLogFileDirectory()
         {
             string logFileDirectory = "";
 
@@ -202,7 +198,7 @@ namespace ZlizEQMap
             return logFileDirectory;
         }
 
-        private static void SetupFileSystemWatcher()
+        private void SetupFileSystemWatcher()
         {
             string logFileDirectory = GetLogFileDirectory();
 
@@ -211,7 +207,6 @@ namespace ZlizEQMap
                 Watcher.Dispose();
                 Watcher.EnableRaisingEvents = false;
                 Parser = null;
-                fileSystemCheckTimer.Enabled = false;
             }
 
             Watcher = new FileSystemWatcher();
@@ -224,7 +219,7 @@ namespace ZlizEQMap
             Watcher.EnableRaisingEvents = true;
         }
 
-        private static void watcher_Changed(object sender, FileSystemEventArgs e)
+        private void watcher_Changed(object sender, FileSystemEventArgs e)
         {
             // Prevent spam from the FileSystemWatcher - a character change more than every 20 seconds is highly unlikely
             if (DateTime.Now > LastCharacterChange.AddSeconds(5) || forceLogReselection)
@@ -233,7 +228,6 @@ namespace ZlizEQMap
                 {
                     Parser = new LogFileParser(e.FullPath);
                     UpdateTitle(CurrentZoneData.FullName);
-                    fileSystemCheckTimer.Enabled = true;
                     timerEnabled = true;
                     LastCharacterChange = DateTime.Now;
                 }
@@ -242,8 +236,11 @@ namespace ZlizEQMap
             forceLogReselection = false;
         }
 
-        public static void TimerTick(object sender, EventArgs e)
+        public void CheckLogParserForNewLines()
         {
+            if (Parser == null)
+                return;
+            
             Direction direction = Direction.Unknown;
             int? locx = null;
             int? locy = null;
@@ -299,7 +296,7 @@ namespace ZlizEQMap
                 UpdatePlayerLocation(Convert.ToInt32(locx.Value), Convert.ToInt32(locy.Value));
         }
 
-        public static string OSSwitchToZoneByShortName(string zoneShortName)
+        public string OSSwitchToZoneByShortName(string zoneShortName)
         {
             ZoneData zone = ZoneDataFactory.FetchByShortZoneName(Zones, zoneShortName);
             if (zone == null)
@@ -310,7 +307,7 @@ namespace ZlizEQMap
             return zone.FullName;
         }
 
-        public static bool OSSwitchToZone(string zoneName, int subMapIndex)
+        public bool OSSwitchToZone(string zoneName, int subMapIndex)
         {
             locInZoneHasBeenRecorded = false;
             Waypoint = null;
@@ -329,11 +326,12 @@ namespace ZlizEQMap
             CurrentZoneData = zoneData;
             CurrentZoneMap = new ZoneMap(CurrentZoneData.ImageFilePath);
             LastRecordedZoneChange = DateTime.Now;
+            RefreshCurrentZoneAnnotations();
 
             return true;
         }
 
-        public static void UpdateTitle(string zoneName)
+        public void UpdateTitle(string zoneName)
         {
             if (Parser != null)
                 CurrentTitle = String.Format("{0} ({1}) - ZlizEQMap", zoneName, GetActiveCharacterName(Parser.LogFilePath));
@@ -342,7 +340,7 @@ namespace ZlizEQMap
             RaiseRedrawMaps(null, null);
         }
 
-        private static string GetActiveCharacterName(string logFilePath)
+        private string GetActiveCharacterName(string logFilePath)
         {
             string logFileName = Path.GetFileNameWithoutExtension(logFilePath);
 
@@ -352,7 +350,7 @@ namespace ZlizEQMap
             return logFileName.Substring(i, j - i);
         }
 
-        public static void UpdatePlayerLocation(int x, int y)
+        public void UpdatePlayerLocation(int x, int y)
         {
             locInZoneHasBeenRecorded = true;
             LastRecordedLocationDateTime = DateTime.Now;
@@ -391,7 +389,7 @@ namespace ZlizEQMap
         /// <param name="x"></param>
         /// <param name="y"></param>
         /// <returns></returns>
-        public static MapPoint GetMapImageLocationPoint(int x, int y)
+        public MapPoint GetMapImageLocationPoint(int x, int y)
         {
             int newLocationX = (int)(CurrentZoneData.ZeroLocation.X - ((float)x) / ImageXCoordRatio);
             int newLocationY = (int)(CurrentZoneData.ZeroLocation.Y - ((float)y) / ImageYCoordRatio);
@@ -405,12 +403,12 @@ namespace ZlizEQMap
                 return null;
         }
 
-        private static bool CheckLocationIsWithinMapImage(int locationXPixel, int locationYPixel, int imageWidth, int imageHeight)
+        private bool CheckLocationIsWithinMapImage(int locationXPixel, int locationYPixel, int imageWidth, int imageHeight)
         {
             return (locationXPixel > 0 && locationYPixel > 0 && locationXPixel < imageWidth && locationYPixel < imageHeight);
         }
 
-        public static void CharacterNameChange(string characterName)
+        public void CharacterNameChange(string characterName)
         {
             string charNameFilter = "";
 
@@ -427,26 +425,26 @@ namespace ZlizEQMap
             RaiseRedrawMaps(null, null);
         }
 
-        public static void EQDirSettingsChanged()
+        public void EQDirSettingsChanged()
         {
             Zones = ZoneDataFactory.GetAllZones(Settings.GetZoneDataSet());
             OSSwitchToZoneByShortName(CurrentZoneData.ShortName);
             RaiseRedrawMaps(null, null);
         }
 
-        public static void SetWaypoint(int x, int y)
+        public void SetWaypoint(int x, int y)
         {
             Waypoint = GetMapImageLocationPoint(x, y);
             RaiseRedrawMaps(null, null);
         }
 
-        public static void ClearWaypoint()
+        public void ClearWaypoint()
         {
             Waypoint = null;
             RaiseRedrawMaps(null, null);
         }
 
-        internal static void PrepMapMarkersForCanvas(object sender, PaintEventArgs e, bool useDirectional)
+        internal void PrepMapMarkersForCanvas(object sender, PaintEventArgs e, bool useDirectional)
         {
             float renderScale = 1F;
             Markers.Clear();
@@ -493,28 +491,29 @@ namespace ZlizEQMap
                 Markers.Add(currentWaypoint);
             }
 
-            if (showZoneAnnotations != 0 && ZoneAnnotationManager.ZoneAnnotations.Any())
+            if (showZoneAnnotations != 0 && CurrentZoneAnnotations.Any())
             {
                 int aOV = (int)Math.Round(defaultWaypointOffsetValue * renderScale);
-
                 List<MapAnnotation> convertedAnnotations = new List<MapAnnotation>();
-                foreach (ZoneAnnotation zAnno in ZoneAnnotationManager.ZoneAnnotations.Where(za => za.Show == true && za.MapShortName == CurrentZoneData.ShortName && za.SubMap == CurrentZoneData.SubMapIndex))
+                AnnotationPen.Color = Settings.NotesColor;
+                int noteIndex = 0;
+                foreach (ZoneAnnotation zAnno in CurrentZoneAnnotations.Where(za => za.Show == true))
                 {
                     MapPoint zAMP = GetMapImageLocationPoint(zAnno.X, zAnno.Y);
 
                     if (zAMP != null)
                     {
                         MapEllipse annotationEllipse = new MapEllipse(AnnotationPen, (zAMP.X - aOV), (zAMP.Y - aOV), 2 * 5, 2 * 5);
-                        string note = showZoneAnnotations == 1 ? zAnno.Note : "";
-                        MapAnnotation newMapAnno = new MapAnnotation(annotationEllipse, zAMP.X, zAMP.Y, zAnno.Note);
+                        string note = showZoneAnnotations == 1 ? zAnno.Note : $"{noteIndex}";
+                        MapAnnotation newMapAnno = new MapAnnotation(annotationEllipse, zAMP.X, zAMP.Y, note);
 
                         convertedAnnotations.Add(newMapAnno);
                     }
+                    noteIndex++;
                 }
 
                 foreach (MapAnnotation annotation in convertedAnnotations)
                 {
-                    Console.WriteLine($"{annotation.X} {annotation.Y} {annotation.Note}");
                     Markers.Add(annotation);
                 }
             }
@@ -538,7 +537,7 @@ namespace ZlizEQMap
             }
         }
 
-        private static PointSet GetDirectionLinePointSet(float renderScale)
+        private PointSet GetDirectionLinePointSet(float renderScale)
         {
             int ordVal = (int)Math.Round(defaultOrdVal * renderScale);
             int interordVal = (int)Math.Round(defaultInterordVal * renderScale);
@@ -570,28 +569,45 @@ namespace ZlizEQMap
             }
         }
 
-        public static void TogglePlayerLocationHistory(bool state)
+        public void TogglePlayerLocationHistory(bool state)
         {
             showPlayerLocationHistory = state;
             RaiseRedrawMaps(null, null);
         }
 
-        public static void ToggleZoneAnnotations(int state)
+        public void ToggleZoneAnnotations(int state)
         {
             showZoneAnnotations = state;
             RaiseRedrawMaps(null, null);
         }
 
-        public static void UpdateNotesColor(Color color)
+        public void UpdateNotesColor(Color color)
         {
             Settings.NotesColor = color;
             RaiseRedrawMaps(null, null);
         }
 
-        public static void UpdateNotesFont(Font font)
+        public void UpdateNotesFont(Font font)
         {
             Settings.NotesFont = font;
             RaiseRedrawMaps(null, null);
+        }
+
+        public void AddNote(string noteText, int x, int y)
+        {
+            ZoneAnnotationManager.AddNote(new ZoneAnnotation(noteText, x, y, CurrentZoneData.ShortName, CurrentZoneData.SubMapIndex));
+            RefreshCurrentZoneAnnotations();
+        }
+
+        public void RefreshCurrentZoneAnnotations()
+        {
+            CurrentZoneAnnotations.Clear();
+            CurrentZoneAnnotations.AddRange(ZoneAnnotationManager.GetFilteredZoneAnnotations(CurrentZoneData.ShortName, CurrentZoneData.SubMapIndex));
+        }
+
+        public void SaveNotes()
+        {
+            ZoneAnnotationManager.SaveNotesToFile();
         }
     }
 }

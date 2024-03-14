@@ -119,7 +119,7 @@ namespace ZlizEQMap
             MapMarker.Draw(g, renderScale, xOffset, yOffset);
             if (!string.IsNullOrWhiteSpace(Note))
             {
-                g.DrawString(Note, Settings.NotesFont, MapMarker.MapPen.Brush, (X * renderScale) + xOffset, (Y * renderScale) + yOffset);
+                g.DrawString(Note, Settings.NotesFont, MapMarker.MapPen.Brush, (X * renderScale) + xOffset + 5, (Y * renderScale) + yOffset + 2);
             }
         }
     }
