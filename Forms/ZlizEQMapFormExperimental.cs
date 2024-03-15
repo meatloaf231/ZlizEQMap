@@ -35,6 +35,11 @@ namespace ZlizEQMap
             Initialize();
         }
 
+        private void ZlizEQMapFormExperimental_Load(object sender, EventArgs e)
+        {
+
+        }
+
         private void Initialize()
         {
             Cartographer = new CartographyService();
@@ -56,7 +61,6 @@ namespace ZlizEQMap
             btnAutosize.Select();
             picBox.Invalidate();
         }
-
 
         private void ZlizEQMapFormExperimental_CartographerSaysRedraw(object sender, EventArgs e)
         {
@@ -85,7 +89,7 @@ namespace ZlizEQMap
 
             sliderOpacity.Value = Settings.OpacityLevel;
             SetFormOpacity();
-            
+
             checkAlwaysOnTop.Checked = Settings.AlwaysOnTop;
             SetAlwaysOnTop();
 
@@ -94,7 +98,7 @@ namespace ZlizEQMap
             check_ClearNoteAfterEntry.Checked = Settings.NotesClearAfterEntry;
             check_ShowAnnotations.CheckState = (CheckState)Settings.NotesShow;
             check_ShowPlayerLocHistory.Checked = Settings.LocHistoryShow;
-            
+
             nud_HistoryToTrack.Value = Settings.LocHistoryNumberToTrack;
             button_NotesFont.Font = Settings.NotesFont;
             button_NotesColor.BackColor = Settings.NotesColor;
@@ -150,11 +154,10 @@ namespace ZlizEQMap
             PopulateSubMaps(Cartographer.CurrentZoneData);
             comboZone.SelectedItem = Cartographer.CurrentZoneData.FullName;
             labelLegend.Text = LegendTextFactory.GetLegendText(Cartographer.CurrentZoneData);
-            zoneAnnotationBindingSource.ResetBindings(false);
 
             PopulateConnectedZones();
             SetButtonWaypointText();
-            FilterNotesToCurrentZone();
+            RefreshZoneAnnotationList();
 
             if (popoutMap != null)
             {
@@ -624,13 +627,22 @@ namespace ZlizEQMap
         {
             OpenPopoutMap();
         }
+        private void BindNoteDataToDGV()
+        {
+            if (initialLoadCompleted)
+            {
+                zoneAnnotationBindingSource.DataSource = Cartographer.CurrentZoneAnnotations;
+                dgv_ZoneAnnotation.DataSource = zoneAnnotationBindingSource;
+                dgv_ZoneAnnotation.AutoGenerateColumns = false;
+                dgv_ZoneAnnotation.AutoSize = false;
+            }
+        }
 
         private void button_AddNote_Click(object sender, EventArgs e)
         {
             Point noteCoords = ParseTextToPoint(txt_NewNoteCoords.Text);
 
             Cartographer.AddNote(txt_NewNote.Text, noteCoords.X, noteCoords.Y);
-            zoneAnnotationBindingSource.ResetBindings(false);
 
             if (check_AutosaveNotes.Checked)
             {
@@ -643,21 +655,14 @@ namespace ZlizEQMap
                 txt_NewNoteCoords.Clear();
                 txt_NewNoteCoords.Text = "0, 0";
             }
-        }
-        
-        private void BindNoteDataToDGV()
-        {
-            if (initialLoadCompleted)
-            {
-                zoneAnnotationBindingSource.DataSource = Cartographer.CurrentZoneAnnotations;
-                dgv_ZoneAnnotation.DataSource = zoneAnnotationBindingSource;
-                dgv_ZoneAnnotation.AutoGenerateColumns = false;
-                dgv_ZoneAnnotation.AutoSize = false;
-            }
+
+            RefreshZoneAnnotationList();
         }
 
-        public void FilterNotesToCurrentZone()
+        private void RefreshZoneAnnotationList()
         {
+            zoneAnnotationBindingSource.Clear();
+            zoneAnnotationBindingSource.DataSource = Cartographer.CurrentZoneAnnotations;
             zoneAnnotationBindingSource.ResetBindings(false);
         }
 
@@ -676,7 +681,7 @@ namespace ZlizEQMap
         {
             if (Cartographer.PlayerCoords != null)
             {
-                txt_NewNoteCoords.Text = $"{Cartographer.PlayerCoords.X}, {Cartographer.PlayerCoords.Y}";
+                txt_NewNoteCoords.Text = $"{Cartographer.PlayerCoords.Y}, {Cartographer.PlayerCoords.X}";
             }
         }
 
@@ -708,11 +713,6 @@ namespace ZlizEQMap
             }
         }
 
-        private void ZlizEQMapFormExperimental_Load(object sender, EventArgs e)
-        {
-
-        }
-
         private void check_ShowAnnotations_CheckStateChanged(object sender, EventArgs e)
         {
             if (initialLoadCompleted)
@@ -736,15 +736,47 @@ namespace ZlizEQMap
 
         }
 
-        private void label_AnnotationFontSize_Click(object sender, EventArgs e)
-        {
-
-        }
 
         private void btn_EditMapCoords_Click(object sender, EventArgs e)
         {
             MapCoordEditor fixer = new MapCoordEditor(Cartographer);
             fixer.Show();
+        }
+
+        private void zoneAnnotationBindingSource_CurrentChanged(object sender, EventArgs e)
+        {
+            // Maybe more bindings but augh not right now
+        }
+
+        private void dgv_ZoneAnnotation_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+            // Ignore clicks that are not on button cells. 
+            if (e.RowIndex < 0 || e.ColumnIndex !=
+                dgv_ZoneAnnotation.Columns["ColDeleteButton"].Index) return;
+
+            // validate deletion target
+            string note = dgv_ZoneAnnotation["Note", e.RowIndex].Value.ToString();
+            string y = dgv_ZoneAnnotation["YCoord", e.RowIndex].Value.ToString();
+            string x = dgv_ZoneAnnotation["XCoord", e.RowIndex].Value.ToString();
+            string mapShortName = dgv_ZoneAnnotation["MapShortName", e.RowIndex].Value.ToString();
+            string subMap = dgv_ZoneAnnotation["SubMap", e.RowIndex].Value.ToString();
+
+            var match = Cartographer.CurrentZoneAnnotations.Where(za => za.Note == note
+                && (za.X.ToString() == x)
+                && (za.Y.ToString() == y)
+                && (za.MapShortName == mapShortName)
+                && (za.SubMap.ToString() == subMap)).FirstOrDefault();
+
+            if (match != null)
+            {
+                DialogResult confirmDeleteNote = MessageBox.Show($"Delete note {note} in {mapShortName} at {y} {x} ? ", "Confirm deletion", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+                if (confirmDeleteNote == DialogResult.Yes)
+                {
+                    Cartographer.RemoveNote(match);
+                }
+            }
+
+            RefreshZoneAnnotationList();
         }
     }
 }

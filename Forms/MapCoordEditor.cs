@@ -74,12 +74,24 @@ namespace ZlizEQMap.Forms
             CoordsY = Cartographer.CurrentZoneData.TotalY;
             ZeroLocation = new Point(Cartographer.CurrentZoneData.ZeroLocation.X, Cartographer.CurrentZoneData.ZeroLocation.Y);
 
+            CalculateInitialGridDensity();
             UpdateControlsFromData();
         }
 
-        private void bindingSource1_CurrentChanged(object sender, EventArgs e)
+        private void CalculateInitialGridDensity()
         {
+            // Grid density check
+            int smallestCoordVal = Math.Min(CoordsX, CoordsY);
+            int proportion = smallestCoordVal / 10;
 
+            if (smallestCoordVal < 500)
+                nud_GridDensity.Value = 25;
+            else if (smallestCoordVal < 2000)
+                nud_GridDensity.Value = 100;
+            else if (smallestCoordVal < 5000)
+                nud_GridDensity.Value = 250;
+            else
+                nud_GridDensity.Value = 500;
         }
 
         private MapPoint ScaleToMapPoint(int x, int y)
@@ -88,7 +100,6 @@ namespace ZlizEQMap.Forms
             int newLocationY = (int)(ZeroLocation.Y - ((float)y) / ImageYCoordRatio);
 
             return new MapPoint(newLocationX, newLocationY);
-
         }
 
         private void pictureBox_MapCoordEditor_Paint(object sender, PaintEventArgs e)
@@ -122,7 +133,7 @@ namespace ZlizEQMap.Forms
             double gridLineCount = bound / gridSize;
 
             // If there's too many grid lines, we need to offset the count
-            int maxGridMarkers = 7;
+            int maxGridMarkers = 7 * gridScaleMult;
             double factorChange = gridLineCount / maxGridMarkers;
             double gridMarkerFactor = Math.Ceiling(factorChange);
 
@@ -208,6 +219,17 @@ namespace ZlizEQMap.Forms
         private void btn_ResetImageSizeX_Click(object sender, EventArgs e)
         {
             LoadCurrentData();
+
+            pictureBox_MapCoordEditor.Width = ImageWidth;
+            pictureBox_MapCoordEditor.Height = ImageHeight;
+            pictureBox_MapCoordEditor.Invalidate();
+        }
+
+        private void button_TempApply_Click(object sender, EventArgs e)
+        {
+            Cartographer.CurrentZoneData.TotalX = CoordsX;
+            Cartographer.CurrentZoneData.TotalY = CoordsY;
+            Cartographer.CurrentZoneData.ZeroLocation = ZeroLocation;
         }
     }
 }

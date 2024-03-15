@@ -13,7 +13,7 @@ namespace ZlizEQMap
 {
     public class ZoneAnnotationService
     {
-        private List<ZoneAnnotation> ZoneAnnotations { get; set; } = new List<ZoneAnnotation>();
+        public List<ZoneAnnotation> ZoneAnnotations { get; set; }
 
         public bool NotesFileExists
         {
@@ -23,6 +23,11 @@ namespace ZlizEQMap
         public ZoneAnnotationService()
         {
             LoadNotesFromFile();
+        }
+
+        public List<ZoneAnnotation> GetAllZoneAnnotations()
+        {
+            return ZoneAnnotations;
         }
 
         public List<ZoneAnnotation> GetFilteredZoneAnnotations(string mapShortName, int subMapIndex)
@@ -54,6 +59,7 @@ namespace ZlizEQMap
                 r.Write(JsonConvert.SerializeObject(ZoneAnnotations));
             }
 
+            Console.WriteLine($"CURRENT LIST: {ZoneAnnotations.Count}");
             foreach (var item in ZoneAnnotations)
             {
                 Console.WriteLine($"{item.X} {item.Y} {item.Note}");

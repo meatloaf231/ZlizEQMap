@@ -88,13 +88,6 @@ namespace ZlizEQMap
             this.txt_NewNote = new System.Windows.Forms.TextBox();
             this.zoneAnnotationBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.dgv_ZoneAnnotation = new System.Windows.Forms.DataGridView();
-            this.Index = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.MapShortName = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.SubMap = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Note = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.XCoord = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.YCoord = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Show = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             this.txt_NewNoteCoords = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.button_SetNoteCoordsToPlayerLoc = new System.Windows.Forms.Button();
@@ -112,6 +105,13 @@ namespace ZlizEQMap
             this.timer_ParseLogsTimer = new System.Windows.Forms.Timer(this.components);
             this.btn_EditMapCoords = new System.Windows.Forms.Button();
             this.labelZoneName = new ZlizEQMap.ZlizLabel();
+            this.MapShortName = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.SubMap = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Note = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.YCoord = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.XCoord = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Show = new System.Windows.Forms.DataGridViewCheckBoxColumn();
+            this.ColDeleteButton = new System.Windows.Forms.DataGridViewButtonColumn();
             ((System.ComponentModel.ISupportInitialize)(this.picBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.sliderOpacity)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.sliderZoom)).BeginInit();
@@ -354,7 +354,7 @@ namespace ZlizEQMap
             // check_AutoUpdateNoteLocation
             // 
             this.check_AutoUpdateNoteLocation.AutoSize = true;
-            this.check_AutoUpdateNoteLocation.Location = new System.Drawing.Point(202, 54);
+            this.check_AutoUpdateNoteLocation.Location = new System.Drawing.Point(216, 54);
             this.check_AutoUpdateNoteLocation.Name = "check_AutoUpdateNoteLocation";
             this.check_AutoUpdateNoteLocation.Size = new System.Drawing.Size(49, 17);
             this.check_AutoUpdateNoteLocation.TabIndex = 47;
@@ -365,7 +365,7 @@ namespace ZlizEQMap
             // check_AutoParseFromLogs
             // 
             this.check_AutoParseFromLogs.AutoSize = true;
-            this.check_AutoParseFromLogs.Location = new System.Drawing.Point(15, 74);
+            this.check_AutoParseFromLogs.Location = new System.Drawing.Point(6, 76);
             this.check_AutoParseFromLogs.Name = "check_AutoParseFromLogs";
             this.check_AutoParseFromLogs.Size = new System.Drawing.Size(120, 17);
             this.check_AutoParseFromLogs.TabIndex = 51;
@@ -473,7 +473,6 @@ namespace ZlizEQMap
             // 
             this.panelMainControls.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.panelMainControls.BackColor = System.Drawing.Color.Transparent;
-            this.panelMainControls.Controls.Add(this.btn_EditMapCoords);
             this.panelMainControls.Controls.Add(this.labelCharName);
             this.panelMainControls.Controls.Add(this.comboZone);
             this.panelMainControls.Controls.Add(this.textBoxCharName);
@@ -494,7 +493,7 @@ namespace ZlizEQMap
             0,
             0,
             131072});
-            this.nud_scale.Location = new System.Drawing.Point(102, 97);
+            this.nud_scale.Location = new System.Drawing.Point(117, 102);
             this.nud_scale.Maximum = new decimal(new int[] {
             1,
             0,
@@ -637,7 +636,7 @@ namespace ZlizEQMap
             // label_Scale
             // 
             this.label_Scale.AutoSize = true;
-            this.label_Scale.Location = new System.Drawing.Point(12, 94);
+            this.label_Scale.Location = new System.Drawing.Point(27, 104);
             this.label_Scale.Name = "label_Scale";
             this.label_Scale.Size = new System.Drawing.Size(84, 13);
             this.label_Scale.TabIndex = 23;
@@ -755,7 +754,6 @@ namespace ZlizEQMap
             this.label_AnnotationFontSize.Size = new System.Drawing.Size(106, 13);
             this.label_AnnotationFontSize.TabIndex = 37;
             this.label_AnnotationFontSize.Text = "Font style and color:";
-            this.label_AnnotationFontSize.Click += new System.EventHandler(this.label_AnnotationFontSize_Click);
             // 
             // label_HistoryToKeep
             // 
@@ -783,97 +781,32 @@ namespace ZlizEQMap
             this.txt_NewNote.Size = new System.Drawing.Size(165, 21);
             this.txt_NewNote.TabIndex = 43;
             // 
+            // zoneAnnotationBindingSource
+            // 
+            this.zoneAnnotationBindingSource.CurrentChanged += new System.EventHandler(this.zoneAnnotationBindingSource_CurrentChanged);
+            // 
             // dgv_ZoneAnnotation
             // 
             this.dgv_ZoneAnnotation.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.dgv_ZoneAnnotation.AutoGenerateColumns = false;
             this.dgv_ZoneAnnotation.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgv_ZoneAnnotation.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-            this.Index,
             this.MapShortName,
             this.SubMap,
             this.Note,
-            this.XCoord,
             this.YCoord,
-            this.Show});
+            this.XCoord,
+            this.Show,
+            this.ColDeleteButton});
             this.dgv_ZoneAnnotation.DataSource = this.zoneAnnotationBindingSource;
             this.dgv_ZoneAnnotation.Location = new System.Drawing.Point(721, 483);
             this.dgv_ZoneAnnotation.Name = "dgv_ZoneAnnotation";
-            this.dgv_ZoneAnnotation.RowHeadersWidth = 15;
+            this.dgv_ZoneAnnotation.RowHeadersWidth = 4;
             this.dgv_ZoneAnnotation.RowTemplate.Height = 21;
             this.dgv_ZoneAnnotation.Size = new System.Drawing.Size(272, 237);
             this.dgv_ZoneAnnotation.TabIndex = 44;
+            this.dgv_ZoneAnnotation.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgv_ZoneAnnotation_CellContentClick);
             this.dgv_ZoneAnnotation.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgv_ZoneAnnotation_CellValueChanged);
-            // 
-            // Index
-            // 
-            this.Index.Frozen = true;
-            this.Index.HeaderText = "#";
-            this.Index.Name = "Index";
-            this.Index.ReadOnly = true;
-            this.Index.Width = 25;
-            // 
-            // MapShortName
-            // 
-            this.MapShortName.DataPropertyName = "MapShortName";
-            this.MapShortName.Frozen = true;
-            this.MapShortName.HeaderText = "MapShortName";
-            this.MapShortName.Name = "MapShortName";
-            this.MapShortName.ReadOnly = true;
-            this.MapShortName.Visible = false;
-            this.MapShortName.Width = 50;
-            // 
-            // SubMap
-            // 
-            this.SubMap.DataPropertyName = "SubMap";
-            this.SubMap.Frozen = true;
-            this.SubMap.HeaderText = "SubMap";
-            this.SubMap.Name = "SubMap";
-            this.SubMap.ReadOnly = true;
-            this.SubMap.Visible = false;
-            this.SubMap.Width = 50;
-            // 
-            // Note
-            // 
-            this.Note.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-            this.Note.DataPropertyName = "Note";
-            this.Note.FillWeight = 176.9911F;
-            this.Note.Frozen = true;
-            this.Note.HeaderText = "Note";
-            this.Note.MinimumWidth = 50;
-            this.Note.Name = "Note";
-            // 
-            // XCoord
-            // 
-            this.XCoord.DataPropertyName = "X";
-            this.XCoord.FillWeight = 34.58654F;
-            this.XCoord.Frozen = true;
-            this.XCoord.HeaderText = "X";
-            this.XCoord.MinimumWidth = 40;
-            this.XCoord.Name = "XCoord";
-            this.XCoord.Resizable = System.Windows.Forms.DataGridViewTriState.False;
-            this.XCoord.Width = 40;
-            // 
-            // YCoord
-            // 
-            this.YCoord.DataPropertyName = "Y";
-            this.YCoord.FillWeight = 46.11596F;
-            this.YCoord.Frozen = true;
-            this.YCoord.HeaderText = "Y";
-            this.YCoord.MinimumWidth = 40;
-            this.YCoord.Name = "YCoord";
-            this.YCoord.Resizable = System.Windows.Forms.DataGridViewTriState.False;
-            this.YCoord.Width = 40;
-            // 
-            // Show
-            // 
-            this.Show.DataPropertyName = "Show";
-            this.Show.FillWeight = 142.3064F;
-            this.Show.Frozen = true;
-            this.Show.HeaderText = "Show";
-            this.Show.Name = "Show";
-            this.Show.Resizable = System.Windows.Forms.DataGridViewTriState.False;
-            this.Show.Width = 50;
             // 
             // txt_NewNoteCoords
             // 
@@ -896,9 +829,9 @@ namespace ZlizEQMap
             // 
             this.button_SetNoteCoordsToPlayerLoc.Location = new System.Drawing.Point(109, 50);
             this.button_SetNoteCoordsToPlayerLoc.Name = "button_SetNoteCoordsToPlayerLoc";
-            this.button_SetNoteCoordsToPlayerLoc.Size = new System.Drawing.Size(87, 23);
+            this.button_SetNoteCoordsToPlayerLoc.Size = new System.Drawing.Size(101, 23);
             this.button_SetNoteCoordsToPlayerLoc.TabIndex = 48;
-            this.button_SetNoteCoordsToPlayerLoc.Text = "Player X/Y";
+            this.button_SetNoteCoordsToPlayerLoc.Text = "Set To Player Loc";
             this.button_SetNoteCoordsToPlayerLoc.UseVisualStyleBackColor = true;
             this.button_SetNoteCoordsToPlayerLoc.Click += new System.EventHandler(this.button_SetNoteCoordsToPlayerLoc_Click);
             // 
@@ -961,6 +894,7 @@ namespace ZlizEQMap
             // 
             // groupBox2
             // 
+            this.groupBox2.Controls.Add(this.btn_EditMapCoords);
             this.groupBox2.Controls.Add(this.check_AutoParseFromLogs);
             this.groupBox2.Controls.Add(this.buttonAutosize);
             this.groupBox2.Controls.Add(this.buttonStretch);
@@ -1044,11 +978,11 @@ namespace ZlizEQMap
             // 
             // btn_EditMapCoords
             // 
-            this.btn_EditMapCoords.Location = new System.Drawing.Point(22, 24);
+            this.btn_EditMapCoords.Location = new System.Drawing.Point(6, 138);
             this.btn_EditMapCoords.Name = "btn_EditMapCoords";
             this.btn_EditMapCoords.Size = new System.Drawing.Size(108, 23);
             this.btn_EditMapCoords.TabIndex = 15;
-            this.btn_EditMapCoords.Text = "Edit Map Coords";
+            this.btn_EditMapCoords.Text = "Map Coord Tool";
             this.toolTip1.SetToolTip(this.btn_EditMapCoords, "Set waypoint on map");
             this.btn_EditMapCoords.UseVisualStyleBackColor = true;
             this.btn_EditMapCoords.Click += new System.EventHandler(this.btn_EditMapCoords_Click);
@@ -1061,6 +995,77 @@ namespace ZlizEQMap
             this.labelZoneName.Size = new System.Drawing.Size(352, 55);
             this.labelZoneName.TabIndex = 0;
             this.labelZoneName.Text = "Zone";
+            // 
+            // MapShortName
+            // 
+            this.MapShortName.DataPropertyName = "MapShortName";
+            this.MapShortName.Frozen = true;
+            this.MapShortName.HeaderText = "MapShortName";
+            this.MapShortName.Name = "MapShortName";
+            this.MapShortName.ReadOnly = true;
+            this.MapShortName.Visible = false;
+            this.MapShortName.Width = 50;
+            // 
+            // SubMap
+            // 
+            this.SubMap.DataPropertyName = "SubMap";
+            this.SubMap.Frozen = true;
+            this.SubMap.HeaderText = "SubMap";
+            this.SubMap.Name = "SubMap";
+            this.SubMap.ReadOnly = true;
+            this.SubMap.Visible = false;
+            this.SubMap.Width = 50;
+            // 
+            // Note
+            // 
+            this.Note.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
+            this.Note.DataPropertyName = "Note";
+            this.Note.FillWeight = 176.9911F;
+            this.Note.Frozen = true;
+            this.Note.HeaderText = "Note";
+            this.Note.MinimumWidth = 60;
+            this.Note.Name = "Note";
+            this.Note.Width = 110;
+            // 
+            // YCoord
+            // 
+            this.YCoord.DataPropertyName = "Y";
+            this.YCoord.FillWeight = 46.11596F;
+            this.YCoord.Frozen = true;
+            this.YCoord.HeaderText = "Y";
+            this.YCoord.MinimumWidth = 40;
+            this.YCoord.Name = "YCoord";
+            this.YCoord.Resizable = System.Windows.Forms.DataGridViewTriState.False;
+            this.YCoord.Width = 40;
+            // 
+            // XCoord
+            // 
+            this.XCoord.DataPropertyName = "X";
+            this.XCoord.FillWeight = 34.58654F;
+            this.XCoord.Frozen = true;
+            this.XCoord.HeaderText = "X";
+            this.XCoord.MinimumWidth = 40;
+            this.XCoord.Name = "XCoord";
+            this.XCoord.Resizable = System.Windows.Forms.DataGridViewTriState.False;
+            this.XCoord.Width = 40;
+            // 
+            // Show
+            // 
+            this.Show.DataPropertyName = "Show";
+            this.Show.FillWeight = 142.3064F;
+            this.Show.Frozen = true;
+            this.Show.HeaderText = "Show";
+            this.Show.Name = "Show";
+            this.Show.Resizable = System.Windows.Forms.DataGridViewTriState.False;
+            this.Show.Width = 40;
+            // 
+            // ColDeleteButton
+            // 
+            this.ColDeleteButton.HeaderText = "DEL";
+            this.ColDeleteButton.Name = "ColDeleteButton";
+            this.ColDeleteButton.ReadOnly = true;
+            this.ColDeleteButton.ToolTipText = "Delete the note";
+            this.ColDeleteButton.Width = 35;
             // 
             // ZlizEQMapFormExperimental
             // 
@@ -1192,14 +1197,14 @@ namespace ZlizEQMap
         private Timer timer_ParseLogsTimer;
         private CheckBox check_AutosaveNotes;
         private Button button_SaveNotes;
-        private DataGridViewTextBoxColumn Index;
+        private Button btn_EditMapCoords;
         private DataGridViewTextBoxColumn MapShortName;
         private DataGridViewTextBoxColumn SubMap;
         private DataGridViewTextBoxColumn Note;
-        private DataGridViewTextBoxColumn XCoord;
         private DataGridViewTextBoxColumn YCoord;
+        private DataGridViewTextBoxColumn XCoord;
         private DataGridViewCheckBoxColumn Show;
-        private Button btn_EditMapCoords;
+        private DataGridViewButtonColumn ColDeleteButton;
     }
 }
 

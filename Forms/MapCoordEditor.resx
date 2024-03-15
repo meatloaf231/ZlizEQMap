@@ -118,8 +118,9 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="label9.Text" xml:space="preserve">
-    <value>Please note that changing these options in this window won't modify or save any map data. For now, you'll still need to edit map files by hand if you want to change anything permanently.
+    <value>This is just here to help debug if there's map scaling issues so we can more accurately line up coordinates and zero points.  Changing these options here won't permanently change any map data.  Additionally, only the zero point and the map coordinate counts can be applied to the main map. 
 
-This is just here to help debug if there's map scaling issues so we can more accurately line up coordinates and zero points. </value>
+For now, you'll still need to edit map files by hand if you want to change anything permanently. As soon as a map is reloaded, the changes from this window will be lost as the map reloads from the map data file.
+</value>
   </data>
 </root>

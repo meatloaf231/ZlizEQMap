@@ -49,6 +49,7 @@
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.label9 = new System.Windows.Forms.Label();
+            this.button_TempApply = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox_MapCoordEditor)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nud_ImageX)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nud_ImageY)).BeginInit();
@@ -65,7 +66,7 @@
             // 
             this.pictureBox_MapCoordEditor.Location = new System.Drawing.Point(251, 12);
             this.pictureBox_MapCoordEditor.Name = "pictureBox_MapCoordEditor";
-            this.pictureBox_MapCoordEditor.Size = new System.Drawing.Size(552, 474);
+            this.pictureBox_MapCoordEditor.Size = new System.Drawing.Size(595, 522);
             this.pictureBox_MapCoordEditor.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.pictureBox_MapCoordEditor.TabIndex = 0;
             this.pictureBox_MapCoordEditor.TabStop = false;
@@ -145,6 +146,7 @@
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.button_TempApply);
             this.groupBox1.Controls.Add(this.btn_ResetImageSizeX);
             this.groupBox1.Controls.Add(this.nud_GridMultiplier);
             this.groupBox1.Controls.Add(this.label8);
@@ -171,7 +173,7 @@
             // 
             // btn_ResetImageSizeX
             // 
-            this.btn_ResetImageSizeX.Location = new System.Drawing.Point(172, 271);
+            this.btn_ResetImageSizeX.Location = new System.Drawing.Point(6, 317);
             this.btn_ResetImageSizeX.Name = "btn_ResetImageSizeX";
             this.btn_ResetImageSizeX.Size = new System.Drawing.Size(46, 20);
             this.btn_ResetImageSizeX.TabIndex = 24;
@@ -342,10 +344,20 @@
             // 
             this.label9.Location = new System.Drawing.Point(18, 358);
             this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(227, 128);
+            this.label9.Size = new System.Drawing.Size(227, 242);
             this.label9.TabIndex = 17;
             this.label9.Text = resources.GetString("label9.Text");
             this.label9.Click += new System.EventHandler(this.label9_Click);
+            // 
+            // button_TempApply
+            // 
+            this.button_TempApply.Location = new System.Drawing.Point(147, 286);
+            this.button_TempApply.Name = "button_TempApply";
+            this.button_TempApply.Size = new System.Drawing.Size(80, 51);
+            this.button_TempApply.TabIndex = 25;
+            this.button_TempApply.Text = "Temporarily Apply to Main Map";
+            this.button_TempApply.UseVisualStyleBackColor = true;
+            this.button_TempApply.Click += new System.EventHandler(this.button_TempApply_Click);
             // 
             // MapCoordEditor
             // 
@@ -395,5 +407,6 @@
         private System.Windows.Forms.NumericUpDown nud_GridMultiplier;
         private System.Windows.Forms.Label label9;
         private System.Windows.Forms.Button btn_ResetImageSizeX;
+        private System.Windows.Forms.Button button_TempApply;
     }
 }

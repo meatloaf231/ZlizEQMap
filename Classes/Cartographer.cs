@@ -63,8 +63,8 @@ namespace ZlizEQMap
         public LogFileParser Parser;
         
         // Zone and map info.
-        private ZoneAnnotationService ZoneAnnotationManager = new ZoneAnnotationService();
-        public List<ZoneAnnotation> CurrentZoneAnnotations = new List<ZoneAnnotation>();
+        public ZoneAnnotationService ZoneAnnotationManager = new ZoneAnnotationService();
+        public List<ZoneAnnotation> CurrentZoneAnnotations { get => ZoneAnnotationManager.GetFilteredZoneAnnotations(CurrentZoneData.ShortName, CurrentZoneData.SubMapIndex); }
 
         public List<ZoneData> Zones;
         public ZoneData CurrentZoneData = null;
@@ -598,15 +598,23 @@ namespace ZlizEQMap
             RefreshCurrentZoneAnnotations();
         }
 
-        public void RefreshCurrentZoneAnnotations()
+        public void RemoveNote(ZoneAnnotation zoneAnnotation)
         {
-            CurrentZoneAnnotations.Clear();
-            CurrentZoneAnnotations.AddRange(ZoneAnnotationManager.GetFilteredZoneAnnotations(CurrentZoneData.ShortName, CurrentZoneData.SubMapIndex));
+            ZoneAnnotationManager.ZoneAnnotations.Remove(zoneAnnotation);
+            RefreshCurrentZoneAnnotations();
         }
 
         public void SaveNotes()
         {
             ZoneAnnotationManager.SaveNotesToFile();
+            RefreshCurrentZoneAnnotations();
+        }
+
+        public void RefreshCurrentZoneAnnotations()
+        {
+            CurrentZoneAnnotations.Clear();
+            CurrentZoneAnnotations.AddRange(ZoneAnnotationManager.GetFilteredZoneAnnotations(CurrentZoneData.ShortName, CurrentZoneData.SubMapIndex));
+            RaiseRedrawMaps(null, null);
         }
     }
 }
