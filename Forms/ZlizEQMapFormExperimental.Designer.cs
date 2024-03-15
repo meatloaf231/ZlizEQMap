@@ -112,6 +112,8 @@ namespace ZlizEQMap
             this.XCoord = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Show = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             this.ColDeleteButton = new System.Windows.Forms.DataGridViewButtonColumn();
+            this.nud_ParseTimerMS = new System.Windows.Forms.NumericUpDown();
+            this.label2 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.picBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.sliderOpacity)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.sliderZoom)).BeginInit();
@@ -139,6 +141,7 @@ namespace ZlizEQMap
             this.tabControl_Main.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.tabPage2.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nud_ParseTimerMS)).BeginInit();
             this.SuspendLayout();
             // 
             // picBox
@@ -365,11 +368,11 @@ namespace ZlizEQMap
             // check_AutoParseFromLogs
             // 
             this.check_AutoParseFromLogs.AutoSize = true;
-            this.check_AutoParseFromLogs.Location = new System.Drawing.Point(9, 74);
+            this.check_AutoParseFromLogs.Location = new System.Drawing.Point(26, 109);
             this.check_AutoParseFromLogs.Name = "check_AutoParseFromLogs";
-            this.check_AutoParseFromLogs.Size = new System.Drawing.Size(120, 17);
+            this.check_AutoParseFromLogs.Size = new System.Drawing.Size(67, 17);
             this.check_AutoParseFromLogs.TabIndex = 51;
-            this.check_AutoParseFromLogs.Text = "Suspend Autoparse";
+            this.check_AutoParseFromLogs.Text = "Suspend";
             this.toolTip1.SetToolTip(this.check_AutoParseFromLogs, "Always-On-Top");
             this.check_AutoParseFromLogs.UseVisualStyleBackColor = true;
             this.check_AutoParseFromLogs.CheckedChanged += new System.EventHandler(this.check_AutoParseFromLogs_CheckedChanged);
@@ -393,7 +396,7 @@ namespace ZlizEQMap
             this.panelMain.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panelMain.Location = new System.Drawing.Point(0, 0);
             this.panelMain.Name = "panelMain";
-            this.panelMain.Size = new System.Drawing.Size(565, 476);
+            this.panelMain.Size = new System.Drawing.Size(565, 403);
             this.panelMain.TabIndex = 13;
             // 
             // panelConnectedZones
@@ -423,7 +426,7 @@ namespace ZlizEQMap
             this.flowSubMaps.Dock = System.Windows.Forms.DockStyle.Fill;
             this.flowSubMaps.Location = new System.Drawing.Point(0, 0);
             this.flowSubMaps.Name = "flowSubMaps";
-            this.flowSubMaps.Size = new System.Drawing.Size(127, 476);
+            this.flowSubMaps.Size = new System.Drawing.Size(127, 403);
             this.flowSubMaps.TabIndex = 7;
             // 
             // btnSettingsHelp
@@ -494,7 +497,7 @@ namespace ZlizEQMap
             0,
             0,
             131072});
-            this.nud_scale.Location = new System.Drawing.Point(204, 20);
+            this.nud_scale.Location = new System.Drawing.Point(204, 14);
             this.nud_scale.Maximum = new decimal(new int[] {
             1,
             0,
@@ -532,7 +535,7 @@ namespace ZlizEQMap
             this.splitContainerMapAndLegend.Panel2.AutoScroll = true;
             this.splitContainerMapAndLegend.Panel2.Controls.Add(this.flowSubMaps);
             this.splitContainerMapAndLegend.Panel2MinSize = 125;
-            this.splitContainerMapAndLegend.Size = new System.Drawing.Size(700, 478);
+            this.splitContainerMapAndLegend.Size = new System.Drawing.Size(700, 405);
             this.splitContainerMapAndLegend.SplitterDistance = 567;
             this.splitContainerMapAndLegend.TabIndex = 14;
             // 
@@ -560,7 +563,7 @@ namespace ZlizEQMap
             this.splitContainerMain.Panel2MinSize = 100;
             this.splitContainerMain.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.splitContainerMain.Size = new System.Drawing.Size(700, 649);
-            this.splitContainerMain.SplitterDistance = 478;
+            this.splitContainerMain.SplitterDistance = 405;
             this.splitContainerMain.TabIndex = 15;
             // 
             // panel1
@@ -571,7 +574,7 @@ namespace ZlizEQMap
             this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel1.Location = new System.Drawing.Point(0, 0);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(700, 167);
+            this.panel1.Size = new System.Drawing.Size(700, 240);
             this.panel1.TabIndex = 14;
             // 
             // panelLegend
@@ -581,12 +584,12 @@ namespace ZlizEQMap
             this.panelLegend.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panelLegend.Location = new System.Drawing.Point(0, 31);
             this.panelLegend.Name = "panelLegend";
-            this.panelLegend.Size = new System.Drawing.Size(700, 136);
+            this.panelLegend.Size = new System.Drawing.Size(700, 209);
             this.panelLegend.TabIndex = 14;
             // 
             // buttonAutosize
             // 
-            this.buttonAutosize.Location = new System.Drawing.Point(175, 47);
+            this.buttonAutosize.Location = new System.Drawing.Point(175, 40);
             this.buttonAutosize.Name = "buttonAutosize";
             this.buttonAutosize.Size = new System.Drawing.Size(73, 23);
             this.buttonAutosize.TabIndex = 17;
@@ -596,7 +599,7 @@ namespace ZlizEQMap
             // 
             // buttonStretch
             // 
-            this.buttonStretch.Location = new System.Drawing.Point(175, 105);
+            this.buttonStretch.Location = new System.Drawing.Point(175, 98);
             this.buttonStretch.Name = "buttonStretch";
             this.buttonStretch.Size = new System.Drawing.Size(73, 23);
             this.buttonStretch.TabIndex = 18;
@@ -616,7 +619,7 @@ namespace ZlizEQMap
             // 
             // buttonZoom
             // 
-            this.buttonZoom.Location = new System.Drawing.Point(175, 76);
+            this.buttonZoom.Location = new System.Drawing.Point(175, 69);
             this.buttonZoom.Name = "buttonZoom";
             this.buttonZoom.Size = new System.Drawing.Size(73, 23);
             this.buttonZoom.TabIndex = 20;
@@ -637,7 +640,7 @@ namespace ZlizEQMap
             // label_Scale
             // 
             this.label_Scale.AutoSize = true;
-            this.label_Scale.Location = new System.Drawing.Point(114, 22);
+            this.label_Scale.Location = new System.Drawing.Point(118, 17);
             this.label_Scale.Name = "label_Scale";
             this.label_Scale.Size = new System.Drawing.Size(84, 13);
             this.label_Scale.TabIndex = 23;
@@ -895,6 +898,8 @@ namespace ZlizEQMap
             // 
             // groupBox2
             // 
+            this.groupBox2.Controls.Add(this.label2);
+            this.groupBox2.Controls.Add(this.nud_ParseTimerMS);
             this.groupBox2.Controls.Add(this.btn_EditMapCoords);
             this.groupBox2.Controls.Add(this.check_AutoParseFromLogs);
             this.groupBox2.Controls.Add(this.buttonAutosize);
@@ -974,14 +979,14 @@ namespace ZlizEQMap
             // 
             // timer_ParseLogsTimer
             // 
-            this.timer_ParseLogsTimer.Interval = 500;
+            this.timer_ParseLogsTimer.Interval = 1000;
             this.timer_ParseLogsTimer.Tick += new System.EventHandler(this.timer_ParseLogsTimer_Tick);
             // 
             // btn_EditMapCoords
             // 
-            this.btn_EditMapCoords.Location = new System.Drawing.Point(41, 105);
+            this.btn_EditMapCoords.Location = new System.Drawing.Point(6, 149);
             this.btn_EditMapCoords.Name = "btn_EditMapCoords";
-            this.btn_EditMapCoords.Size = new System.Drawing.Size(88, 47);
+            this.btn_EditMapCoords.Size = new System.Drawing.Size(130, 32);
             this.btn_EditMapCoords.TabIndex = 15;
             this.btn_EditMapCoords.Text = "Launch Map Coord Tool";
             this.toolTip1.SetToolTip(this.btn_EditMapCoords, "Set waypoint on map");
@@ -993,7 +998,7 @@ namespace ZlizEQMap
             this.labelZoneName.Font = new System.Drawing.Font("Times New Roman", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.labelZoneName.Location = new System.Drawing.Point(13, 13);
             this.labelZoneName.Name = "labelZoneName";
-            this.labelZoneName.Size = new System.Drawing.Size(352, 55);
+            this.labelZoneName.Size = new System.Drawing.Size(454, 55);
             this.labelZoneName.TabIndex = 0;
             this.labelZoneName.Text = "Zone";
             // 
@@ -1068,6 +1073,43 @@ namespace ZlizEQMap
             this.ColDeleteButton.ToolTipText = "Delete the note";
             this.ColDeleteButton.Width = 35;
             // 
+            // nud_ParseTimerMS
+            // 
+            this.nud_ParseTimerMS.Increment = new decimal(new int[] {
+            25,
+            0,
+            0,
+            0});
+            this.nud_ParseTimerMS.Location = new System.Drawing.Point(99, 87);
+            this.nud_ParseTimerMS.Maximum = new decimal(new int[] {
+            10000,
+            0,
+            0,
+            0});
+            this.nud_ParseTimerMS.Minimum = new decimal(new int[] {
+            50,
+            0,
+            0,
+            0});
+            this.nud_ParseTimerMS.Name = "nud_ParseTimerMS";
+            this.nud_ParseTimerMS.Size = new System.Drawing.Size(44, 21);
+            this.nud_ParseTimerMS.TabIndex = 52;
+            this.nud_ParseTimerMS.Value = new decimal(new int[] {
+            1000,
+            0,
+            0,
+            0});
+            this.nud_ParseTimerMS.ValueChanged += new System.EventHandler(this.nud_ParseTimerMS_ValueChanged);
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(6, 89);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(87, 13);
+            this.label2.TabIndex = 53;
+            this.label2.Text = "Parse Timer (ms)";
+            // 
             // ZlizEQMapFormExperimental
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1121,6 +1163,7 @@ namespace ZlizEQMap
             this.tabPage1.ResumeLayout(false);
             this.tabPage1.PerformLayout();
             this.tabPage2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.nud_ParseTimerMS)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -1206,6 +1249,8 @@ namespace ZlizEQMap
         private DataGridViewTextBoxColumn XCoord;
         private DataGridViewCheckBoxColumn Show;
         private DataGridViewButtonColumn ColDeleteButton;
+        private Label label2;
+        private NumericUpDown nud_ParseTimerMS;
     }
 }
 

@@ -56,7 +56,7 @@ namespace ZlizEQMap
             BindNoteDataToDGV();
 
             timer_ParseLogsTimer.Enabled = true;
-            timer_ParseLogsTimer.Interval = 500;
+            timer_ParseLogsTimer.Interval = Settings.AutoParseIntervalMS;
 
             btnAutosize.Select();
             picBox.Invalidate();
@@ -102,6 +102,8 @@ namespace ZlizEQMap
             nud_HistoryToTrack.Value = Settings.LocHistoryNumberToTrack;
             button_NotesFont.Font = Settings.NotesFont;
             button_NotesColor.BackColor = Settings.NotesColor;
+
+            nud_ParseTimerMS.Value = Settings.AutoParseIntervalMS;
         }
 
         private void PopulateZoneComboBox()
@@ -328,7 +330,7 @@ namespace ZlizEQMap
                 if (subMaps.Count() > 1)
                     width += flowSubMaps.Width;
 
-                //this.Width = width;
+                this.Width = width;
 
                 int legendHeight = labelLegend.Height;
 
@@ -337,9 +339,9 @@ namespace ZlizEQMap
 
                 int height = labelZoneName.Height + picBox.Height + legendHeight + 105;
 
-                Rectangle working = Screen.GetWorkingArea(this.picBox);
-                if (height > working.Height - 100)
-                    height = working.Height - 100;
+                ////Rectangle working = Screen.GetWorkingArea(this.splitContainerMain);
+                //if (height > splitContainerMain.Height + 100)
+                //    height = working.Height + 100;
 
                 this.Height = height;
             }
@@ -366,7 +368,7 @@ namespace ZlizEQMap
 
             Settings.LocHistoryShow = check_ShowPlayerLocHistory.Checked;
             Settings.LocHistoryNumberToTrack = (int)nud_HistoryToTrack.Value;
-
+            Settings.AutoParseIntervalMS = (int)nud_ParseTimerMS.Value;
 
             Settings.SaveSettings();
         }
@@ -782,6 +784,15 @@ namespace ZlizEQMap
         private void check_AutoParseFromLogs_CheckedChanged(object sender, EventArgs e)
         {
             Cartographer.ToggleAutoParse(check_AutoParseFromLogs.Checked);
+        }
+
+        private void nud_ParseTimerMS_ValueChanged(object sender, EventArgs e)
+        {
+            if (nud_ParseTimerMS.Value > 0)
+            {
+                Cartographer.SetParseTimerMS((int)nud_ParseTimerMS.Value);
+                timer_ParseLogsTimer.Interval = Settings.AutoParseIntervalMS;
+            }
         }
     }
 }

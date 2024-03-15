@@ -622,5 +622,10 @@ namespace ZlizEQMap
         {
             suspendAutoParse = autoParseState;
         }
+
+        internal void SetParseTimerMS(int newParseInterval)
+        {
+            Settings.AutoParseIntervalMS = newParseInterval;
+        }
     }
 }

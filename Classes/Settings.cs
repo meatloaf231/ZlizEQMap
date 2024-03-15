@@ -65,14 +65,18 @@ namespace ZlizEQMap
         public static int PopoutMapPositionY { get; set; } = 100;
         public static int PopoutMapSizeWidth { get; set; } = 450;
         public static int PopoutMapSizeHeight { get; set; } = 350;
+
         public static int NotesShow { get; set; } = 1;
         public static Font NotesFont { get; set; } = new Font("Tahoma", 8.25F, FontStyle.Regular);
         public static Color NotesColor { get; set; } = Color.Green;
         public static bool NotesClearAfterEntry { get; set; } = false;
         public static bool NotesAutoUpdate { get; set; } = false;
         public static bool NotesAutoSave { get; set; } = false;
+
         public static bool LocHistoryShow { get; set; } = true;
         public static int LocHistoryNumberToTrack { get; set; } = 25;
+
+        public static int AutoParseIntervalMS { get; set; } = 1000;
 
         public static string GetEQDirectoryPath()
         {
@@ -305,7 +309,8 @@ namespace ZlizEQMap
                                     LocHistoryNumberToTrack = ProcessSetting(LocHistoryNumberToTrack, value, ref currentValue);
                                     LocHistoryNumberToTrack = Clamp(LocHistoryNumberToTrack, 0, 4096);
                                     break;
-                                case "Popout":
+
+                                case "PopoutMapPositionX":
                                     PopoutMapPositionX = ProcessSetting(PopoutMapPositionX, value, ref currentValue);
                                     break;
                                 case "PopoutMapPositionY":
@@ -317,6 +322,11 @@ namespace ZlizEQMap
                                 case "PopoutMapSizeHeight":
                                     PopoutMapSizeHeight = ProcessSetting(PopoutMapSizeHeight, value, ref currentValue);
                                     break;
+
+                                case "AutoParseIntervalMS":
+                                    AutoParseIntervalMS = ProcessSetting(AutoParseIntervalMS, value, ref currentValue);
+                                    break;
+
                                 default:
                                     Console.WriteLine($"Unknown Key: {key}");
                                     break;
@@ -396,6 +406,7 @@ namespace ZlizEQMap
                     WriteSetting(tw, "PopoutMapPositionY", PopoutMapPositionY.ToString());
                     WriteSetting(tw, "PopoutMapSizeWidth", PopoutMapSizeWidth.ToString());
                     WriteSetting(tw, "PopoutMapSizeHeight", PopoutMapSizeHeight.ToString());
+                    WriteSetting(tw, "AutoParseIntervalMS", AutoParseIntervalMS.ToString());
                 }
             }
         }
