@@ -13,6 +13,7 @@ using System.Threading;
 using System.Diagnostics;
 using System.Text.RegularExpressions;
 using System.Configuration;
+using ZlizEQMap.Forms;
 
 namespace ZlizEQMap
 {
@@ -738,6 +739,12 @@ namespace ZlizEQMap
         private void label_AnnotationFontSize_Click(object sender, EventArgs e)
         {
 
+        }
+
+        private void btn_EditMapCoords_Click(object sender, EventArgs e)
+        {
+            MapCoordEditor fixer = new MapCoordEditor(Cartographer);
+            fixer.Show();
         }
     }
 }

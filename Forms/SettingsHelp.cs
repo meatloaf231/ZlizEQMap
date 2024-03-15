@@ -16,7 +16,7 @@ namespace ZlizEQMap
     {
         public event EventHandler OnEQDirSettingsChanged;
 
-        private string version = "7";
+        private string version = "7.1 Experimental Fork by Meatloaf231";
 
         public SettingsHelp()
         {
@@ -168,16 +168,6 @@ namespace ZlizEQMap
                 radioProfile2.Font = new Font(radioProfile2.Font, FontStyle.Bold);
             else
                 radioProfile2.Font = new Font(radioProfile2.Font, FontStyle.Regular);
-        }
-
-        private void button1_Click(object sender, EventArgs e)
-        {
-            SettingsLoader loader = new SettingsLoader();
-            loader.ShowDialog();
-            if (loader.results.Any())
-            {
-                Console.WriteLine($"results: {loader.results.Count}" );
-            }
         }
     }
 }

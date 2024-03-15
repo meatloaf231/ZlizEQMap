@@ -14,6 +14,19 @@ namespace ZlizEQMap
     {
         public int Y { get; set; }
         public int X { get; set; }
+
+        public MapPoint() { }
+
+        public MapPoint(int x, int y)
+        {
+            X = x;
+            Y = y;
+        }
+
+        public Point ToPoint()
+        {
+            return new Point(X, Y);
+        }
     }
 
     public class PointSet

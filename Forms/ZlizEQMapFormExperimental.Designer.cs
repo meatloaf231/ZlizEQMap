@@ -110,6 +110,7 @@ namespace ZlizEQMap
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.timer_ParseLogsTimer = new System.Windows.Forms.Timer(this.components);
+            this.btn_EditMapCoords = new System.Windows.Forms.Button();
             this.labelZoneName = new ZlizEQMap.ZlizLabel();
             ((System.ComponentModel.ISupportInitialize)(this.picBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.sliderOpacity)).BeginInit();
@@ -442,7 +443,7 @@ namespace ZlizEQMap
             // 
             // txtWaypoint
             // 
-            this.txtWaypoint.Location = new System.Drawing.Point(207, 28);
+            this.txtWaypoint.Location = new System.Drawing.Point(207, 27);
             this.txtWaypoint.Name = "txtWaypoint";
             this.txtWaypoint.Size = new System.Drawing.Size(87, 21);
             this.txtWaypoint.TabIndex = 3;
@@ -472,6 +473,7 @@ namespace ZlizEQMap
             // 
             this.panelMainControls.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.panelMainControls.BackColor = System.Drawing.Color.Transparent;
+            this.panelMainControls.Controls.Add(this.btn_EditMapCoords);
             this.panelMainControls.Controls.Add(this.labelCharName);
             this.panelMainControls.Controls.Add(this.comboZone);
             this.panelMainControls.Controls.Add(this.textBoxCharName);
@@ -1040,6 +1042,17 @@ namespace ZlizEQMap
             this.timer_ParseLogsTimer.Interval = 500;
             this.timer_ParseLogsTimer.Tick += new System.EventHandler(this.timer_ParseLogsTimer_Tick);
             // 
+            // btn_EditMapCoords
+            // 
+            this.btn_EditMapCoords.Location = new System.Drawing.Point(22, 24);
+            this.btn_EditMapCoords.Name = "btn_EditMapCoords";
+            this.btn_EditMapCoords.Size = new System.Drawing.Size(108, 23);
+            this.btn_EditMapCoords.TabIndex = 15;
+            this.btn_EditMapCoords.Text = "Edit Map Coords";
+            this.toolTip1.SetToolTip(this.btn_EditMapCoords, "Set waypoint on map");
+            this.btn_EditMapCoords.UseVisualStyleBackColor = true;
+            this.btn_EditMapCoords.Click += new System.EventHandler(this.btn_EditMapCoords_Click);
+            // 
             // labelZoneName
             // 
             this.labelZoneName.Font = new System.Drawing.Font("Times New Roman", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -1186,6 +1199,7 @@ namespace ZlizEQMap
         private DataGridViewTextBoxColumn XCoord;
         private DataGridViewTextBoxColumn YCoord;
         private DataGridViewCheckBoxColumn Show;
+        private Button btn_EditMapCoords;
     }
 }
 

@@ -502,7 +502,7 @@ namespace ZlizEQMap
 
                     if (zAMP != null)
                     {
-                        MapEllipse annotationEllipse = new MapEllipse(AnnotationPen, (zAMP.X - aOV), (zAMP.Y - aOV), 2 * 5, 2 * 5);
+                        MapEllipse annotationEllipse = new MapEllipse(AnnotationPen, (zAMP.X - aOV), (zAMP.Y - aOV), 2 * aOV, 2 * aOV);
                         string note = showZoneAnnotations == 1 ? zAnno.Note : $"{noteIndex}";
                         MapAnnotation newMapAnno = new MapAnnotation(annotationEllipse, zAMP.X, zAMP.Y, note);
 

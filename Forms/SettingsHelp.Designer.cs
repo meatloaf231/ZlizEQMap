@@ -509,10 +509,10 @@
             this.label2.AutoSize = true;
             this.label2.Location = new System.Drawing.Point(13, 55);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(378, 26);
+            this.label2.Size = new System.Drawing.Size(421, 26);
             this.label2.TabIndex = 0;
-            this.label2.Text = "ZlizEQMap was developed by Zliz the Iksar Monk of Project1999 (Blue server).\r\nChe" +
-    "ck out some of my other projects:";
+            this.label2.Text = "ZlizEQMap was originally developed by Zliz the Iksar Monk of Project1999 (Blue se" +
+    "rver).\r\nCheck out some of their other projects:";
             // 
             // folderBrowserDialog1
             // 

@@ -145,6 +145,12 @@
     <Compile Include="Classes\ZoneAnnotation.cs" />
     <Compile Include="Classes\Cartographer.cs" />
     <Compile Include="Controls\ZlizPictureBox.cs" />
+    <Compile Include="Forms\MapCoordEditor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\MapCoordEditor.Designer.cs">
+      <DependentUpon>MapCoordEditor.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\PopoutMap.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -163,12 +169,6 @@
     </Compile>
     <Compile Include="Forms\FirstRun.Designer.cs">
       <DependentUpon>FirstRun.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\SettingsLoader.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\SettingsLoader.Designer.cs">
-      <DependentUpon>SettingsLoader.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\ZlizEQMapForm.cs">
       <SubType>Form</SubType>
@@ -202,14 +202,14 @@
     <EmbeddedResource Include="Forms\FirstRun.resx">
       <DependentUpon>FirstRun.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Forms\MapCoordEditor.resx">
+      <DependentUpon>MapCoordEditor.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\PopoutMap.resx">
       <DependentUpon>PopoutMap.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\SettingsHelp.resx">
       <DependentUpon>SettingsHelp.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Forms\SettingsLoader.resx">
-      <DependentUpon>SettingsLoader.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\ZlizEQMapForm.resx">
       <DependentUpon>ZlizEQMapForm.cs</DependentUpon>
