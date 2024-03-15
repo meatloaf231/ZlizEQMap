@@ -778,5 +778,10 @@ namespace ZlizEQMap
 
             RefreshZoneAnnotationList();
         }
+
+        private void check_AutoParseFromLogs_CheckedChanged(object sender, EventArgs e)
+        {
+            Cartographer.ToggleAutoParse(check_AutoParseFromLogs.Checked);
+        }
     }
 }

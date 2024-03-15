@@ -79,6 +79,7 @@ namespace ZlizEQMap
         public bool locInZoneHasBeenRecorded = false;
         public bool initialLoadCompleted = false;
         public bool forceLogReselection = false;
+        public bool suspendAutoParse = false;
 
         // Events! We could definitely use these for more stuff. But this one works for now for at least making sure the maps get redrawn.
         public static EventHandler RedrawMapsEH;
@@ -238,7 +239,7 @@ namespace ZlizEQMap
 
         public void CheckLogParserForNewLines()
         {
-            if (Parser == null)
+            if (Parser == null || suspendAutoParse)
                 return;
             
             Direction direction = Direction.Unknown;
@@ -615,6 +616,11 @@ namespace ZlizEQMap
             CurrentZoneAnnotations.Clear();
             CurrentZoneAnnotations.AddRange(ZoneAnnotationManager.GetFilteredZoneAnnotations(CurrentZoneData.ShortName, CurrentZoneData.SubMapIndex));
             RaiseRedrawMaps(null, null);
+        }
+
+        public void ToggleAutoParse(bool autoParseState)
+        {
+            suspendAutoParse = autoParseState;
         }
     }
 }

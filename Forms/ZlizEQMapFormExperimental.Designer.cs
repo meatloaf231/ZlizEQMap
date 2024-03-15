@@ -365,13 +365,14 @@ namespace ZlizEQMap
             // check_AutoParseFromLogs
             // 
             this.check_AutoParseFromLogs.AutoSize = true;
-            this.check_AutoParseFromLogs.Location = new System.Drawing.Point(6, 76);
+            this.check_AutoParseFromLogs.Location = new System.Drawing.Point(9, 74);
             this.check_AutoParseFromLogs.Name = "check_AutoParseFromLogs";
             this.check_AutoParseFromLogs.Size = new System.Drawing.Size(120, 17);
             this.check_AutoParseFromLogs.TabIndex = 51;
             this.check_AutoParseFromLogs.Text = "Suspend Autoparse";
             this.toolTip1.SetToolTip(this.check_AutoParseFromLogs, "Always-On-Top");
             this.check_AutoParseFromLogs.UseVisualStyleBackColor = true;
+            this.check_AutoParseFromLogs.CheckedChanged += new System.EventHandler(this.check_AutoParseFromLogs_CheckedChanged);
             // 
             // check_AutosaveNotes
             // 
@@ -493,7 +494,7 @@ namespace ZlizEQMap
             0,
             0,
             131072});
-            this.nud_scale.Location = new System.Drawing.Point(117, 102);
+            this.nud_scale.Location = new System.Drawing.Point(204, 20);
             this.nud_scale.Maximum = new decimal(new int[] {
             1,
             0,
@@ -585,7 +586,7 @@ namespace ZlizEQMap
             // 
             // buttonAutosize
             // 
-            this.buttonAutosize.Location = new System.Drawing.Point(175, 128);
+            this.buttonAutosize.Location = new System.Drawing.Point(175, 47);
             this.buttonAutosize.Name = "buttonAutosize";
             this.buttonAutosize.Size = new System.Drawing.Size(73, 23);
             this.buttonAutosize.TabIndex = 17;
@@ -595,7 +596,7 @@ namespace ZlizEQMap
             // 
             // buttonStretch
             // 
-            this.buttonStretch.Location = new System.Drawing.Point(175, 70);
+            this.buttonStretch.Location = new System.Drawing.Point(175, 105);
             this.buttonStretch.Name = "buttonStretch";
             this.buttonStretch.Size = new System.Drawing.Size(73, 23);
             this.buttonStretch.TabIndex = 18;
@@ -605,7 +606,7 @@ namespace ZlizEQMap
             // 
             // buttonCenter
             // 
-            this.buttonCenter.Location = new System.Drawing.Point(175, 41);
+            this.buttonCenter.Location = new System.Drawing.Point(175, 129);
             this.buttonCenter.Name = "buttonCenter";
             this.buttonCenter.Size = new System.Drawing.Size(73, 23);
             this.buttonCenter.TabIndex = 19;
@@ -615,7 +616,7 @@ namespace ZlizEQMap
             // 
             // buttonZoom
             // 
-            this.buttonZoom.Location = new System.Drawing.Point(175, 99);
+            this.buttonZoom.Location = new System.Drawing.Point(175, 76);
             this.buttonZoom.Name = "buttonZoom";
             this.buttonZoom.Size = new System.Drawing.Size(73, 23);
             this.buttonZoom.TabIndex = 20;
@@ -625,7 +626,7 @@ namespace ZlizEQMap
             // 
             // buttonNormal
             // 
-            this.buttonNormal.Location = new System.Drawing.Point(175, 12);
+            this.buttonNormal.Location = new System.Drawing.Point(175, 158);
             this.buttonNormal.Name = "buttonNormal";
             this.buttonNormal.Size = new System.Drawing.Size(73, 23);
             this.buttonNormal.TabIndex = 21;
@@ -636,7 +637,7 @@ namespace ZlizEQMap
             // label_Scale
             // 
             this.label_Scale.AutoSize = true;
-            this.label_Scale.Location = new System.Drawing.Point(27, 104);
+            this.label_Scale.Location = new System.Drawing.Point(114, 22);
             this.label_Scale.Name = "label_Scale";
             this.label_Scale.Size = new System.Drawing.Size(84, 13);
             this.label_Scale.TabIndex = 23;
@@ -649,7 +650,7 @@ namespace ZlizEQMap
             0,
             0,
             0});
-            this.nud_playerX.Location = new System.Drawing.Point(64, 20);
+            this.nud_playerX.Location = new System.Drawing.Point(58, 20);
             this.nud_playerX.Maximum = new decimal(new int[] {
             5000,
             0,
@@ -673,7 +674,7 @@ namespace ZlizEQMap
             // label_PlayerX
             // 
             this.label_PlayerX.AutoSize = true;
-            this.label_PlayerX.Location = new System.Drawing.Point(12, 22);
+            this.label_PlayerX.Location = new System.Drawing.Point(6, 22);
             this.label_PlayerX.Name = "label_PlayerX";
             this.label_PlayerX.Size = new System.Drawing.Size(46, 13);
             this.label_PlayerX.TabIndex = 26;
@@ -682,7 +683,7 @@ namespace ZlizEQMap
             // label_PlayerY
             // 
             this.label_PlayerY.AutoSize = true;
-            this.label_PlayerY.Location = new System.Drawing.Point(12, 49);
+            this.label_PlayerY.Location = new System.Drawing.Point(6, 49);
             this.label_PlayerY.Name = "label_PlayerY";
             this.label_PlayerY.Size = new System.Drawing.Size(46, 13);
             this.label_PlayerY.TabIndex = 27;
@@ -695,7 +696,7 @@ namespace ZlizEQMap
             0,
             0,
             0});
-            this.nud_playerY.Location = new System.Drawing.Point(64, 47);
+            this.nud_playerY.Location = new System.Drawing.Point(58, 47);
             this.nud_playerY.Maximum = new decimal(new int[] {
             5000,
             0,
@@ -909,7 +910,7 @@ namespace ZlizEQMap
             this.groupBox2.Controls.Add(this.nud_scale);
             this.groupBox2.Location = new System.Drawing.Point(6, 6);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(254, 167);
+            this.groupBox2.Size = new System.Drawing.Size(254, 187);
             this.groupBox2.TabIndex = 50;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Debugging";
@@ -978,11 +979,11 @@ namespace ZlizEQMap
             // 
             // btn_EditMapCoords
             // 
-            this.btn_EditMapCoords.Location = new System.Drawing.Point(6, 138);
+            this.btn_EditMapCoords.Location = new System.Drawing.Point(41, 105);
             this.btn_EditMapCoords.Name = "btn_EditMapCoords";
-            this.btn_EditMapCoords.Size = new System.Drawing.Size(108, 23);
+            this.btn_EditMapCoords.Size = new System.Drawing.Size(88, 47);
             this.btn_EditMapCoords.TabIndex = 15;
-            this.btn_EditMapCoords.Text = "Map Coord Tool";
+            this.btn_EditMapCoords.Text = "Launch Map Coord Tool";
             this.toolTip1.SetToolTip(this.btn_EditMapCoords, "Set waypoint on map");
             this.btn_EditMapCoords.UseVisualStyleBackColor = true;
             this.btn_EditMapCoords.Click += new System.EventHandler(this.btn_EditMapCoords_Click);
