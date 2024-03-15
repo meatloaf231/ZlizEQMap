@@ -70,5 +70,305 @@ namespace ZlizEQMap.Properties {
                 this["ZoneDataSet2"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("2")]
+        public int LogsInLogsDir1 {
+            get {
+                return ((int)(this["LogsInLogsDir1"]));
+            }
+            set {
+                this["LogsInLogsDir1"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("1")]
+        public int LogsInLogsDir2 {
+            get {
+                return ((int)(this["LogsInLogsDir2"]));
+            }
+            set {
+                this["LogsInLogsDir2"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("1")]
+        public int ActiveProfileIndex {
+            get {
+                return ((int)(this["ActiveProfileIndex"]));
+            }
+            set {
+                this["ActiveProfileIndex"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool CheckAutoSizeOnMapSwitch {
+            get {
+                return ((bool)(this["CheckAutoSizeOnMapSwitch"]));
+            }
+            set {
+                this["CheckAutoSizeOnMapSwitch"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool CheckGroupByContinent {
+            get {
+                return ((bool)(this["CheckGroupByContinent"]));
+            }
+            set {
+                this["CheckGroupByContinent"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool CheckEnableDirection {
+            get {
+                return ((bool)(this["CheckEnableDirection"]));
+            }
+            set {
+                this["CheckEnableDirection"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool CheckEnableLegend {
+            get {
+                return ((bool)(this["CheckEnableLegend"]));
+            }
+            set {
+                this["CheckEnableLegend"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("ecommons")]
+        public string LastSelectedZone {
+            get {
+                return ((string)(this["LastSelectedZone"]));
+            }
+            set {
+                this["LastSelectedZone"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("http://wiki.project1999.com/")]
+        public string WikiRootURL {
+            get {
+                return ((string)(this["WikiRootURL"]));
+            }
+            set {
+                this["WikiRootURL"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("100")]
+        public int OpacityLevel {
+            get {
+                return ((int)(this["OpacityLevel"]));
+            }
+            set {
+                this["OpacityLevel"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool MinimizeToTray {
+            get {
+                return ((bool)(this["MinimizeToTray"]));
+            }
+            set {
+                this["MinimizeToTray"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool AlwaysOnTop {
+            get {
+                return ((bool)(this["AlwaysOnTop"]));
+            }
+            set {
+                this["AlwaysOnTop"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("10")]
+        public int LegendFontSize {
+            get {
+                return ((int)(this["LegendFontSize"]));
+            }
+            set {
+                this["LegendFontSize"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool UseLegacyUI {
+            get {
+                return ((bool)(this["UseLegacyUI"]));
+            }
+            set {
+                this["UseLegacyUI"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool PopoutMapAlwaysOnTop {
+            get {
+                return ((bool)(this["PopoutMapAlwaysOnTop"]));
+            }
+            set {
+                this["PopoutMapAlwaysOnTop"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("100")]
+        public int PopoutMapOpacityLevel {
+            get {
+                return ((int)(this["PopoutMapOpacityLevel"]));
+            }
+            set {
+                this["PopoutMapOpacityLevel"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("1")]
+        public int NotesShow {
+            get {
+                return ((int)(this["NotesShow"]));
+            }
+            set {
+                this["NotesShow"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Tahoma, 8.25pt")]
+        public global::System.Drawing.Font NotesFont {
+            get {
+                return ((global::System.Drawing.Font)(this["NotesFont"]));
+            }
+            set {
+                this["NotesFont"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("Blue")]
+        public global::System.Drawing.Color NotesColor {
+            get {
+                return ((global::System.Drawing.Color)(this["NotesColor"]));
+            }
+            set {
+                this["NotesColor"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool NotesClearAfterEntry {
+            get {
+                return ((bool)(this["NotesClearAfterEntry"]));
+            }
+            set {
+                this["NotesClearAfterEntry"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool NotesAutoUpdate {
+            get {
+                return ((bool)(this["NotesAutoUpdate"]));
+            }
+            set {
+                this["NotesAutoUpdate"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool NotesAutoSave {
+            get {
+                return ((bool)(this["NotesAutoSave"]));
+            }
+            set {
+                this["NotesAutoSave"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool LocHistoryShow {
+            get {
+                return ((bool)(this["LocHistoryShow"]));
+            }
+            set {
+                this["LocHistoryShow"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("25")]
+        public int LocHistoryNumberToTrack {
+            get {
+                return ((int)(this["LocHistoryNumberToTrack"]));
+            }
+            set {
+                this["LocHistoryNumberToTrack"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("3151")]
+        public string ASDF {
+            get {
+                return ((string)(this["ASDF"]));
+            }
+            set {
+                this["ASDF"] = value;
+            }
+        }
     }
 }

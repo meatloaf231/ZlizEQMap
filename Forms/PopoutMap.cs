@@ -71,7 +71,8 @@ namespace ZlizEQMap
         private void Initialize()
         {
             CartographyService.RedrawMapsEH += PopoutMap_CartographerSaysRedraw;
-            //CartographyService.ZoneChangedEH += PopoutMap_CartographerSaysZoneChanged;
+            Opacity = Settings.PopoutMapOpacityLevel;
+            check_AOT.Checked = Settings.PopoutMapAlwaysOnTop;
         }
 
         private void PopoutMap_CartographerSaysRedraw(object sender, EventArgs e)
@@ -79,22 +80,11 @@ namespace ZlizEQMap
             picBox_PopoutMap.Invalidate();
         }
 
-        //private void PopoutMap_CartographerSaysZoneChanged(object sender, EventArgs e)
-        //{
-        //    picBox_PopoutMap.Invalidate();
-        //    LoadMapIntoPopoutMap(Cartographer.CurrentZoneData.ImageFilePath);
-        //}
-
         public void LoadMapByPath(string imagePath)
         {
             picBox_PopoutMap.Load(imagePath);
             MapHasBeenResized();
         }
-
-        //public void OverwritePopoutMap(PictureBox mainMap)
-        //{
-        //    picBox_PopoutMap = mainMap;
-        //}
 
         private void buttonClosePopupMap_Click(object sender, EventArgs e)
         {
@@ -230,7 +220,13 @@ namespace ZlizEQMap
 
         private void check_AOT_CheckedChanged(object sender, EventArgs e)
         {
+            Settings.PopoutMapAlwaysOnTop = check_AOT.Checked;
             SetAlwaysOnTop();
+        }
+
+        private void PopoutMap_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            Settings.SaveSettings();
         }
     }
 }

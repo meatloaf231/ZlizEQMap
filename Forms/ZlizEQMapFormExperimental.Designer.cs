@@ -88,6 +88,13 @@ namespace ZlizEQMap
             this.txt_NewNote = new System.Windows.Forms.TextBox();
             this.zoneAnnotationBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.dgv_ZoneAnnotation = new System.Windows.Forms.DataGridView();
+            this.Index = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.MapShortName = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.SubMap = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Note = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.XCoord = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.YCoord = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Show = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             this.txt_NewNoteCoords = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.button_SetNoteCoordsToPlayerLoc = new System.Windows.Forms.Button();
@@ -104,13 +111,6 @@ namespace ZlizEQMap
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.timer_ParseLogsTimer = new System.Windows.Forms.Timer(this.components);
             this.labelZoneName = new ZlizEQMap.ZlizLabel();
-            this.Index = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.MapShortName = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.SubMap = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Note = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.XCoord = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.YCoord = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Show = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             ((System.ComponentModel.ISupportInitialize)(this.picBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.sliderOpacity)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.sliderZoom)).BeginInit();
@@ -256,14 +256,15 @@ namespace ZlizEQMap
             // 
             this.sliderOpacity.AutoSize = false;
             this.sliderOpacity.Location = new System.Drawing.Point(60, 35);
-            this.sliderOpacity.Maximum = 20;
-            this.sliderOpacity.Minimum = 2;
+            this.sliderOpacity.Maximum = 100;
+            this.sliderOpacity.Minimum = 5;
             this.sliderOpacity.Name = "sliderOpacity";
             this.sliderOpacity.Size = new System.Drawing.Size(120, 20);
+            this.sliderOpacity.SmallChange = 5;
             this.sliderOpacity.TabIndex = 9;
             this.sliderOpacity.TickStyle = System.Windows.Forms.TickStyle.None;
             this.toolTip1.SetToolTip(this.sliderOpacity, "Opacity Level (10-100%)");
-            this.sliderOpacity.Value = 20;
+            this.sliderOpacity.Value = 100;
             this.sliderOpacity.Scroll += new System.EventHandler(this.sliderOpacity_Scroll);
             // 
             // btnSetWaypoint
@@ -309,7 +310,7 @@ namespace ZlizEQMap
             this.sliderZoom.Size = new System.Drawing.Size(120, 20);
             this.sliderZoom.TabIndex = 31;
             this.sliderZoom.TickStyle = System.Windows.Forms.TickStyle.None;
-            this.toolTip1.SetToolTip(this.sliderZoom, "Opacity Level (10-100%)");
+            this.toolTip1.SetToolTip(this.sliderZoom, "Zoom Level (10 - 200%)");
             this.sliderZoom.Value = 100;
             this.sliderZoom.Scroll += new System.EventHandler(this.sliderZoom_Scroll);
             // 
@@ -732,10 +733,15 @@ namespace ZlizEQMap
             this.label_Opacity.TabIndex = 34;
             this.label_Opacity.Text = "Opacity";
             // 
-            // nud_HistoryToKeep
+            // nud_HistoryToTrack
             // 
             this.nud_HistoryToTrack.Location = new System.Drawing.Point(115, 144);
-            this.nud_HistoryToTrack.Name = "nud_HistoryToKeep";
+            this.nud_HistoryToTrack.Maximum = new decimal(new int[] {
+            4096,
+            0,
+            0,
+            0});
+            this.nud_HistoryToTrack.Name = "nud_HistoryToTrack";
             this.nud_HistoryToTrack.Size = new System.Drawing.Size(52, 21);
             this.nud_HistoryToTrack.TabIndex = 35;
             // 
@@ -774,7 +780,6 @@ namespace ZlizEQMap
             this.txt_NewNote.Name = "txt_NewNote";
             this.txt_NewNote.Size = new System.Drawing.Size(165, 21);
             this.txt_NewNote.TabIndex = 43;
-            this.txt_NewNote.Text = "New Note";
             // 
             // dgv_ZoneAnnotation
             // 
@@ -797,6 +802,76 @@ namespace ZlizEQMap
             this.dgv_ZoneAnnotation.Size = new System.Drawing.Size(272, 237);
             this.dgv_ZoneAnnotation.TabIndex = 44;
             this.dgv_ZoneAnnotation.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgv_ZoneAnnotation_CellValueChanged);
+            // 
+            // Index
+            // 
+            this.Index.Frozen = true;
+            this.Index.HeaderText = "#";
+            this.Index.Name = "Index";
+            this.Index.ReadOnly = true;
+            this.Index.Width = 25;
+            // 
+            // MapShortName
+            // 
+            this.MapShortName.DataPropertyName = "MapShortName";
+            this.MapShortName.Frozen = true;
+            this.MapShortName.HeaderText = "MapShortName";
+            this.MapShortName.Name = "MapShortName";
+            this.MapShortName.ReadOnly = true;
+            this.MapShortName.Visible = false;
+            this.MapShortName.Width = 50;
+            // 
+            // SubMap
+            // 
+            this.SubMap.DataPropertyName = "SubMap";
+            this.SubMap.Frozen = true;
+            this.SubMap.HeaderText = "SubMap";
+            this.SubMap.Name = "SubMap";
+            this.SubMap.ReadOnly = true;
+            this.SubMap.Visible = false;
+            this.SubMap.Width = 50;
+            // 
+            // Note
+            // 
+            this.Note.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
+            this.Note.DataPropertyName = "Note";
+            this.Note.FillWeight = 176.9911F;
+            this.Note.Frozen = true;
+            this.Note.HeaderText = "Note";
+            this.Note.MinimumWidth = 50;
+            this.Note.Name = "Note";
+            // 
+            // XCoord
+            // 
+            this.XCoord.DataPropertyName = "X";
+            this.XCoord.FillWeight = 34.58654F;
+            this.XCoord.Frozen = true;
+            this.XCoord.HeaderText = "X";
+            this.XCoord.MinimumWidth = 40;
+            this.XCoord.Name = "XCoord";
+            this.XCoord.Resizable = System.Windows.Forms.DataGridViewTriState.False;
+            this.XCoord.Width = 40;
+            // 
+            // YCoord
+            // 
+            this.YCoord.DataPropertyName = "Y";
+            this.YCoord.FillWeight = 46.11596F;
+            this.YCoord.Frozen = true;
+            this.YCoord.HeaderText = "Y";
+            this.YCoord.MinimumWidth = 40;
+            this.YCoord.Name = "YCoord";
+            this.YCoord.Resizable = System.Windows.Forms.DataGridViewTriState.False;
+            this.YCoord.Width = 40;
+            // 
+            // Show
+            // 
+            this.Show.DataPropertyName = "Show";
+            this.Show.FillWeight = 142.3064F;
+            this.Show.Frozen = true;
+            this.Show.HeaderText = "Show";
+            this.Show.Name = "Show";
+            this.Show.Resizable = System.Windows.Forms.DataGridViewTriState.False;
+            this.Show.Width = 50;
             // 
             // txt_NewNoteCoords
             // 
@@ -973,76 +1048,6 @@ namespace ZlizEQMap
             this.labelZoneName.Size = new System.Drawing.Size(352, 55);
             this.labelZoneName.TabIndex = 0;
             this.labelZoneName.Text = "Zone";
-            // 
-            // Index
-            // 
-            this.Index.Frozen = true;
-            this.Index.HeaderText = "#";
-            this.Index.Name = "Index";
-            this.Index.ReadOnly = true;
-            this.Index.Width = 25;
-            // 
-            // MapShortName
-            // 
-            this.MapShortName.DataPropertyName = "MapShortName";
-            this.MapShortName.Frozen = true;
-            this.MapShortName.HeaderText = "MapShortName";
-            this.MapShortName.Name = "MapShortName";
-            this.MapShortName.ReadOnly = true;
-            this.MapShortName.Visible = false;
-            this.MapShortName.Width = 50;
-            // 
-            // SubMap
-            // 
-            this.SubMap.DataPropertyName = "SubMap";
-            this.SubMap.Frozen = true;
-            this.SubMap.HeaderText = "SubMap";
-            this.SubMap.Name = "SubMap";
-            this.SubMap.ReadOnly = true;
-            this.SubMap.Visible = false;
-            this.SubMap.Width = 50;
-            // 
-            // Note
-            // 
-            this.Note.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-            this.Note.DataPropertyName = "Note";
-            this.Note.FillWeight = 176.9911F;
-            this.Note.Frozen = true;
-            this.Note.HeaderText = "Note";
-            this.Note.MinimumWidth = 50;
-            this.Note.Name = "Note";
-            // 
-            // XCoord
-            // 
-            this.XCoord.DataPropertyName = "X";
-            this.XCoord.FillWeight = 34.58654F;
-            this.XCoord.Frozen = true;
-            this.XCoord.HeaderText = "X";
-            this.XCoord.MinimumWidth = 40;
-            this.XCoord.Name = "XCoord";
-            this.XCoord.Resizable = System.Windows.Forms.DataGridViewTriState.False;
-            this.XCoord.Width = 40;
-            // 
-            // YCoord
-            // 
-            this.YCoord.DataPropertyName = "Y";
-            this.YCoord.FillWeight = 46.11596F;
-            this.YCoord.Frozen = true;
-            this.YCoord.HeaderText = "Y";
-            this.YCoord.MinimumWidth = 40;
-            this.YCoord.Name = "YCoord";
-            this.YCoord.Resizable = System.Windows.Forms.DataGridViewTriState.False;
-            this.YCoord.Width = 40;
-            // 
-            // Show
-            // 
-            this.Show.DataPropertyName = "Show";
-            this.Show.FillWeight = 142.3064F;
-            this.Show.Frozen = true;
-            this.Show.HeaderText = "Show";
-            this.Show.Name = "Show";
-            this.Show.Resizable = System.Windows.Forms.DataGridViewTriState.False;
-            this.Show.Width = 50;
             // 
             // ZlizEQMapFormExperimental
             // 

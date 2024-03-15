@@ -215,7 +215,7 @@ namespace ZlizEQMap
             Watcher.Filter = "eqlog_*.txt";
             Watcher.NotifyFilter = NotifyFilters.LastWrite;
             Watcher.Changed += new FileSystemEventHandler(watcher_Changed);
-            //watcher.SynchronizingObject = this;
+            //Watcher.SynchronizingObject = this;
             Watcher.EnableRaisingEvents = true;
         }
 
@@ -321,13 +321,13 @@ namespace ZlizEQMap
                 return false;
             }
 
-            UpdateTitle(zoneName);
-            
             CurrentZoneData = zoneData;
             CurrentZoneMap = new ZoneMap(CurrentZoneData.ImageFilePath);
             LastRecordedZoneChange = DateTime.Now;
-            RefreshCurrentZoneAnnotations();
 
+            UpdateTitle(zoneName);
+            RefreshCurrentZoneAnnotations();
+            RaiseRedrawMaps(null, null);
             return true;
         }
 
@@ -337,7 +337,6 @@ namespace ZlizEQMap
                 CurrentTitle = String.Format("{0} ({1}) - ZlizEQMap", zoneName, GetActiveCharacterName(Parser.LogFilePath));
             else
                 CurrentTitle = String.Format("{0} - ZlizEQMap", zoneName);
-            RaiseRedrawMaps(null, null);
         }
 
         private string GetActiveCharacterName(string logFilePath)

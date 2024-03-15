@@ -684,7 +684,7 @@ namespace ZlizEQMap
 
 		private void SetFormOpacity()
 		{
-			this.Opacity = sliderOpacity.Value * 5 / 100f;
+			this.Opacity = sliderOpacity.Value;
 		}
 
 		private void ZlizEQMapForm_Resize(object sender, EventArgs e)

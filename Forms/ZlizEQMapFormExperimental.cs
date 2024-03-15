@@ -29,7 +29,6 @@ namespace ZlizEQMap
 
         public ZlizEQMapFormExperimental()
         {
-            Cartographer = new CartographyService();
             InitializeComponent();
             SetControlProperties();
             Initialize();
@@ -37,13 +36,11 @@ namespace ZlizEQMap
 
         private void Initialize()
         {
+            Cartographer = new CartographyService();
+            CartographyService.RedrawMapsEH += ZlizEQMapFormExperimental_CartographerSaysRedraw;
             PopulateZoneComboBox();
             SetControlsFromSettings();
-
             Cartographer.OSSwitchToZoneByShortName(Settings.LastSelectedZone);
-            
-            CartographyService.RedrawMapsEH += ZlizEQMapFormExperimental_CartographerSaysRedraw;
-            //CartographyService.ZoneChangedEH += ZlizEQMapFormExperimental_CartographerSaysZoneChanged;
 
             initialLoadCompleted = true;
 
@@ -62,14 +59,21 @@ namespace ZlizEQMap
 
         private void ZlizEQMapFormExperimental_CartographerSaysRedraw(object sender, EventArgs e)
         {
-            picBox.Invalidate();
+            GetLatestCartographyData();
         }
 
-        //private void ZlizEQMapFormExperimental_CartographerSaysZoneChanged(object sender, EventArgs e)
-        //{
-        //    picBox.Invalidate();
-        //    ZoneChangedUpdateUI();
-        //}
+        private void GetLatestCartographyData()
+        {
+            if (LastRecordedZoneChange < Cartographer.LastRecordedZoneChange)
+            {
+                ZoneChangedUpdateUI();
+            }
+            if (check_AutoUpdateNoteLocation.Checked)
+            {
+                SetNoteCoordsToPlayerLocation();
+            }
+            picBox.Invalidate();
+        }
 
         private void SetControlsFromSettings()
         {
@@ -267,11 +271,6 @@ namespace ZlizEQMap
 
         private void picBox_Paint(object sender, PaintEventArgs e)
         {
-            if (LastRecordedZoneChange < Cartographer.LastRecordedZoneChange)
-            {
-                ZoneChangedUpdateUI();
-            }
-
             Cartographer.PrepMapMarkersForCanvas(sender, e, checkEnableDirection.Checked);
 
             foreach (IMapDrawable marker in Cartographer.Markers)
@@ -409,7 +408,7 @@ namespace ZlizEQMap
 
         private void SetFormOpacity()
         {
-            this.Opacity = sliderOpacity.Value * 5 / 100f;
+            this.Opacity = sliderOpacity.Value / 100f;
         }
 
         private void ZlizEQMapFormExperimental_Resize(object sender, EventArgs e)
@@ -641,6 +640,7 @@ namespace ZlizEQMap
             {
                 txt_NewNote.Clear();
                 txt_NewNoteCoords.Clear();
+                txt_NewNoteCoords.Text = "0, 0";
             }
         }
         
@@ -660,15 +660,23 @@ namespace ZlizEQMap
             zoneAnnotationBindingSource.ResetBindings(false);
         }
 
-
         private void check_ShowPlayerLocHistory_CheckedChanged(object sender, EventArgs e)
         {
-            Cartographer.TogglePlayerLocationHistory(check_ShowPlayerLocHistory.Checked);
+            if (initialLoadCompleted)
+                Cartographer.TogglePlayerLocationHistory(check_ShowPlayerLocHistory.Checked);
         }
 
         private void button_SetNoteCoordsToPlayerLoc_Click(object sender, EventArgs e)
         {
-            txt_NewNoteCoords.Text = $"{Cartographer.PlayerCoords.X}, {Cartographer.PlayerCoords.Y}";
+            SetNoteCoordsToPlayerLocation();
+        }
+
+        private void SetNoteCoordsToPlayerLocation()
+        {
+            if (Cartographer.PlayerCoords != null)
+            {
+                txt_NewNoteCoords.Text = $"{Cartographer.PlayerCoords.X}, {Cartographer.PlayerCoords.Y}";
+            }
         }
 
         private void dgv_ZoneAnnotation_CellValueChanged(object sender, DataGridViewCellEventArgs e)
@@ -706,17 +714,20 @@ namespace ZlizEQMap
 
         private void check_ShowAnnotations_CheckStateChanged(object sender, EventArgs e)
         {
-            Cartographer.ToggleZoneAnnotations((int)check_ShowAnnotations.CheckState);
+            if (initialLoadCompleted)
+                Cartographer.ToggleZoneAnnotations((int)check_ShowAnnotations.CheckState);
         }
 
         private void timer_ParseLogsTimer_Tick(object sender, EventArgs e)
         {
-            Cartographer.CheckLogParserForNewLines();
+            if (initialLoadCompleted)
+                Cartographer.CheckLogParserForNewLines();
         }
 
         private void button_SaveNotes_Click(object sender, EventArgs e)
         {
-            Cartographer.SaveNotes();
+            if (initialLoadCompleted)
+                Cartographer.SaveNotes();
         }
 
         private void check_AutosaveNotes_CheckedChanged(object sender, EventArgs e)

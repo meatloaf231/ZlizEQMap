@@ -38,26 +38,26 @@ namespace ZlizEQMap
 
         public static string EQDirectoryPath1 { get; set; }
         public static string EQDirectoryPath2 { get; set; }
-               
+
         public static string ZoneDataSet1 { get; set; }
         public static string ZoneDataSet2 { get; set; }
 
         public static SettingsLogsInLogsDir LogsInLogsDir1 { get; set; } = SettingsLogsInLogsDir.RootDir;
         public static SettingsLogsInLogsDir LogsInLogsDir2 { get; set; } = SettingsLogsInLogsDir.LogsDir;
-               
+
         public static int ActiveProfileIndex { get; set; } = 1;
         public static bool CheckAutoSizeOnMapSwitch { get; set; } = true;
         public static bool CheckGroupByContinent { get; set; } = true;
         public static bool CheckEnableDirection { get; set; } = true;
         public static bool CheckEnableLegend { get; set; } = true;
-               
+
         public static string LastSelectedZone { get; set; } = "ecommons";
         public static string WikiRootURL { get; set; } = "http://wiki.project1999.com/";
-        public static int OpacityLevel { get; set; } = 20;
+        public static int OpacityLevel { get; set; } = 100;
         public static bool MinimizeToTray { get; set; } = false;
         public static bool AlwaysOnTop { get; set; } = false;
         public static int LegendFontSize { get; set; } = 10;
-               
+
         public static bool UseLegacyUI { get; set; } = false;
         public static bool PopoutMapAlwaysOnTop { get; set; } = false;
         public static int PopoutMapOpacityLevel { get; set; } = 100;
@@ -120,7 +120,7 @@ namespace ZlizEQMap
                 storeInString = convertTarget.ToString();
             }
 
-            T convertedValue = default(T);
+            T convertedValue;
             try
             {
                 convertedValue = (T)Convert.ChangeType(value, typeof(T));
@@ -132,6 +132,17 @@ namespace ZlizEQMap
             }
 
             return convertedValue;
+        }
+
+        public static int Clamp(int value, int min, int max)
+        {
+            return value;
+        }
+
+        // since dotnet doesn't even have clamp smh
+        public static T Clamp<T>(this T value, T min, T max) where T : IComparable<T>
+        {
+            return ((value.CompareTo(min) < 0) ? min : ((value.CompareTo(max) > 0) ? max : value));
         }
 
         public static void LoadSettings(bool forceReload = false)
@@ -146,6 +157,7 @@ namespace ZlizEQMap
                     string line = "";
                     string key = "";
                     string value = "";
+                    string aggregatedResult = "";
                     while ((line = tr.ReadLine()) != null)
                     {
                         try
@@ -227,15 +239,8 @@ namespace ZlizEQMap
                                     break;
 
                                 case "OpacityLevel":
-                                    {
-                                        OpacityLevel = ProcessSetting(OpacityLevel, value, ref currentValue);
-                                        int level = Convert.ToInt32(value);
-
-                                        if (level < 2 || level > 20)
-                                            level = 20;
-
-                                        OpacityLevel = level;
-                                    }
+                                    OpacityLevel = ProcessSetting(OpacityLevel, value, ref currentValue);
+                                    OpacityLevel = Clamp(OpacityLevel, 5, 100);
                                     break;
 
                                 case "MinimizeToTray":
@@ -248,6 +253,7 @@ namespace ZlizEQMap
 
                                 case "LegendFontSize":
                                     LegendFontSize = ProcessSetting(LegendFontSize, value, ref currentValue);
+                                    LegendFontSize = Clamp(LegendFontSize, 2, 256);
                                     break;
 
                                 case "UseLegacyUI":
@@ -260,6 +266,7 @@ namespace ZlizEQMap
 
                                 case "PopoutMapOpacityLevel":
                                     PopoutMapOpacityLevel = ProcessSetting(PopoutMapOpacityLevel, value, ref currentValue);
+                                    PopoutMapOpacityLevel = Clamp(PopoutMapOpacityLevel, 5, 100);
                                     break;
 
                                 case "NotesShow":
@@ -292,25 +299,33 @@ namespace ZlizEQMap
 
                                 case "LocHistoryNumberToTrack":
                                     LocHistoryNumberToTrack = ProcessSetting(LocHistoryNumberToTrack, value, ref currentValue);
+                                    LocHistoryNumberToTrack = Clamp(LocHistoryNumberToTrack, 0, 4096);
                                     break;
 
                                 default:
-                                    Console.WriteLine($"Unkown Key: {key}");
+                                    Console.WriteLine($"Unknown Key: {key}");
                                     break;
                             }
-
                         }
                         catch (Exception ex)
                         {
                             // Error! Add the problem setting to the list to show later so the user can see which settings got screwed up.
-                            DialogResult settingErrorResult = MessageBox.Show($"There was a problem parsing one of the settings. Would you like to reset your settings to default? If you click yes, two things will happen. First: a backup will be made of the settings file as it is right now, and then the default settings will be restored over the settings that didn't load properly.", "Setting Parse Error", MessageBoxButtons.YesNoCancel);
-                            if (settingErrorResult == DialogResult.Yes)
-                            {
-                                BackupSettings();
-                            }
-
+                            aggregatedResult += $"Error with setting {key}: \n{ex.Message}";
                             Console.WriteLine(ex.Message);
                             continue;
+                        }
+                    }
+                    if (!string.IsNullOrEmpty(aggregatedResult))
+                    {
+                        DialogResult settingErrorResult = MessageBox.Show($"There was a problem loading or parsing one or more of the settings." +
+                            $"\n\n{aggregatedResult}" +
+                            $"Some settings have been reset to their default values. Here's some details" +
+                            $"\n\nWould you like to make a backup of the currently broken settings file?",
+                            "Setting Load Error",
+                            MessageBoxButtons.YesNo);
+                        if (settingErrorResult == DialogResult.Yes)
+                        {
+                            BackupSettings();
                         }
                     }
                 }
@@ -353,7 +368,6 @@ namespace ZlizEQMap
                     WriteSetting(tw, "PopoutMapOpacityLevel", PopoutMapOpacityLevel.ToString());
 
                     WriteSetting(tw, "NotesShow", NotesShow.ToString());
-                    var fontTString = JsonConvert.SerializeObject(NotesFont);
                     WriteSetting(tw, "NotesFont", JsonConvert.SerializeObject(NotesFont));
                     WriteSetting(tw, "NotesColor", JsonConvert.SerializeObject(NotesColor));
                     WriteSetting(tw, "NotesClearAfterEntry", NotesClearAfterEntry.ToString());

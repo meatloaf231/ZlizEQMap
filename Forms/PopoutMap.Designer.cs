@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(PopoutMap));
             this.picBox_PopoutMap = new System.Windows.Forms.PictureBox();
             this.trackBar_Opacity = new System.Windows.Forms.TrackBar();
@@ -42,9 +43,11 @@
             this.label_Zoom = new System.Windows.Forms.Label();
             this.label_Opacity = new System.Windows.Forms.Label();
             this.check_AOT = new System.Windows.Forms.CheckBox();
+            this.bindingSource_Settings = new System.Windows.Forms.BindingSource(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.picBox_PopoutMap)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar_Opacity)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar_Zoom)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.bindingSource_Settings)).BeginInit();
             this.SuspendLayout();
             // 
             // picBox_PopoutMap
@@ -256,9 +259,11 @@
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
             this.Name = "PopoutMap";
             this.Text = "Minimap";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.PopoutMap_FormClosing);
             ((System.ComponentModel.ISupportInitialize)(this.picBox_PopoutMap)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar_Opacity)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar_Zoom)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.bindingSource_Settings)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -278,5 +283,6 @@
         private System.Windows.Forms.Label label_Zoom;
         private System.Windows.Forms.Label label_Opacity;
         private System.Windows.Forms.CheckBox check_AOT;
+        private System.Windows.Forms.BindingSource bindingSource_Settings;
     }
 }

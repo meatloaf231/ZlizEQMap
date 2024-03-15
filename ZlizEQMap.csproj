@@ -141,7 +141,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Classes\ZoneAnnotationManager.cs" />
+    <Compile Include="Classes\ZoneAnnotationService.cs" />
     <Compile Include="Classes\ZoneAnnotation.cs" />
     <Compile Include="Classes\Cartographer.cs" />
     <Compile Include="Controls\ZlizPictureBox.cs" />
@@ -231,7 +231,6 @@
     <None Include="app.config" />
     <None Include="packages.config" />
     <None Include="Properties\DataSources\Settings.datasource" />
-    <None Include="Properties\DataSources\ZoneAnnotationManager.datasource" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
