@@ -260,6 +260,7 @@
             this.Name = "PopoutMap";
             this.Text = "Minimap";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.PopoutMap_FormClosing);
+            this.Load += new System.EventHandler(this.PopoutMap_Load);
             ((System.ComponentModel.ISupportInitialize)(this.picBox_PopoutMap)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar_Opacity)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBar_Zoom)).EndInit();

@@ -47,9 +47,15 @@ namespace ZlizEQMap.Forms
             InitializeComponent();
         }
 
-        private void MapCoordFixer_Load(object sender, EventArgs e)
+        private void MapCoordEditor_Load(object sender, EventArgs e)
         {
             Initialize();
+            CartographyService.RedrawMapsEH += MapCoordEditor_CartographerSaysRedraw;
+        }
+
+        private void MapCoordEditor_CartographerSaysRedraw(object sender, EventArgs e)
+        {
+            pictureBox_MapCoordEditor.Invalidate();
         }
 
         public void Initialize()
@@ -58,9 +64,11 @@ namespace ZlizEQMap.Forms
             LoadCurrentData();
         }
 
+        // Yeah yeah I could do real data binding instead of doing it by hand. But I've always found trying to get the bindings to do exactly what I want is more trouble than just... doing it by hand.
         public void LoadCurrentData()
         {
             Lock = true;
+
             //nud_ImageX.DataBindings.Add(new Binding("value", Cartographer.CurrentZoneMap, nameof(Cartographer.CurrentZoneMap.ImageX)));
             //nud_ImageY.DataBindings.Add(new Binding("value", Cartographer.CurrentZoneMap, nameof(Cartographer.CurrentZoneMap.ImageY)));
             //nud_TotalX.DataBindings.Add(new Binding("value", Cartographer.CurrentZoneData, nameof(Cartographer.CurrentZoneData.TotalX)));
@@ -164,16 +172,6 @@ namespace ZlizEQMap.Forms
             {
                 marker.Draw(e.Graphics);
             }
-        }
-
-        private void ZeroCoordsChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void GridTotalsChanged(object sender, EventArgs e)
-        {
-           
         }
 
         private void label9_Click(object sender, EventArgs e)

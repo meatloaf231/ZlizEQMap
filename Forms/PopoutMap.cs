@@ -65,14 +65,16 @@ namespace ZlizEQMap
         {
             Cartographer = cartographer;
             InitializeComponent();
-            Initialize();
         }
 
-        private void Initialize()
+        private void PopoutMap_Load(object sender, EventArgs e)
         {
-            CartographyService.RedrawMapsEH += PopoutMap_CartographerSaysRedraw;
-            Opacity = Settings.PopoutMapOpacityLevel;
+            Location = new Point(Settings.PopoutMapPositionX, Settings.PopoutMapPositionY);
+            Size = new Size(Settings.PopoutMapSizeWidth, Settings.PopoutMapSizeHeight);
+            trackBar_Opacity.Value = Settings.PopoutMapOpacityLevel;
             check_AOT.Checked = Settings.PopoutMapAlwaysOnTop;
+
+            CartographyService.RedrawMapsEH += PopoutMap_CartographerSaysRedraw;
         }
 
         private void PopoutMap_CartographerSaysRedraw(object sender, EventArgs e)
@@ -226,6 +228,13 @@ namespace ZlizEQMap
 
         private void PopoutMap_FormClosing(object sender, FormClosingEventArgs e)
         {
+            Settings.PopoutMapPositionX = Location.X;
+            Settings.PopoutMapPositionY = Location.Y;
+            Settings.PopoutMapSizeWidth = Size.Width;
+            Settings.PopoutMapSizeHeight = Size.Height;
+            Settings.PopoutMapAlwaysOnTop = check_AOT.Checked;
+            Settings.PopoutMapOpacityLevel = trackBar_Opacity.Value;
+
             Settings.SaveSettings();
         }
     }

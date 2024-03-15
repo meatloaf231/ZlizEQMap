@@ -61,6 +61,10 @@ namespace ZlizEQMap
         public static bool UseLegacyUI { get; set; } = false;
         public static bool PopoutMapAlwaysOnTop { get; set; } = false;
         public static int PopoutMapOpacityLevel { get; set; } = 100;
+        public static int PopoutMapPositionX { get; set; } = 100;
+        public static int PopoutMapPositionY { get; set; } = 100;
+        public static int PopoutMapSizeWidth { get; set; } = 450;
+        public static int PopoutMapSizeHeight { get; set; } = 350;
         public static int NotesShow { get; set; } = 1;
         public static Font NotesFont { get; set; } = new Font("Tahoma", 8.25F, FontStyle.Regular);
         public static Color NotesColor { get; set; } = Color.Green;
@@ -301,7 +305,18 @@ namespace ZlizEQMap
                                     LocHistoryNumberToTrack = ProcessSetting(LocHistoryNumberToTrack, value, ref currentValue);
                                     LocHistoryNumberToTrack = Clamp(LocHistoryNumberToTrack, 0, 4096);
                                     break;
-
+                                case "Popout":
+                                    PopoutMapPositionX = ProcessSetting(PopoutMapPositionX, value, ref currentValue);
+                                    break;
+                                case "PopoutMapPositionY":
+                                    PopoutMapPositionY = ProcessSetting(PopoutMapPositionY, value, ref currentValue);
+                                    break;
+                                case "PopoutMapSizeWidth":
+                                    PopoutMapSizeWidth = ProcessSetting(PopoutMapSizeWidth, value, ref currentValue);
+                                    break;
+                                case "PopoutMapSizeHeight":
+                                    PopoutMapSizeHeight = ProcessSetting(PopoutMapSizeHeight, value, ref currentValue);
+                                    break;
                                 default:
                                     Console.WriteLine($"Unknown Key: {key}");
                                     break;
@@ -376,6 +391,11 @@ namespace ZlizEQMap
 
                     WriteSetting(tw, "LocHistoryShow", LocHistoryShow.ToString());
                     WriteSetting(tw, "LocHistoryNumberToTrack", LocHistoryNumberToTrack.ToString());
+
+                    WriteSetting(tw, "PopoutMapPositionX", PopoutMapPositionX.ToString());
+                    WriteSetting(tw, "PopoutMapPositionY", PopoutMapPositionY.ToString());
+                    WriteSetting(tw, "PopoutMapSizeWidth", PopoutMapSizeWidth.ToString());
+                    WriteSetting(tw, "PopoutMapSizeHeight", PopoutMapSizeHeight.ToString());
                 }
             }
         }

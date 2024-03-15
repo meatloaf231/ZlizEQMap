@@ -369,7 +369,7 @@
             this.Controls.Add(this.pictureBox_MapCoordEditor);
             this.Name = "MapCoordEditor";
             this.Text = "Map Coordinate Tool";
-            this.Load += new System.EventHandler(this.MapCoordFixer_Load);
+            this.Load += new System.EventHandler(this.MapCoordEditor_Load);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox_MapCoordEditor)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nud_ImageX)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nud_ImageY)).EndInit();
