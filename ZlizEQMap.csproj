@@ -126,6 +126,9 @@
     <Reference Include="HtmlRenderer.WinForms">
       <HintPath>ExternalBinaries\HtmlRenderer.WinForms.dll</HintPath>
     </Reference>
+    <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>packages\Newtonsoft.Json.13.0.3\lib\net40\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -138,48 +141,82 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Classes\ZoneAnnotationService.cs" />
+    <Compile Include="Classes\ZoneAnnotation.cs" />
+    <Compile Include="Classes\Cartographer.cs" />
     <Compile Include="Controls\ZlizPictureBox.cs" />
+    <Compile Include="Forms\MapCoordEditor.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\MapCoordEditor.Designer.cs">
+      <DependentUpon>MapCoordEditor.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\PopoutMap.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\PopoutMap.Designer.cs">
+      <DependentUpon>PopoutMap.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\SettingsHelp.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Forms\SettingsHelp.Designer.cs">
       <DependentUpon>SettingsHelp.cs</DependentUpon>
     </Compile>
-    <Compile Include="Enums.cs" />
+    <Compile Include="Classes\Enums.cs" />
     <Compile Include="Forms\FirstRun.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Forms\FirstRun.Designer.cs">
       <DependentUpon>FirstRun.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\ZlizEQMapForm.DesignerCustom.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="LegendTextFactory.cs" />
-    <Compile Include="LogFileParser.cs" />
-    <Compile Include="Settings.cs" />
     <Compile Include="Forms\ZlizEQMapForm.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Forms\ZlizEQMapForm.Designer.cs">
       <DependentUpon>ZlizEQMapForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="UnitTestDetector.cs" />
-    <Compile Include="ZoneData.cs" />
-    <Compile Include="ZoneDataFactory.cs" />
-    <Compile Include="Paths.cs" />
+    <Compile Include="Forms\ZlizEQMapForm.DesignerCustom.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\ZlizEQMapFormExperimental.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\ZlizEQMapFormExperimental.Designer.cs">
+      <DependentUpon>ZlizEQMapFormExperimental.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Classes\LegendTextFactory.cs" />
+    <Compile Include="Classes\LogFileParser.cs" />
+    <Compile Include="Classes\MiniClasses.cs" />
+    <Compile Include="Classes\Settings.cs" />
+    <Compile Include="Classes\UnitTestDetector.cs" />
+    <Compile Include="Classes\ZoneMap.cs" />
+    <Compile Include="Classes\ZoneData.cs" />
+    <Compile Include="Classes\ZoneDataFactory.cs" />
+    <Compile Include="Classes\Paths.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Controls\ZlizLabel.cs" />
     <Compile Include="Controls\ZlizPanel.cs" />
+    <Compile Include="Settings.cs" />
     <EmbeddedResource Include="Forms\FirstRun.resx">
       <DependentUpon>FirstRun.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\MapCoordEditor.resx">
+      <DependentUpon>MapCoordEditor.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\PopoutMap.resx">
+      <DependentUpon>PopoutMap.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\SettingsHelp.resx">
       <DependentUpon>SettingsHelp.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\ZlizEQMapForm.resx">
       <DependentUpon>ZlizEQMapForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\ZlizEQMapFormExperimental.resx">
+      <DependentUpon>ZlizEQMapFormExperimental.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -191,6 +228,9 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
+    <None Include="app.config" />
+    <None Include="packages.config" />
+    <None Include="Properties\DataSources\Settings.datasource" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -203,6 +243,10 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="readme.md" />
+    <Content Include="Images\icons\close x icon.png" />
+    <Content Include="Images\icons\gear config.png" />
+    <Content Include="Images\icons\movearound quadarrow.png" />
+    <Content Include="Images\icons\resize dualarrow.png" />
     <Content Include="ZoneData\01Antonica\arena1.txt" />
     <Content Include="ZoneData\01Antonica\befallen1.txt" />
     <Content Include="ZoneData\01Antonica\befallen2.txt" />

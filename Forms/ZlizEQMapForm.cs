@@ -21,7 +21,7 @@ namespace ZlizEQMap
 		static Regex regExLocation = new Regex(@"^\[.+\] Your Location is (.+), (.+), .+$", RegexOptions.Compiled);
 		static Regex regExDirection = new Regex(@"^\[.+\] You think you are heading (.+)\.$", RegexOptions.Compiled);
 
-		MapPoint playerLocation = null;
+        MapPoint playerLocation = null;
 		MapPoint waypoint = null;
 		bool locationIsWithinMap;
 		Direction playerDirection = Direction.Unknown;
@@ -40,7 +40,7 @@ namespace ZlizEQMap
 
 		public ZlizEQMapForm()
 		{
-			InitializeComponent();
+            InitializeComponent();
 			SetControlProperties();
 
 			if (HandleSettings())
@@ -154,9 +154,7 @@ namespace ZlizEQMap
 
 			if (form.EQDirectoryValid)
 			{
-				if (initializeDefaultSettings)
-					Settings.InitializeDefaultSettings();
-
+				Settings.InitializeSettings(initializeDefaultSettings);
 				Settings.EQDirectoryPath1 = form.EQDirectory;
 				Settings.LogsInLogsDir1 = form.LogsInLogsDir;
 				Settings.ZoneDataSet1 = form.ZoneDataSet;
@@ -686,7 +684,7 @@ namespace ZlizEQMap
 
 		private void SetFormOpacity()
 		{
-			this.Opacity = sliderOpacity.Value * 5 / 100f;
+			this.Opacity = sliderOpacity.Value;
 		}
 
 		private void ZlizEQMapForm_Resize(object sender, EventArgs e)
@@ -763,17 +761,5 @@ namespace ZlizEQMap
             watcher.Filter = assembledLogNamefilter;
             forceLogReselection = true;
         }
-	}
-
-    public class MapPoint
-	{
-		public int Y { get; set; }
-		public int X { get; set; }
-	}
-
-	public class PointSet
-	{
-		public Point Point1 { get; set; }
-		public Point Point2 { get; set; }
 	}
 }
