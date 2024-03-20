@@ -160,6 +160,7 @@ namespace ZlizEQMap
             PopulateConnectedZones();
             SetButtonWaypointText();
             RefreshZoneAnnotationList();
+            ResizeMap();
 
             if (popoutMap != null)
             {
@@ -177,8 +178,6 @@ namespace ZlizEQMap
                 MessageBox.Show(String.Format("Unable to find zone '{0}' in Zone Data", zoneName), "ZlizEQMap", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
-
-            ZoneChangedUpdateUI();
         }
 
         private void PopulateConnectedZones()
@@ -527,8 +526,8 @@ namespace ZlizEQMap
             picBox.Width = (int)roundedX;
             picBox.Height = (int)roundedY;
 
-            ForceSetWaypoint();
-            ForceSetPlayerLocation();
+            //ForceSetWaypoint();
+            //ForceSetPlayerLocation();
         }
 
         private void buttonAutosize_Click(object sender, EventArgs e)

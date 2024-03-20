@@ -597,25 +597,27 @@ namespace ZlizEQMap
         {
             ZoneAnnotationManager.AddNote(new ZoneAnnotation(noteText, x, y, CurrentZoneData.ShortName, CurrentZoneData.SubMapIndex));
             RefreshCurrentZoneAnnotations();
+            RaiseRedrawMaps(null, null);
         }
 
         public void RemoveNote(ZoneAnnotation zoneAnnotation)
         {
             ZoneAnnotationManager.ZoneAnnotations.Remove(zoneAnnotation);
             RefreshCurrentZoneAnnotations();
+            RaiseRedrawMaps(null, null);
         }
 
         public void SaveNotes()
         {
             ZoneAnnotationManager.SaveNotesToFile();
             RefreshCurrentZoneAnnotations();
+            RaiseRedrawMaps(null, null);
         }
 
         public void RefreshCurrentZoneAnnotations()
         {
             CurrentZoneAnnotations.Clear();
             CurrentZoneAnnotations.AddRange(ZoneAnnotationManager.GetFilteredZoneAnnotations(CurrentZoneData.ShortName, CurrentZoneData.SubMapIndex));
-            RaiseRedrawMaps(null, null);
         }
 
         public void ToggleAutoParse(bool autoParseState)
